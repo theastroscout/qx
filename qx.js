@@ -5,8 +5,12 @@
  */
 (function() {
 var qx = function(selector){
-	let elements = document.querySelectorAll(selector);
 	let items = [];
+	if(typeof selector == 'object'){
+		items = qx.bind([selector]);
+		return items;
+	}
+	let elements = document.querySelectorAll(selector);
 	elements.forEach(function(currentValue, currentIndex, listObj){
 		let item = currentValue;
 		items.push(item);
@@ -20,9 +24,8 @@ qx.bind = (el) => {
 	}
 	return el;
 };
-qx.methods = {
-	// Adding Event Listeners to elements.
-	on: function(events,fn){
+qx.fn = {
+	getPassive: () => {
 		// Determine passive
 		let passiveSupported = false;
 		try {
@@ -32,7 +35,27 @@ qx.methods = {
 				}
 			});
 		} catch(e) {}
-		let passive = passiveSupported?{passive:true}:false;
+		
+		return passiveSupported?{passive:true}:false;
+	},
+	over: function(e){
+		switch(e.type){
+			case 'mouseenter': case 'touchstart':
+				qx(this).addClass('hover');
+				break;
+			case 'mouseleave': case 'mousecancel': case 'touchend': case 'touchcancel':
+				qx(this).removeClass('hover');
+				break;
+		}
+	}
+};
+qx.ui = {
+	hover: ['mouseenter', 'mouseleave', 'mousecancel', 'touchstart', 'touchend', 'touchcancel']
+};
+qx.methods = {
+	// Adding Event Listeners to elements.
+	on: function(events,fn){
+		let passive = qx.fn.getPassive();
 
 		// Split events list and add Event Listener for each
 		let eventsList = events.split(' ');
@@ -94,7 +117,7 @@ qx.methods = {
 		}
 		return false;
 	},
-	// Get Attribute of elements
+	// Get Attribute value of elements
 	getAttr: function(attrName){
 		let list = [];
 		for(var i=0,l=this.length;i<l;i++){
@@ -116,7 +139,6 @@ qx.methods = {
 	},
 	// Set Attribute to elements
 	setAttr: function(attrName,value=''){
-		let list = [];
 		for(var i=0,l=this.length;i<l;i++){
 			this[i].setAttribute(attrName,value);
 		}
@@ -124,9 +146,33 @@ qx.methods = {
 	},
 	// Remove Attribute from elements
 	removeAttr: function(attrName){
-		let list = [];
 		for(var i=0,l=this.length;i<l;i++){
 			this[i].removeAttribute(attrName);
+		}
+		return this;
+	},
+	// Add a behavior that switches the class "hover" when you hover the mouse or tap on the element.
+	hover: function(){
+		let passive = qx.fn.getPassive();
+		for(var i=0,l=this.length;i<l;i++){
+			let item = this[i];
+			for(var e in qx.ui.hover){
+				item.addEventListener(qx.ui.hover[e],qx.fn.over,passive);
+			}
+		}
+	},
+	// Removes an element from the DOM
+	remove: function(){
+		for(var i=0,l=this.length;i<l;i++){
+			let item = this[i];
+			item.parentNode.removeChild(item);
+		}
+		return true;
+	},
+	// Replace element with new HTML
+	replace: function(html){
+		for(var i=0,l=this.length;i<l;i++){
+			this[i].outerHTML = html;
 		}
 		return this;
 	}
