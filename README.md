@@ -41,6 +41,12 @@ Checking elements for class name available. Returning array of values if it need
 $(selector).hasClass(className);
 ```
 
+### css()
+Set css to elements.
+```javascript
+$(selector).css({prop:value});
+```
+
 ### getAttr()
 Get Attribute value of elements
 ```javascript
@@ -77,10 +83,70 @@ Replace element with new HTML
 $(selector).replace(HTML);
 ```
 
+### val()
+Get or Set value of inputs
+```javascript
+$(selector).val(newValue); // Set value
+$(selector).val(); // Get value
+```
+
+### hide()
+Hide elements. Set display to "none".
+```javascript
+$(selector).hide();
+```
+
+### show()
+Show elements. Set display to "block".
+```javascript
+$(selector).show();
+```
+
+### text()
+Get or Set plain text of elements
+```javascript
+$(selector).text(newText); // Set text
+$(selector).text(); // Get text
+```
+
+### html()
+Get or Set HTML of elements
+```javascript
+$(selector).html(newHtml); // Set HTML inner elements
+$(selector).html(); // Get Outer HTML
+```
+
+### fadeIn(duration, callback)
+Fade-in element using the transparency.
+```javascript
+$(selector).fadeIn(duration=600,callback=false);
+```
+
+### fadeOut(duration, callback)
+Fade-out element using the transparency.
+```javascript
+$(selector).fadeOut(duration=600,callback=false);
+```
+
+### width(value)
+Get or Set Width of elements
+```javascript
+$(selector).width(value=false);
+```
+
+### height(value)
+Get or Set Height of elements
+```javascript
+$(selector).height(value=false);
+```
 
 
+<br />
+<br />
+<br />
+<br />
 
-MIT License
+## MIT License
 
 Copyright (c) 2020 HQ
 
