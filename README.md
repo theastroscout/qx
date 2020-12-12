@@ -1,5 +1,6 @@
 # qx
 Lightweight JavaScript library for manipulating with HTML
+
 <br />
 
 ## Initialization
@@ -11,6 +12,7 @@ Just add the script into your HTML
 
 ## Using
 $(selector) - Like JQuery. Use querySelectorAll [documentation](https://developer.mozilla.org/ru/docs/Web/API/Document/querySelectorAll)
+
 <br />
 
 ## Methods
