@@ -8,14 +8,20 @@ $(selector) - Like JQuery. Use querySelectorAll [documentation](https://develope
 
 ## Methods
 
+### on()
+Adding Event Listeners to the elements.
+```javascript
+$(selector).on(eventNames,functionName);
+```
+
 ### addClass()
-Adding the class name or list of class names to the element
+Adding the class name or list of class names to the element.
 ```javascript
 $(selector).addClass('className1 className2');
 ```
 
 ### removeClass()
-Remove the class name or list of class names from elements classList
+Remove the class name or list of class names from elements classList.
 ```javascript
 $(selector).removeClass('className1 className2');
 ```

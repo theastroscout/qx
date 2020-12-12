@@ -21,7 +21,7 @@ qx.bind = (el) => {
 	return el;
 };
 qx.methods = {
-	// Bind functions with elements
+	// Adding Event Listeners to the elements.
 	on: function(events,fn){
 		// Determine passive
 		let passiveSupported = false;
@@ -45,7 +45,7 @@ qx.methods = {
 		}
 		return this;
 	},
-	// Adding some class or list of the class name to the element
+	// Adding the class name or list of class names to the element
 	addClass: function(classNames){
 		for(var i=0,l=this.length;i<l;i++){
 			let item = this[i];
@@ -61,7 +61,7 @@ qx.methods = {
 
 		return this;
 	},
-	// Remove class or list of the class names
+	// Remove the class name or list of class names from elements classList
 	removeClass: function(classNames){
 		for(var i=0,l=this.length;i<l;i++){
 			let item = this[i];
@@ -76,7 +76,7 @@ qx.methods = {
 
 		return this;
 	},
-	// Checking elements for class name available.
+	// Checking elements for class name available. Returning array of values if it needed.
 	hasClass: function(className){
 		let checkedList = [];
 		for(var i=0,l=this.length;i<l;i++){
