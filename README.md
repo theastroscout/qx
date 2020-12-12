@@ -38,6 +38,23 @@ $(selector).removeClass('className1 className2');
 ### hasClass()
 Checking elements for class name available. Returning array of values if it needed.
 ```javascript
-$(selector).hasClass('className');
+$(selector).hasClass(className);
 ```
 
+### getAttr()
+Get Attribute value of elements
+```javascript
+$(selector).getAttr(attributeName);
+```
+
+### setAttr()
+Set Attribute to elements
+```javascript
+$(selector).setAttr(attributeName,value);
+```
+
+### removeAttr()
+Remove Attribute from elements
+```javascript
+$(selector).removeAttr(attributeName);
+```

@@ -93,6 +93,42 @@ qx.methods = {
 			return true;
 		}
 		return false;
+	},
+	// Get Attribute of elements
+	getAttr: function(attrName){
+		let list = [];
+		for(var i=0,l=this.length;i<l;i++){
+			let attr = this[i].getAttribute(attrName);
+			if(attr != null){
+				if(attr == ''){
+					attr = true;
+				}
+				list.push(attr);
+			}
+		}
+
+		if(list.length > 1){
+			return list;
+		} else if(list[0]){
+			return true;
+		}
+		return false;
+	},
+	// Set Attribute to elements
+	setAttr: function(attrName,value=''){
+		let list = [];
+		for(var i=0,l=this.length;i<l;i++){
+			this[i].setAttribute(attrName,value);
+		}
+		return this;
+	},
+	// Remove Attribute from elements
+	removeAttr: function(attrName){
+		let list = [];
+		for(var i=0,l=this.length;i<l;i++){
+			this[i].removeAttribute(attrName);
+		}
+		return this;
 	}
 };
 window.$ = qx;
