@@ -21,7 +21,7 @@ qx.bind = (el) => {
 	return el;
 };
 qx.methods = {
-	// Adding Event Listeners to the elements.
+	// Adding Event Listeners to elements.
 	on: function(events,fn){
 		// Determine passive
 		let passiveSupported = false;
