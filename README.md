@@ -1,16 +1,16 @@
 # qx
 Lightweight JavaScript library for manipulating with HTML
 
-<br/>
+<br />
 ## Initialization
 Just add the script into your HTML
 > <script src="/path_to_script/qx.min.js"></script>
 
-<br/>
+<br />
 ## Using
 $(selector) - Like JQuery. Use querySelectorAll [documentation](https://developer.mozilla.org/ru/docs/Web/API/Document/querySelectorAll)
 
-<br/>
+<br />
 ## Methods
 
 ### on()
