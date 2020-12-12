@@ -1,15 +1,19 @@
 # qx
 Lightweight JavaScript library for manipulating with HTML
 
-
 ## Initialization
+Just add the script into your HTML
+> <script src="/path_to_script/qx.min.js"></script>
+
+
+## Using
 $(selector) - Like JQuery. Use querySelectorAll [documentation](https://developer.mozilla.org/ru/docs/Web/API/Document/querySelectorAll)
 
 
 ## Methods
 
 ### on()
-Adding Event Listeners to the elements.
+Adding Event Listeners to elements.
 ```javascript
 $(selector).on(eventNames,functionName);
 ```
