@@ -17,49 +17,55 @@ $(selector) - Like JQuery. Use querySelectorAll [documentation](https://develope
 
 ## Methods
 
-### on()
+### on(eventNames, function)
 Adding Event Listeners to elements.
 ```javascript
 $(selector).on(eventNames,functionName);
 ```
 
-### addClass()
+### click(function)
+Adding Click Or Tap Listener to elements depending on TouchScreen Device Detected.
+```javascript
+$(selector).click(functionName);
+```
+
+### addClass(classNames)
 Adding the class name or list of class names to the element.
 ```javascript
 $(selector).addClass('className1 className2');
 ```
 
-### removeClass()
+### removeClass(classNames)
 Remove the class name or list of class names from elements classList.
 ```javascript
 $(selector).removeClass('className1 className2');
 ```
 
-### hasClass()
+### hasClass(classNames)
 Checking elements for class name available. Returning array of values if it needed.
 ```javascript
 $(selector).hasClass(className);
 ```
 
-### css()
+### css({properties})
 Set css to elements.
 ```javascript
 $(selector).css({prop:value});
 ```
 
-### getAttr()
+### getAttr(attributeName)
 Get Attribute value of elements
 ```javascript
 $(selector).getAttr(attributeName);
 ```
 
-### setAttr()
+### setAttr(attributeName)
 Set Attribute to elements
 ```javascript
 $(selector).setAttr(attributeName,value);
 ```
 
-### removeAttr()
+### removeAttr(attributeName)
 Remove Attribute from elements
 ```javascript
 $(selector).removeAttr(attributeName);
@@ -77,13 +83,19 @@ Removes an element from the DOM
 $(selector).remove();
 ```
 
-### replace()
+### replace(HTML)
 Replace element with new HTML
 ```javascript
 $(selector).replace(HTML);
 ```
 
-### val()
+### append(HTML)
+Append HTML before End Of Elements
+```javascript
+$(selector).append(HTML);
+```
+
+### val(value)
 Get or Set value of inputs
 ```javascript
 $(selector).val(newValue); // Set value
@@ -138,6 +150,24 @@ $(selector).width(value=false);
 Get or Set Height of elements
 ```javascript
 $(selector).height(value=false);
+```
+
+### each(function)
+Executing function for each of elements
+```javascript
+$(selector).each(functionName);
+```
+
+### slideUp(duration, callback)
+Slide Up Elements and fade-out
+```javascript
+$(selector).slideUp(duration=500, callback=false);
+```
+
+### slideDown(duration, callback)
+Slide Down Elements and fade-in
+```javascript
+$(selector).slideDown(duration=500, callback=false);
 ```
 
 

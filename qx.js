@@ -38,6 +38,9 @@ qx.fn = {
 		
 		return passiveSupported?{passive:true}:false;
 	},
+	isTouch: () => {
+		return ('ontouchstart' in document.documentElement);
+	},
 	over: function(e){
 		switch(e.type){
 			case 'mouseenter': case 'touchstart':
@@ -67,6 +70,14 @@ qx.methods = {
 			}
 		}
 		return this;
+	},
+	// Adding Click Or Tap Listener to elements depending on TouchScreen Device Detected.
+	click: function(fn){
+		let passive = qx.fn.getPassive();
+		let eventName = (qx.fn.isTouch())?'tap':'click';
+		for(var i=0,l=this.length;i<l;i++){
+			this[i].addEventListener(eventName,fn,passive);
+		}
 	},
 	// Adding the class name or list of class names to the element
 	addClass: function(classNames){
@@ -186,6 +197,13 @@ qx.methods = {
 		}
 		return this;
 	},
+	// Append HTML before End Of Elements
+	append: function(html){
+		for(var i=0,l=this.length;i<l;i++){
+			this[i].insertAdjacentHTML('beforeEnd', html);
+		}
+		return this;
+	},
 	// Get or Set value of inputs
 	val: function(v=false){
 		if(v !== false){
@@ -229,7 +247,6 @@ qx.methods = {
 			let list = [];
 			for(var i=0,l=this.length;i<l;i++){
 				list.push(this[i].innerText);
-				break
 			}
 			if(list.length > 1){
 				return list;
@@ -362,6 +379,111 @@ qx.methods = {
 			}
 			return false;
 		}
+	},
+	// Executing function for each of elements
+	each: function(callback){
+		for(var i=0,l=this.length;i<l;i++){
+			callback(this[i]);
+		};
+		return this;
+	},
+	// Slide Up Elements and fade-out
+	slideUp: function(duration=500, callback=false){
+		let removeOnComplete = false;
+		if(typeof duration == 'function'){
+			callback = duration;
+			duration = 500;
+		} else if(duration == 'remove'){
+			removeOnComplete = true;
+			duration = 500;
+		}
+		for(var i=0,l=this.length;i<l;i++){
+			let target = this[i];
+			target.style.transitionProperty = 'height, margin, padding, opacity';
+			target.style.transitionDuration = duration + 'ms';
+			target.style.boxSizing = 'border-box';
+			target.style.height = target.offsetHeight + 'px';
+			target.style.overflow = 'hidden';
+			target.style.opacity = 0;
+			target.style.height = 0;
+			target.style.paddingTop = 0;
+			target.style.paddingBottom = 0;
+			target.style.marginTop = 0;
+			target.style.marginBottom = 0;
+			window.setTimeout( () => {
+				target.style.display = 'none';
+				target.style.removeProperty('opacity');
+				target.style.removeProperty('box-sizing');
+				target.style.removeProperty('height');
+				target.style.removeProperty('padding-top');
+				target.style.removeProperty('padding-bottom');
+				target.style.removeProperty('margin-top');
+				target.style.removeProperty('margin-bottom');
+				target.style.removeProperty('overflow');
+				target.style.removeProperty('transition-duration');
+				target.style.removeProperty('transition-property');
+				if(callback){
+					callback(target);
+				}
+				if(removeOnComplete){
+					target.parentNode.removeChild(target);
+				}
+			}, duration);
+		}
+		return this;
+	},
+	// Slide Down Elements and fade-in
+	slideDown: function(duration=500, callback=false){
+		if(typeof duration == 'string'){
+			duration = 500;
+		} else if(typeof duration == 'function'){
+			callback = duration;
+			duration = 500;
+		}
+		for(var i=0,l=this.length;i<l;i++){
+			let target = this[i];
+			target.style.removeProperty('display');
+			let computedStyle = window.getComputedStyle(target);
+			let display = computedStyle.display;
+
+			if(display === 'none'){
+				display = 'block';
+			}
+
+			let opacity = computedStyle.opacity;
+
+			target.style.display = display;
+			let height = target.offsetHeight;
+			target.style.overflow = 'hidden';
+			target.style.opacity = 0;
+			target.style.height = 0;
+			target.style.paddingTop = 0;
+			target.style.paddingBottom = 0;
+			target.style.marginTop = 0;
+			target.style.marginBottom = 0;
+			target.style.boxSizing = 'border-box';
+			target.style.transitionProperty = "height, margin, padding";
+			target.style.transitionDuration = duration + 'ms';
+
+			target.style.opacity = opacity;
+			target.style.height = height + 'px';
+			target.style.removeProperty('padding-top');
+			target.style.removeProperty('padding-bottom');
+			target.style.removeProperty('margin-top');
+			target.style.removeProperty('margin-bottom');
+			window.setTimeout( () => {
+				target.style.removeProperty('opacity');
+				target.style.removeProperty('box-sizing');
+				target.style.removeProperty('height');
+				target.style.removeProperty('overflow');
+				target.style.removeProperty('transition-duration');
+				target.style.removeProperty('transition-property');
+				if(callback){
+					callback(target);
+				}
+			}, duration);
+		}
+		return this;
 	}
 };
 window.$ = qx;
