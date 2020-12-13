@@ -500,7 +500,7 @@ qx.methods = {
 		return this;
 	},
 	// Returns the size and position of elements
-	getBound: function(){
+	getBounds: function(){
 		let list = [];
 		for(var i=0,l=this.length;i<l;i++){
 			let target = this[i];
@@ -593,4 +593,4 @@ qx.methods = {
 	},
 };
 window.$ = qx;
-});
+})();
