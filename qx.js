@@ -204,6 +204,20 @@ qx.methods = {
 		}
 		return this;
 	},
+	// Insert HTML before Beging Of Elements
+	prepend: function(html){
+		for(var i=0,l=this.length;i<l;i++){
+			this[i].insertAdjacentHTML('beforeBegin', html);
+		}
+		return this;
+	},
+	// Insert HTML after the End Of Elements
+	after: function(html){
+		for(var i=0,l=this.length;i<l;i++){
+			this[i].insertAdjacentHTML('afterEnd', html);
+		}
+		return this;
+	},
 	// Get or Set value of inputs
 	val: function(v=false){
 		if(v !== false){
@@ -484,6 +498,67 @@ qx.methods = {
 			}, duration);
 		}
 		return this;
+	},
+	// Returns the size and position of elements
+	getBound: function(){
+		let list = [];
+		for(var i=0,l=this.length;i<l;i++){
+			let target = this[i];
+			let bound = {};
+			if ('getBoundingClientRect' in target){
+				bound = target.getBoundingClientRect();
+				if(typeof bound.x == 'undefined'){
+					bound.x = bound.left;
+					bound.y = bound.top;
+				}
+			} else {
+				bound.x = target.offsetLeft;
+				bound.y = target.offsetTop;
+				bound.width = target.offsetWidth;
+				bound.height = target.offsetHeight;
+			}
+			list.push(bound);
+		}
+		if(list.length > 1){
+			return list;
+		} else if(list.length){
+			return list[0];
+		}
+		return false;
+	},
+	// Return the list of parent elements
+	parent: function(){
+		let items = [];
+		for(var i=0,l=this.length;i<l;i++){
+			items.push(this[i].parentNode);
+		}
+		return qx.bind(items);
+	},
+	// Return the list of elements width
+	textWidth: function(){
+		let list = [];
+		for(var i=0,l=this.length;i<l;i++){
+			let item = this[i];
+			let str = item.innerText;
+			text = document.createElement('span');
+			let computedStyle = window.getComputedStyle(item);
+			text.innerHTML = str;
+			text.style.position = 'absolute';
+			text.style.visibility = 'hidden';
+			text.style.font = computedStyle.font;
+			document.body.appendChild(text); 
+			let width = text.offsetWidth;
+			document.body.removeChild(text);
+
+			list.push(width);
+		}
+
+		if(list.length > 1){
+			return list;
+		} else if(list.length){
+			return list[0];
+		}
+		return false;
 	}
 };
 window.$ = qx;
