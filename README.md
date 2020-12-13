@@ -11,7 +11,7 @@ Just add the script into your HTML
 <br />
 
 ## Using
-$(selector) - Like JQuery. Use querySelectorAll [documentation](https://developer.mozilla.org/ru/docs/Web/API/Document/querySelectorAll)
+$(selector) - Like JQuery. Using **querySelectorAll** [documentation](https://developer.mozilla.org/ru/docs/Web/API/Document/querySelectorAll)
 
 <br />
 
@@ -95,6 +95,18 @@ Append HTML before End Of Elements
 $(selector).append(HTML);
 ```
 
+### prepend(HTML)
+Insert HTML before the Beging Of Elements
+```javascript
+$(selector).prepend(HTML);
+```
+
+### after(HTML)
+Insert HTML after the End Of Elements
+```javascript
+$(selector).after(HTML);
+```
+
 ### val(value)
 Get or Set value of inputs
 ```javascript
@@ -168,6 +180,24 @@ $(selector).slideUp(duration=500, callback=false);
 Slide Down Elements and fade-in
 ```javascript
 $(selector).slideDown(duration=500, callback=false);
+```
+
+### getBound()
+Returns the size and position of elements
+```javascript
+$(selector).getBound();
+```
+
+### parent()
+Return the list of parent elements
+```javascript
+$(selector).parent();
+```
+
+### textWidth()
+Return the list of elements width
+```javascript
+$(selector).textWidth();
 ```
 
 
