@@ -559,7 +559,38 @@ qx.methods = {
 			return list[0];
 		}
 		return false;
-	}
+	},
+	// Return Offset Top Of Elements
+	top: function(){
+		let list = [];
+		for(var i=0,l=this.length;i<l;i++){
+			list.push(this[i].offsetTop);
+		}
+		if(list.length > 1){
+			return list;
+		} else if(list.length){
+			return list[0];
+		}
+		return false;
+	},
+	// Find elements inside the list of selected elements
+	find: function(selector){
+		let items = [];
+		for(var i=0,l=this.length;i<l;i++){
+			let elmts = this[i].querySelectorAll(selector);
+			elmts.forEach(function(currentValue, currentIndex, listObj){
+				items.push(currentValue);
+			});
+		}
+		return qx.bind(items);
+	},
+	// Set focus at the first element of the list
+	focus: function(){
+		if(this.length){
+			this[0].focus();
+		}
+		return this;
+	},
 };
 window.$ = qx;
 });
