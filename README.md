@@ -182,10 +182,10 @@ Slide Down Elements and fade-in
 $(selector).slideDown(duration=500, callback=false);
 ```
 
-### getBound()
+### getBounds()
 Returns the size and position of elements
 ```javascript
-$(selector).getBound();
+$(selector).getBounds();
 ```
 
 ### parent()
@@ -206,7 +206,7 @@ Return Offset Top Of Elements
 $(selector).top();
 ```
 
-### find()
+### find(selector)
 Find elements inside the list of selected elements
 ```javascript
 $(selector).find(selector);
