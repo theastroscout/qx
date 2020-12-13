@@ -200,6 +200,24 @@ Return the list of elements width
 $(selector).textWidth();
 ```
 
+### top()
+Return Offset Top Of Elements
+```javascript
+$(selector).top();
+```
+
+### find()
+Find elements inside the list of selected elements
+```javascript
+$(selector).find(selector);
+```
+
+### focus()
+Set focus at the first element of the list
+```javascript
+$(selector).focus();
+```
+
 
 <br />
 <br />
