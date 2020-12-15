@@ -75,6 +75,7 @@ qx.methods = {
 	click: function(fn){
 		let passive = qx.fn.getPassive();
 		for(var i=0,l=this.length;i<l;i++){
+			// Remove tap events
 			this[i].addEventListener('click',fn,passive);
 		}
 	},
