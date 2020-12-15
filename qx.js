@@ -74,9 +74,8 @@ qx.methods = {
 	// Adding Click Or Tap Listener to elements depending on TouchScreen Device Detected.
 	click: function(fn){
 		let passive = qx.fn.getPassive();
-		let eventName = (qx.fn.isTouch())?'tap':'click';
 		for(var i=0,l=this.length;i<l;i++){
-			this[i].addEventListener(eventName,fn,passive);
+			this[i].addEventListener('click',fn,passive);
 		}
 	},
 	// Adding the class name or list of class names to the element
@@ -596,6 +595,56 @@ qx.methods = {
 		}
 		return this;
 	},
+	counter: function(options){
+		let go = false;
+		for(var i=0,l=this.length;i<l;i++){
+			let item = this[i];
+			if(typeof options.count != 'object'){
+				options.count = [parseFloat(item.innerText), options.count];
+			}
+			
+			if(typeof options.duration == 'undefined'){
+				options.duration = 1000;
+			}
+			var steps = options.duration/50;
+			let offset = (options.count[1] - options.count[0])/steps;
+			// console.log(options.count)
+	 
+			if(typeof options.current == 'undefined'){
+				if(item.tmo){
+					clearTimeout(item.tmo);
+				}
+				options.current = options.count[0];
+			} else {
+				options.current += offset;
+			}
+	 
+			let v = options.current;
+			if(options.current >= options.count[1]){
+				v = options.count[1];
+			}
+			if(options.round){
+				v = v.toFixed(options.round);
+			}
+			if(options.mask){
+				v = options.mask.replace(/n/,v);
+			}
+			
+			if(options.current >= options.count[1]){
+				item.innerText = v;
+			} else {
+				item.innerText = v;
+				go = true;
+			}
+		}
+
+		if(go){
+			let that = this;
+			setTimeout(() => {
+				that.counter(options);
+			}, 50)
+		}
+	}
 };
 window.$ = qx;
 })();
