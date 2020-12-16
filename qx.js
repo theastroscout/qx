@@ -1,5 +1,5 @@
-(() => {
-var qx = (selector) => {
+(function(){
+var qx = function(selector){
 	if(typeof selector === "object"){
 		return qx.bind([selector]);
 	}
