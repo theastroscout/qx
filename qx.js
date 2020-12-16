@@ -1,4 +1,4 @@
-(function() {
+(() => {
 var qx = (selector) => {
 	if(typeof selector === "object"){
 		return qx.bind([selector]);
