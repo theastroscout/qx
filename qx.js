@@ -1,12 +1,12 @@
-(() => {
-var qx = (selector) => {
+(function(){
+var qx = function(selector){
 	if(typeof selector === "object"){
 		return qx.bind([selector]);
 	}
-	let itemsList = [];
-	let elements = document.querySelectorAll(selector);
-	elements.forEach((currentValue, currentIndex, listObj) => {
-		let item = currentValue;
+	var itemsList = [];
+	var elements = document.querySelectorAll(selector);
+	elements.forEach(function(currentValue){
+		var item = currentValue;
 		itemsList.push(item);
 	});
 	return qx.bind(itemsList);
@@ -25,6 +25,7 @@ qx.fn = {
 			Object.defineProperty({}, "passive", {
 				get: () => {
 					passiveSupported = true;
+					return true;
 				}
 			});
 		} catch(e) {
@@ -215,14 +216,15 @@ qx.methods = {
 	},
 	// Get or Set value of inputs
 	val(v=false){
+		var i,l;
 		if(v !== false){
-			for(var i=0,l=this.length;i<l;i++){
+			for(i=0,l=this.length;i<l;i++){
 				this[i].value = v;
 			}
 			return this;
 		} else {
 			let list = [];
-			for(var i=0,l=this.length;i<l;i++){
+			for(i=0,l=this.length;i<l;i++){
 				let value = this[i].value;
 				list.push((value)?value:false);
 			}
@@ -250,9 +252,10 @@ qx.methods = {
 	},
 	// Get or Set plain text of elements
 	text(str){
+		var i,l;
 		if(typeof str === "undefined"){
 			let list = [];
-			for(var i=0,l=this.length;i<l;i++){
+			for(i=0,l=this.length;i<l;i++){
 				list.push(this[i].innerText);
 			}
 			if(list.length > 1){
@@ -262,7 +265,7 @@ qx.methods = {
 			}
 			return false;
 		} else {
-			for(var i=0,l=this.length;i<l;i++){
+			for(i=0,l=this.length;i<l;i++){
 				this[i].innerText = str;
 			}
 			return this;
@@ -270,9 +273,10 @@ qx.methods = {
 	},
 	// Get or Set HTML of elements
 	html(html){
+		var i,l;
 		if(typeof html === "undefined"){
 			let list = [];
-			for(var i=0,l=this.length;i<l;i++){
+			for(i=0,l=this.length;i<l;i++){
 				list.push(this[i].outerHTML);
 			}
 			if(list.length > 1){
@@ -282,7 +286,7 @@ qx.methods = {
 			}
 			return false;
 		} else {
-			for(var i=0,l=this.length;i<l;i++){
+			for(i=0,l=this.length;i<l;i++){
 				this[i].innerHTML = html;
 			}
 			return this;
@@ -347,15 +351,16 @@ qx.methods = {
 	},
 	// Get or Set Width of elements
 	width(value=false){
+		var i,l;
 		if(value !== false){
 			let dim = (typeof value === "number")?"px":"";
-			for(var i=0,l=this.length;i<l;i++){
+			for(i=0,l=this.length;i<l;i++){
 				this[i].style.width = value+dim;
 			}
 			return this;
 		} else {
 			let list = [];
-			for(var i=0,l=this.length;i<l;i++){
+			for(i=0,l=this.length;i<l;i++){
 				list.push(this[i].offsetWidth);
 			}
 			if(list.length > 1){
@@ -368,15 +373,16 @@ qx.methods = {
 	},
 	// Get or Set Height of elements
 	height(value=false){
+		var i,l;
 		if(value !== false){
 			let dim = (typeof value === "number")?"px":"";
-			for(var i=0,l=this.length;i<l;i++){
+			for(i=0,l=this.length;i<l;i++){
 				this[i].style.height = value+dim;
 			}
 			return this;
 		} else {
 			let list = [];
-			for(var i=0,l=this.length;i<l;i++){
+			for(i=0,l=this.length;i<l;i++){
 				list.push(this[i].offsetHeight);
 			}
 			if(list.length > 1){
@@ -391,7 +397,7 @@ qx.methods = {
 	each(callback){
 		for(var i=0,l=this.length;i<l;i++){
 			callback(this[i]);
-		};
+		}
 		return this;
 	},
 	// Slide Up Elements and fade-out
@@ -538,7 +544,7 @@ qx.methods = {
 		for(var i=0,l=this.length;i<l;i++){
 			let item = this[i];
 			let str = item.innerText;
-			text = document.createElement("span");
+			let text = document.createElement("span");
 			let computedStyle = window.getComputedStyle(item);
 			text.innerHTML = str;
 			text.style.position = "absolute";
@@ -576,7 +582,7 @@ qx.methods = {
 		let items = [];
 		for(var i=0,l=this.length;i<l;i++){
 			let elmts = this[i].querySelectorAll(selector);
-			elmts.forEach(function(currentValue, currentIndex, listObj){
+			elmts.forEach(function(currentValue){
 				items.push(currentValue);
 			});
 		}
@@ -603,7 +609,6 @@ qx.methods = {
 			var steps = options.duration/50;
 			let offset = (options.count[1] - options.count[0])/steps;
 			// console.log(options.count)
-	 
 			if(typeof options.current === "undefined"){
 				if(item.tmo){
 					clearTimeout(item.tmo);
@@ -612,7 +617,6 @@ qx.methods = {
 			} else {
 				options.current += offset;
 			}
-	 
 			let v = options.current;
 			if(options.current >= options.count[1]){
 				v = options.count[1];
