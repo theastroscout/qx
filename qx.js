@@ -1,8 +1,3 @@
-/*
- * qx JavaScript Library v0.0.1
- * https://hqmode.com/
- * Released under the MIT license
- */
 (function() {
 var qx = function(selector){
 	let items = [];
