@@ -79,6 +79,7 @@ qx.methods = {
 		for(var i=0,l=this.length;i<l;i++){
 			this[i].addEventListener("click",fn,passive);
 		}
+		return this;
 	},
 	// Adding the class name or list of class names to the element
 	addClass: function(classNames){
@@ -104,7 +105,7 @@ qx.methods = {
 			let currentClassNames = (item.className.length)?item.className.split(/\s+/):[];
 			if(currentClassNames.length){
 				let classNameList = classNames.split(" ");
-				currentClassNames = currentClassNames.filter( el => !classNameList.includes(el) );
+				currentClassNames = currentClassNames.filter( (el) => !classNameList.includes(el) );
 				item.className = currentClassNames.join(" ");
 			}
 		}
@@ -133,7 +134,7 @@ qx.methods = {
 	css: function(css){
 		for(var i=0,l=this.length;i<l;i++){
 			let item = this[i];
-			for(var c in css){
+			for(let c in css){
 				item.style[c] = css[c];
 			}
 		}
@@ -230,9 +231,7 @@ qx.methods = {
 			let list = [];
 			for(var i=0,l=this.length;i<l;i++){
 				let value = this[i].value;
-				if(value){
-					list.push(value);
-				}
+				list.push((value)?value:false);
 			}
 			if(list.length > 1){
 				return list;
