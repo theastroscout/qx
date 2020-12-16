@@ -74,7 +74,7 @@ qx.methods = {
 		return this;
 	},
 	// Adding Click Or Tap Listener to elements depending on TouchScreen Device Detected.
-	click: function(fn){
+	click(fn){
 		let passive = qx.fn.getPassive();
 		for(var i=0,l=this.length;i<l;i++){
 			this[i].addEventListener("click",fn,passive);

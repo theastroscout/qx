@@ -1,3 +1,5 @@
 {
-	"complexity": ["error", 8]
+	"rules": {
+		"complexity": ["error", 8]
+	}
 }

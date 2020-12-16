@@ -218,7 +218,6 @@ Set focus at the first element of the list
 $(selector).focus();
 ```
 
-
 <br />
 <br />
 <br />
