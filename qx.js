@@ -1,17 +1,15 @@
 (function() {
-var qx = function(selector){
-	let items = [];
+var qx = (selector) => {
 	if(typeof selector === "object"){
-		items = qx.bind([selector]);
-		return items;
+		return qx.bind([selector]);
 	}
+	let itemsList = [];
 	let elements = document.querySelectorAll(selector);
-	elements.forEach(function(currentValue, currentIndex, listObj){
+	elements.forEach((currentValue, currentIndex, listObj) => {
 		let item = currentValue;
-		items.push(item);
+		itemsList.push(item);
 	});
-	items = qx.bind(items);
-	return items;
+	return qx.bind(itemsList);
 };
 qx.bind = (el) => {
 	for(var i in qx.methods){
@@ -640,6 +638,7 @@ qx.methods = {
 				that.counter(options);
 			}, 50)
 		}
+		return this;
 	}
 };
 window.$ = qx;
