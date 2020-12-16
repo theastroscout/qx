@@ -5,7 +5,7 @@ Lightweight JavaScript library for manipulating with HTML
 
 ## Initialization
 Just add the script into your HTML
-```
+```html
 <script src="/path_to_script/qx.min.js"></script>
 ```
 <br />
