@@ -1,11 +1,11 @@
-(function(){
-var qx = function(selector){
+(() => {
+var qx = (selector) => {
 	if(typeof selector === "object"){
 		return qx.bind([selector]);
 	}
 	var itemsList = [];
 	var elements = document.querySelectorAll(selector);
-	elements.forEach(function(currentValue){
+	elements.forEach((currentValue) => {
 		var item = currentValue;
 		itemsList.push(item);
 	});
@@ -77,7 +77,7 @@ qx.methods = {
 	},
 	// Adding the class name or list of class names to the element
 	addClass(classNames){
-		qx.utils.parseClasses(this, classNames, (item,currentClassNames,classNameList) => {
+		qx.u.parseClasses(this, classNames, (item,currentClassNames,classNameList) => {
 			item.className = Array.from(new Set([...currentClassNames,...classNameList])).join(" ");
 		});
 
@@ -85,7 +85,7 @@ qx.methods = {
 	},
 	// Remove the class name or list of class names from elements classList
 	removeClass(classNames){
-		qx.utils.parseClasses(this, classNames, (item,currentClassNames,classNameList) => {
+		qx.u.parseClasses(this, classNames, (item,currentClassNames,classNameList) => {
 			if(currentClassNames.length){
 				currentClassNames = currentClassNames.filter( (el) => !classNameList.includes(el) );
 				item.className = currentClassNames.join(" ");
@@ -633,7 +633,8 @@ qx.methods = {
 		return this;
 	}
 };
-qx.utils = {
+// Utils
+qx.u = {
 	parseClasses(items,classNames,cb){
 		let classNameList = classNames.split(" ");
 		for(var i=0,l=items.length;i<l;i++){
