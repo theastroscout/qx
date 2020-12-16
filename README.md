@@ -1,6 +1,8 @@
 # qx
 Lightweight JavaScript library for manipulating with HTML
 
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/1564069f75eb4e6aa24faef6ea43e4be)](https://www.codacy.com/gh/hqdaemon/qx/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=hqdaemon/qx&amp;utm_campaign=Badge_Grade)
+
 <br />
 
 ## Initialization
