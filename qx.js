@@ -43,7 +43,7 @@ qx.fn = {
 	isTouch: () => {
 		return ("ontouchstart" in document.documentElement);
 	},
-	over: function(e){
+	over(e){
 		switch(e.type){
 			case "mouseenter": case "touchstart":
 				qx(this).addClass("hover");
@@ -59,7 +59,7 @@ qx.ui = {
 };
 qx.methods = {
 	// Adding Event Listeners to elements.
-	on: function(events,fn){
+	on(events,fn){
 		let passive = qx.fn.getPassive();
 
 		// Split events list and add Event Listener for each
@@ -82,7 +82,7 @@ qx.methods = {
 		return this;
 	},
 	// Adding the class name or list of class names to the element
-	addClass: function(classNames){
+	addClass(classNames){
 		for(var i=0,l=this.length;i<l;i++){
 			let item = this[i];
 			// Split class names into an array
@@ -98,7 +98,7 @@ qx.methods = {
 		return this;
 	},
 	// Remove the class name or list of class names from elements classList
-	removeClass: function(classNames){
+	removeClass(classNames){
 		for(var i=0,l=this.length;i<l;i++){
 			let item = this[i];
 			// Split class names into an array
@@ -113,7 +113,7 @@ qx.methods = {
 		return this;
 	},
 	// Checking elements for class name available. Returning array of values if it needed.
-	hasClass: function(className){
+	hasClass(className){
 		let checkedList = [];
 		for(var i=0,l=this.length;i<l;i++){
 			if(this[i].classList.contains(className)){
@@ -131,7 +131,7 @@ qx.methods = {
 		return false;
 	},
 	// Set css to elements
-	css: function(css){
+	css(css){
 		for(var i=0,l=this.length;i<l;i++){
 			let item = this[i];
 			for(let c in css){
@@ -141,7 +141,7 @@ qx.methods = {
 		return this;
 	},
 	// Get Attribute value of elements
-	getAttr: function(attrName){
+	getAttr(attrName){
 		let list = [];
 		for(var i=0,l=this.length;i<l;i++){
 			let attr = this[i].getAttribute(attrName);
@@ -161,21 +161,21 @@ qx.methods = {
 		return false;
 	},
 	// Set Attribute to elements
-	setAttr: function(attrName,value=""){
+	setAttr(attrName,value=""){
 		for(var i=0,l=this.length;i<l;i++){
 			this[i].setAttribute(attrName,value);
 		}
 		return this;
 	},
 	// Remove Attribute from elements
-	removeAttr: function(attrName){
+	removeAttr(attrName){
 		for(var i=0,l=this.length;i<l;i++){
 			this[i].removeAttribute(attrName);
 		}
 		return this;
 	},
 	// Add a behavior that switches the class "hover" when you hover the mouse or tap on the element.
-	hover: function(){
+	hover(){
 		let passive = qx.fn.getPassive();
 		for(var i=0,l=this.length;i<l;i++){
 			let item = this[i];
@@ -185,7 +185,7 @@ qx.methods = {
 		}
 	},
 	// Removes an element from the DOM
-	remove: function(){
+	remove(){
 		for(var i=0,l=this.length;i<l;i++){
 			let item = this[i];
 			item.parentNode.removeChild(item);
@@ -193,35 +193,35 @@ qx.methods = {
 		return true;
 	},
 	// Replace element with new HTML
-	replace: function(html){
+	replace(html){
 		for(var i=0,l=this.length;i<l;i++){
 			this[i].outerHTML = html;
 		}
 		return this;
 	},
 	// Append HTML before End Of Elements
-	append: function(html){
+	append(html){
 		for(var i=0,l=this.length;i<l;i++){
 			this[i].insertAdjacentHTML("beforeEnd", html);
 		}
 		return this;
 	},
 	// Insert HTML before Beging Of Elements
-	prepend: function(html){
+	prepend(html){
 		for(var i=0,l=this.length;i<l;i++){
 			this[i].insertAdjacentHTML("beforeBegin", html);
 		}
 		return this;
 	},
 	// Insert HTML after the End Of Elements
-	after: function(html){
+	after(html){
 		for(var i=0,l=this.length;i<l;i++){
 			this[i].insertAdjacentHTML("afterEnd", html);
 		}
 		return this;
 	},
 	// Get or Set value of inputs
-	val: function(v=false){
+	val(v=false){
 		if(v !== false){
 			for(var i=0,l=this.length;i<l;i++){
 				this[i].value = v;
@@ -242,21 +242,21 @@ qx.methods = {
 		}
 	},
 	// Hide elements. Set display to "none".
-	hide: function(){
+	hide(){
 		for(var i=0,l=this.length;i<l;i++){
 			this[i].style.display = "none";
 		}
 		return this;
 	},
 	// Show elements. Set display to "block".
-	show: function(){
+	show(){
 		for(var i=0,l=this.length;i<l;i++){
 			this[i].style.display = "block";
 		}
 		return this;
 	},
 	// Get or Set plain text of elements
-	text: function(str){
+	text(str){
 		if(typeof str === "undefined"){
 			let list = [];
 			for(var i=0,l=this.length;i<l;i++){
@@ -276,7 +276,7 @@ qx.methods = {
 		}
 	},
 	// Get or Set HTML of elements
-	html: function(html){
+	html(html){
 		if(typeof html === "undefined"){
 			let list = [];
 			for(var i=0,l=this.length;i<l;i++){
@@ -296,7 +296,7 @@ qx.methods = {
 		}
 	},
 	// Fade-in element using the transparency
-	fadeIn: function(duration=1000, cb=false){
+	fadeIn(duration=1000, cb=false){
 		for(var i=0,l=this.length;i<l;i++){
 			let target = this[i];
 			target.style.removeProperty("display");
@@ -325,7 +325,7 @@ qx.methods = {
 		}
 	},
 	// Fade-out element using the transparency
-	fadeOut: function(duration=600, cb=false){
+	fadeOut(duration=600, cb=false){
 		for(var i=0,l=this.length;i<l;i++){
 			let target = this[i];
 			target.style.removeProperty("display");
@@ -353,7 +353,7 @@ qx.methods = {
 		}
 	},
 	// Get or Set Width of elements
-	width: function(value=false){
+	width(value=false){
 		if(value !== false){
 			let dim = (typeof value === "number")?"px":"";
 			for(var i=0,l=this.length;i<l;i++){
@@ -374,7 +374,7 @@ qx.methods = {
 		}
 	},
 	// Get or Set Height of elements
-	height: function(value=false){
+	height(value=false){
 		if(value !== false){
 			let dim = (typeof value === "number")?"px":"";
 			for(var i=0,l=this.length;i<l;i++){
@@ -395,14 +395,14 @@ qx.methods = {
 		}
 	},
 	// Executing function for each of elements
-	each: function(callback){
+	each(callback){
 		for(var i=0,l=this.length;i<l;i++){
 			callback(this[i]);
 		};
 		return this;
 	},
 	// Slide Up Elements and fade-out
-	slideUp: function(duration=500, callback=false){
+	slideUp(duration=500, callback=false){
 		let removeOnComplete = false;
 		if(typeof duration === "function"){
 			callback = duration;
@@ -450,7 +450,7 @@ qx.methods = {
 		return this;
 	},
 	// Slide Down Elements and fade-in
-	slideDown: function(duration=500, callback=false){
+	slideDown(duration=500, callback=false){
 		if(typeof duration === "string"){
 			duration = 500;
 		} else if(typeof duration === "function"){
@@ -505,7 +505,7 @@ qx.methods = {
 		return this;
 	},
 	// Returns the size and position of elements
-	getBounds: function(){
+	getBounds(){
 		let list = [];
 		for(var i=0,l=this.length;i<l;i++){
 			let target = this[i];
@@ -532,7 +532,7 @@ qx.methods = {
 		return false;
 	},
 	// Return the list of parent elements
-	parent: function(){
+	parent(){
 		let items = [];
 		for(var i=0,l=this.length;i<l;i++){
 			items.push(this[i].parentNode);
@@ -540,7 +540,7 @@ qx.methods = {
 		return qx.bind(items);
 	},
 	// Return the list of elements width
-	textWidth: function(){
+	textWidth(){
 		let list = [];
 		for(var i=0,l=this.length;i<l;i++){
 			let item = this[i];
@@ -566,7 +566,7 @@ qx.methods = {
 		return false;
 	},
 	// Return Offset Top Of Elements
-	top: function(){
+	top(){
 		let list = [];
 		for(var i=0,l=this.length;i<l;i++){
 			list.push(this[i].offsetTop);
@@ -579,7 +579,7 @@ qx.methods = {
 		return false;
 	},
 	// Find elements inside the list of selected elements
-	find: function(selector){
+	find(selector){
 		let items = [];
 		for(var i=0,l=this.length;i<l;i++){
 			let elmts = this[i].querySelectorAll(selector);
@@ -590,13 +590,13 @@ qx.methods = {
 		return qx.bind(items);
 	},
 	// Set focus at the first element of the list
-	focus: function(){
+	focus(){
 		if(this.length){
 			this[0].focus();
 		}
 		return this;
 	},
-	counter: function(options){
+	counter(options){
 		let go = false;
 		for(var i=0,l=this.length;i<l;i++){
 			let item = this[i];
