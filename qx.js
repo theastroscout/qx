@@ -6,7 +6,7 @@
 (function() {
 var qx = function(selector){
 	let items = [];
-	if(typeof selector == 'object'){
+	if(typeof selector === "object"){
 		items = qx.bind([selector]);
 		return items;
 	}
@@ -30,30 +30,32 @@ qx.fn = {
 		let passiveSupported = false;
 		try {
 			Object.defineProperty({}, "passive", {
-				get: function() {
+				get: () => {
 					passiveSupported = true;
 				}
 			});
-		} catch(e) {}
+		} catch(e) {
+			// continue regardless of error
+		}
 		
 		return passiveSupported?{passive:true}:false;
 	},
 	isTouch: () => {
-		return ('ontouchstart' in document.documentElement);
+		return ("ontouchstart" in document.documentElement);
 	},
 	over: function(e){
 		switch(e.type){
-			case 'mouseenter': case 'touchstart':
-				qx(this).addClass('hover');
+			case "mouseenter": case "touchstart":
+				qx(this).addClass("hover");
 				break;
-			case 'mouseleave': case 'mousecancel': case 'touchend': case 'touchcancel':
-				qx(this).removeClass('hover');
+			case "mouseleave": case "mousecancel": case "touchend": case "touchcancel":
+				qx(this).removeClass("hover");
 				break;
 		}
 	}
 };
 qx.ui = {
-	hover: ['mouseenter', 'mouseleave', 'mousecancel', 'touchstart', 'touchend', 'touchcancel']
+	hover: ["mouseenter", "mouseleave", "mousecancel", "touchstart", "touchend", "touchcancel"]
 };
 qx.methods = {
 	// Adding Event Listeners to elements.
@@ -75,7 +77,7 @@ qx.methods = {
 	click: function(fn){
 		let passive = qx.fn.getPassive();
 		for(var i=0,l=this.length;i<l;i++){
-			this[i].addEventListener('click',fn,passive);
+			this[i].addEventListener("click",fn,passive);
 		}
 	},
 	// Adding the class name or list of class names to the element
@@ -86,8 +88,8 @@ qx.methods = {
 			let currentClassNames = (item.className.length)?item.className.split(/\s+/):[];
 
 			if(currentClassNames.length){
-				let classNameList = classNames.split(' ');
-				classNames = Array.from(new Set([...currentClassNames,...classNameList])).join(' ');
+				let classNameList = classNames.split(" ");
+				classNames = Array.from(new Set([...currentClassNames,...classNameList])).join(" ");
 			}
 			item.className = classNames;
 		}
@@ -101,9 +103,9 @@ qx.methods = {
 			// Split class names into an array
 			let currentClassNames = (item.className.length)?item.className.split(/\s+/):[];
 			if(currentClassNames.length){
-				let classNameList = classNames.split(' ');
+				let classNameList = classNames.split(" ");
 				currentClassNames = currentClassNames.filter( el => !classNameList.includes(el) );
-				item.className = currentClassNames.join(' ');
+				item.className = currentClassNames.join(" ");
 			}
 		}
 
@@ -131,8 +133,8 @@ qx.methods = {
 	css: function(css){
 		for(var i=0,l=this.length;i<l;i++){
 			let item = this[i];
-			for(var i in css){
-				item.style[i] = css[i];
+			for(var c in css){
+				item.style[c] = css[c];
 			}
 		}
 		return this;
@@ -143,7 +145,7 @@ qx.methods = {
 		for(var i=0,l=this.length;i<l;i++){
 			let attr = this[i].getAttribute(attrName);
 			if(attr != null){
-				if(attr == ''){
+				if(attr === ""){
 					attr = true;
 				}
 				list.push(attr);
@@ -158,7 +160,7 @@ qx.methods = {
 		return false;
 	},
 	// Set Attribute to elements
-	setAttr: function(attrName,value=''){
+	setAttr: function(attrName,value=""){
 		for(var i=0,l=this.length;i<l;i++){
 			this[i].setAttribute(attrName,value);
 		}
@@ -199,21 +201,21 @@ qx.methods = {
 	// Append HTML before End Of Elements
 	append: function(html){
 		for(var i=0,l=this.length;i<l;i++){
-			this[i].insertAdjacentHTML('beforeEnd', html);
+			this[i].insertAdjacentHTML("beforeEnd", html);
 		}
 		return this;
 	},
 	// Insert HTML before Beging Of Elements
 	prepend: function(html){
 		for(var i=0,l=this.length;i<l;i++){
-			this[i].insertAdjacentHTML('beforeBegin', html);
+			this[i].insertAdjacentHTML("beforeBegin", html);
 		}
 		return this;
 	},
 	// Insert HTML after the End Of Elements
 	after: function(html){
 		for(var i=0,l=this.length;i<l;i++){
-			this[i].insertAdjacentHTML('afterEnd', html);
+			this[i].insertAdjacentHTML("afterEnd", html);
 		}
 		return this;
 	},
@@ -243,20 +245,20 @@ qx.methods = {
 	// Hide elements. Set display to "none".
 	hide: function(){
 		for(var i=0,l=this.length;i<l;i++){
-			this[i].style.display = 'none';
+			this[i].style.display = "none";
 		}
 		return this;
 	},
 	// Show elements. Set display to "block".
 	show: function(){
 		for(var i=0,l=this.length;i<l;i++){
-			this[i].style.display = 'block';
+			this[i].style.display = "block";
 		}
 		return this;
 	},
 	// Get or Set plain text of elements
 	text: function(str){
-		if(typeof str == 'undefined'){
+		if(typeof str === "undefined"){
 			let list = [];
 			for(var i=0,l=this.length;i<l;i++){
 				list.push(this[i].innerText);
@@ -276,7 +278,7 @@ qx.methods = {
 	},
 	// Get or Set HTML of elements
 	html: function(html){
-		if(typeof html == 'undefined'){
+		if(typeof html === "undefined"){
 			let list = [];
 			for(var i=0,l=this.length;i<l;i++){
 				list.push(this[i].outerHTML);
@@ -298,12 +300,12 @@ qx.methods = {
 	fadeIn: function(duration=1000, cb=false){
 		for(var i=0,l=this.length;i<l;i++){
 			let target = this[i];
-			target.style.removeProperty('display');
+			target.style.removeProperty("display");
 			let computedStyle = window.getComputedStyle(target);
 			let display = computedStyle.display;
 
-			if (display === 'none'){
-				display = 'block';
+			if (display === "none"){
+				display = "block";
 			}
 
 			target.style.opacity = 0;
@@ -315,9 +317,9 @@ qx.methods = {
 			}, 10);
 			
 			window.setTimeout(() => {
-				target.style.removeProperty('transition');
-				target.style.removeProperty('opacity');
-				if(typeof cb == 'function'){
+				target.style.removeProperty("transition");
+				target.style.removeProperty("opacity");
+				if(typeof cb === "function"){
 					cb(target);
 				}
 			}, duration);
@@ -327,12 +329,12 @@ qx.methods = {
 	fadeOut: function(duration=600, cb=false){
 		for(var i=0,l=this.length;i<l;i++){
 			let target = this[i];
-			target.style.removeProperty('display');
+			target.style.removeProperty("display");
 			let computedStyle = window.getComputedStyle(target);
 			let display = computedStyle.display;
 
-			if (display === 'none'){
-				display = 'block';
+			if (display === "none"){
+				display = "block";
 			}
 
 			target.style.opacity = 1;
@@ -344,8 +346,8 @@ qx.methods = {
 			}, 10);
 			
 			window.setTimeout(() => {
-				target.style.removeProperty('transition');
-				if(typeof cb == 'function'){
+				target.style.removeProperty("transition");
+				if(typeof cb === "function"){
 					cb(target);
 				}
 			}, duration);
@@ -354,7 +356,7 @@ qx.methods = {
 	// Get or Set Width of elements
 	width: function(value=false){
 		if(value !== false){
-			let dim = (typeof value == 'number')?'px':'';
+			let dim = (typeof value === "number")?"px":"";
 			for(var i=0,l=this.length;i<l;i++){
 				this[i].style.width = value+dim;
 			}
@@ -375,7 +377,7 @@ qx.methods = {
 	// Get or Set Height of elements
 	height: function(value=false){
 		if(value !== false){
-			let dim = (typeof value == 'number')?'px':'';
+			let dim = (typeof value === "number")?"px":"";
 			for(var i=0,l=this.length;i<l;i++){
 				this[i].style.height = value+dim;
 			}
@@ -403,20 +405,20 @@ qx.methods = {
 	// Slide Up Elements and fade-out
 	slideUp: function(duration=500, callback=false){
 		let removeOnComplete = false;
-		if(typeof duration == 'function'){
+		if(typeof duration === "function"){
 			callback = duration;
 			duration = 500;
-		} else if(duration == 'remove'){
+		} else if(duration === "remove"){
 			removeOnComplete = true;
 			duration = 500;
 		}
 		for(var i=0,l=this.length;i<l;i++){
 			let target = this[i];
-			target.style.transitionProperty = 'height, margin, padding, opacity';
-			target.style.transitionDuration = duration + 'ms';
-			target.style.boxSizing = 'border-box';
-			target.style.height = target.offsetHeight + 'px';
-			target.style.overflow = 'hidden';
+			target.style.transitionProperty = "height, margin, padding, opacity";
+			target.style.transitionDuration = duration + "ms";
+			target.style.boxSizing = "border-box";
+			target.style.height = target.offsetHeight + "px";
+			target.style.overflow = "hidden";
 
 			setTimeout(() => {
 				target.style.opacity = 0;
@@ -427,17 +429,17 @@ qx.methods = {
 				target.style.marginBottom = 0;
 			},10);
 			window.setTimeout( () => {
-				target.style.display = 'none';
-				target.style.removeProperty('opacity');
-				target.style.removeProperty('box-sizing');
-				target.style.removeProperty('height');
-				target.style.removeProperty('padding-top');
-				target.style.removeProperty('padding-bottom');
-				target.style.removeProperty('margin-top');
-				target.style.removeProperty('margin-bottom');
-				target.style.removeProperty('overflow');
-				target.style.removeProperty('transition-duration');
-				target.style.removeProperty('transition-property');
+				target.style.display = "none";
+				target.style.removeProperty("opacity");
+				target.style.removeProperty("box-sizing");
+				target.style.removeProperty("height");
+				target.style.removeProperty("padding-top");
+				target.style.removeProperty("padding-bottom");
+				target.style.removeProperty("margin-top");
+				target.style.removeProperty("margin-bottom");
+				target.style.removeProperty("overflow");
+				target.style.removeProperty("transition-duration");
+				target.style.removeProperty("transition-property");
 				if(callback){
 					callback(target);
 				}
@@ -450,52 +452,52 @@ qx.methods = {
 	},
 	// Slide Down Elements and fade-in
 	slideDown: function(duration=500, callback=false){
-		if(typeof duration == 'string'){
+		if(typeof duration === "string"){
 			duration = 500;
-		} else if(typeof duration == 'function'){
+		} else if(typeof duration === "function"){
 			callback = duration;
 			duration = 500;
 		}
 		for(var i=0,l=this.length;i<l;i++){
 			let target = this[i];
-			target.style.removeProperty('display');
+			target.style.removeProperty("display");
 			let computedStyle = window.getComputedStyle(target);
 			let display = computedStyle.display;
 
-			if(display === 'none'){
-				display = 'block';
+			if(display === "none"){
+				display = "block";
 			}
 
 			let opacity = computedStyle.opacity;
 
 			target.style.display = display;
 			let height = target.offsetHeight;
-			target.style.overflow = 'hidden';
+			target.style.overflow = "hidden";
 			target.style.opacity = 0;
 			target.style.height = 0;
 			target.style.paddingTop = 0;
 			target.style.paddingBottom = 0;
 			target.style.marginTop = 0;
 			target.style.marginBottom = 0;
-			target.style.boxSizing = 'border-box';
+			target.style.boxSizing = "border-box";
 			target.style.transitionProperty = "height, margin, padding";
-			target.style.transitionDuration = duration + 'ms';
+			target.style.transitionDuration = duration + "ms";
 
 			setTimeout(() => {
 				target.style.opacity = opacity;
-				target.style.height = height + 'px';
-				target.style.removeProperty('padding-top');
-				target.style.removeProperty('padding-bottom');
-				target.style.removeProperty('margin-top');
-				target.style.removeProperty('margin-bottom');
+				target.style.height = height + "px";
+				target.style.removeProperty("padding-top");
+				target.style.removeProperty("padding-bottom");
+				target.style.removeProperty("margin-top");
+				target.style.removeProperty("margin-bottom");
 			}, 10);
 			window.setTimeout( () => {
-				target.style.removeProperty('opacity');
-				target.style.removeProperty('box-sizing');
-				target.style.removeProperty('height');
-				target.style.removeProperty('overflow');
-				target.style.removeProperty('transition-duration');
-				target.style.removeProperty('transition-property');
+				target.style.removeProperty("opacity");
+				target.style.removeProperty("box-sizing");
+				target.style.removeProperty("height");
+				target.style.removeProperty("overflow");
+				target.style.removeProperty("transition-duration");
+				target.style.removeProperty("transition-property");
 				if(callback){
 					callback(target);
 				}
@@ -509,9 +511,9 @@ qx.methods = {
 		for(var i=0,l=this.length;i<l;i++){
 			let target = this[i];
 			let bound = {};
-			if ('getBoundingClientRect' in target){
+			if ("getBoundingClientRect" in target){
 				bound = target.getBoundingClientRect();
-				if(typeof bound.x == 'undefined'){
+				if(typeof bound.x === "undefined"){
 					bound.x = bound.left;
 					bound.y = bound.top;
 				}
@@ -544,11 +546,11 @@ qx.methods = {
 		for(var i=0,l=this.length;i<l;i++){
 			let item = this[i];
 			let str = item.innerText;
-			text = document.createElement('span');
+			text = document.createElement("span");
 			let computedStyle = window.getComputedStyle(item);
 			text.innerHTML = str;
-			text.style.position = 'absolute';
-			text.style.visibility = 'hidden';
+			text.style.position = "absolute";
+			text.style.visibility = "hidden";
 			text.style.font = computedStyle.font;
 			document.body.appendChild(text); 
 			let width = text.offsetWidth;
@@ -599,18 +601,18 @@ qx.methods = {
 		let go = false;
 		for(var i=0,l=this.length;i<l;i++){
 			let item = this[i];
-			if(typeof options.count != 'object'){
+			if(typeof options.count != "object"){
 				options.count = [parseFloat(item.innerText), options.count];
 			}
 			
-			if(typeof options.duration == 'undefined'){
+			if(typeof options.duration === "undefined"){
 				options.duration = 1000;
 			}
 			var steps = options.duration/50;
 			let offset = (options.count[1] - options.count[0])/steps;
 			// console.log(options.count)
 	 
-			if(typeof options.current == 'undefined'){
+			if(typeof options.current === "undefined"){
 				if(item.tmo){
 					clearTimeout(item.tmo);
 				}
