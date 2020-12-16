@@ -5,7 +5,7 @@ var qx = function(selector){
 	}
 	var itemsList = [];
 	var elements = document.querySelectorAll(selector);
-	elements.forEach((currentValue) => {
+	elements.forEach(function(currentValue){
 		var item = currentValue;
 		itemsList.push(item);
 	});
@@ -77,20 +77,32 @@ qx.methods = {
 	},
 	// Adding the class name or list of class names to the element
 	addClass(classNames){
-		qx.u.parseClasses(this, classNames, (item,currentClassNames,classNameList) => {
-			item.className = Array.from(new Set([...currentClassNames,...classNameList])).join(" ");
-		});
+		for(var i=0,l=this.length;i<l;i++){
+			let item = this[i];
+			// Split class names into an array
+			let currentClassNames = (item.className.length)?item.className.split(/\s+/):[];
+
+			if(currentClassNames.length){
+				let classNameList = classNames.split(" ");
+				classNames = Array.from(new Set([...currentClassNames,...classNameList])).join(" ");
+			}
+			item.className = classNames;
+		}
 
 		return this;
 	},
 	// Remove the class name or list of class names from elements classList
 	removeClass(classNames){
-		qx.u.parseClasses(this, classNames, (item,currentClassNames,classNameList) => {
+		for(var i=0,l=this.length;i<l;i++){
+			let item = this[i];
+			// Split class names into an array
+			let currentClassNames = (item.className.length)?item.className.split(/\s+/):[];
 			if(currentClassNames.length){
+				let classNameList = classNames.split(" ");
 				currentClassNames = currentClassNames.filter( (el) => !classNameList.includes(el) );
 				item.className = currentClassNames.join(" ");
 			}
-		})
+		}
 
 		return this;
 	},
@@ -570,7 +582,7 @@ qx.methods = {
 		let items = [];
 		for(var i=0,l=this.length;i<l;i++){
 			let elmts = this[i].querySelectorAll(selector);
-			elmts.forEach(function(currentValue){
+			elmts.forEach((currentValue) => {
 				items.push(currentValue);
 			});
 		}
@@ -631,17 +643,6 @@ qx.methods = {
 			}, 50)
 		}
 		return this;
-	}
-};
-// Utils
-qx.u = {
-	parseClasses(items,classNames,cb){
-		let classNameList = classNames.split(" ");
-		for(var i=0,l=items.length;i<l;i++){
-			let item = items[i];
-			let currentClassNames = (item.className.length)?item.className.split(/\s+/):[];
-			cb(item,currentClassNames,classNameList);
-		}
 	}
 };
 window.$ = qx;
