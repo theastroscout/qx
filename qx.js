@@ -582,7 +582,7 @@ qx.methods = {
 		let items = [];
 		for(var i=0,l=this.length;i<l;i++){
 			let elmts = this[i].querySelectorAll(selector);
-			elmts.forEach(function(currentValue){
+			elmts.forEach((currentValue) => {
 				items.push(currentValue);
 			});
 		}
