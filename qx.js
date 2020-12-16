@@ -1,13 +1,12 @@
-(function(){
-var qx = function(selector){
+(() => {
+var qx = (selector) =>{
 	if(typeof selector === "object"){
 		return qx.bind([selector]);
 	}
 	var itemsList = [];
 	var elements = document.querySelectorAll(selector);
-	elements.forEach(function(currentValue){
-		var item = currentValue;
-		itemsList.push(item);
+	elements.forEach((currentValue) => {
+		itemsList.push(currentValue);
 	});
 	return qx.bind(itemsList);
 };
