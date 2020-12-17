@@ -653,7 +653,7 @@ qx.u = {
 	},
 	prop: (items,get) => {
 		let list = [];
-		for(i=0,l=items.length;i<l;i++){
+		for(let i=0,l=items.length;i<l;i++){
 			list.push(items[i][get]);
 		}
 		if(list.length > 1){
