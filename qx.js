@@ -623,16 +623,7 @@ qx.u = {
 		}
 
 		if(!str){
-			let list = [];
-			for(i=0,l=items.length;i<l;i++){
-				list.push(items[i][get]);
-			}
-			if(list.length > 1){
-				return list;
-			} else if(list.length){
-				return list[0];
-			}
-			return false;
+			return qx.u.prop(items,get);
 		} else {
 			for(i=0,l=items.length;i<l;i++){
 				items[i][set] = str;
@@ -657,17 +648,20 @@ qx.u = {
 			}
 			return items;
 		} else {
-			let list = [];
-			for(i=0,l=items.length;i<l;i++){
-				list.push(items[i][get]);
-			}
-			if(list.length > 1){
-				return list;
-			} else if(list.length){
-				return list[0];
-			}
-			return false;
+			return qx.u.prop(items,get);
 		}
+	},
+	prop: (items,get) => {
+		let list = [];
+		for(i=0,l=items.length;i<l;i++){
+			list.push(items[i][get]);
+		}
+		if(list.length > 1){
+			return list;
+		} else if(list.length){
+			return list[0];
+		}
+		return false;
 	}
 }
 window.$ = qx;
