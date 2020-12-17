@@ -81,22 +81,6 @@ qx.methods = {
 			item.className = classNames;
 		});
 		return this;
-		/*
-		for(var i=0,l=this.length;i<l;i++){
-			let item = this[i];
-			// Split class names into an array
-			let currentClassNames = (item.className.length)?item.className.split(/\s+/):[];
-
-			if(currentClassNames.length){
-				let classNameList = classNames.split(" ");
-				classNames = Array.from(new Set([...currentClassNames,...classNameList])).join(" ");
-			}
-			item.className = classNames;
-
-		}
-
-		return this;
-		*/
 	},
 	// Remove the class name or list of class names from elements classList
 	removeClass(classNames){
@@ -105,20 +89,6 @@ qx.methods = {
 			item.className = currentClassNames.join(" ");
 		});
 		return this;
-		/*
-		for(var i=0,l=this.length;i<l;i++){
-			let item = this[i];
-			// Split class names into an array
-			let currentClassNames = (item.className.length)?item.className.split(/\s+/):[];
-			if(currentClassNames.length){
-				let classNameList = classNames.split(" ");
-				currentClassNames = currentClassNames.filter( (el) => !classNameList.includes(el) );
-				item.className = currentClassNames.join(" ");
-			}
-		}
-
-		return this;
-		*/
 	},
 	// Checking elements for class name available. Returning array of values if it needed.
 	hasClass(className){
@@ -265,7 +235,9 @@ qx.methods = {
 		return this;
 	},
 	// Get or Set plain text of elements
-	text(str){
+	text(str=false){
+		return qx.u.textHtml(this,str,'text');
+		/*
 		var i,l;
 		if(typeof str === "undefined"){
 			let list = [];
@@ -284,9 +256,12 @@ qx.methods = {
 			}
 			return this;
 		}
+		*/
 	},
 	// Get or Set HTML of elements
-	html(html){
+	html(str=false){
+		return qx.u.textHtml(this,str,'html');
+		/*
 		var i,l;
 		if(typeof html === "undefined"){
 			let list = [];
@@ -305,6 +280,7 @@ qx.methods = {
 			}
 			return this;
 		}
+		*/
 	},
 	// Fade-in element using the transparency
 	fadeIn(duration=1000, cb=false){
@@ -667,6 +643,34 @@ qx.u = {
 			let currentClassNames = (item.className.length)?item.className.split(/\s+/):[];
 			cb(item,classNames,currentClassNames);
 		}				
+	},
+	textHtml: (items,str,type='html') => {
+		let i,l;
+		let get,set;
+		if(type==='html'){
+			get = 'outerHTML';
+			set = 'innerHTML';
+		} else {
+			get = set = 'innerText';
+		}
+
+		if(!str){
+			let list = [];
+			for(i=0,l=items.length;i<l;i++){
+				list.push(items[i][get]);
+			}
+			if(list.length > 1){
+				return list;
+			} else if(list.length){
+				return list[0];
+			}
+			return false;
+		} else {
+			for(i=0,l=items.length;i<l;i++){
+				items[i][set] = str;
+			}
+			return items;
+		}
 	}
 }
 window.$ = qx;
