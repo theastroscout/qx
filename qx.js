@@ -11,8 +11,10 @@ var qx = (selector) =>{
 	return qx.bind(itemsList);
 };
 qx.bind = (el) => {
-	for(var i in qx.methods){
-		el[i] = qx.methods[i];
+	let keys = Object.keys(qx.methods);
+	for(let i=0,l=keys.length;i<l;i++){
+		let n = keys[i];
+		el[n] = qx.methods[n];
 	}
 	return el;
 };
@@ -237,50 +239,10 @@ qx.methods = {
 	// Get or Set plain text of elements
 	text(str=false){
 		return qx.u.textHtml(this,str,'text');
-		/*
-		var i,l;
-		if(typeof str === "undefined"){
-			let list = [];
-			for(i=0,l=this.length;i<l;i++){
-				list.push(this[i].innerText);
-			}
-			if(list.length > 1){
-				return list;
-			} else if(list.length){
-				return list[0];
-			}
-			return false;
-		} else {
-			for(i=0,l=this.length;i<l;i++){
-				this[i].innerText = str;
-			}
-			return this;
-		}
-		*/
 	},
 	// Get or Set HTML of elements
 	html(str=false){
 		return qx.u.textHtml(this,str,'html');
-		/*
-		var i,l;
-		if(typeof html === "undefined"){
-			let list = [];
-			for(i=0,l=this.length;i<l;i++){
-				list.push(this[i].outerHTML);
-			}
-			if(list.length > 1){
-				return list;
-			} else if(list.length){
-				return list[0];
-			}
-			return false;
-		} else {
-			for(i=0,l=this.length;i<l;i++){
-				this[i].innerHTML = html;
-			}
-			return this;
-		}
-		*/
 	},
 	// Fade-in element using the transparency
 	fadeIn(duration=1000, cb=false){
@@ -341,6 +303,8 @@ qx.methods = {
 	},
 	// Get or Set Width of elements
 	width(value=false){
+		return qx.u.widthHeight(this,value,'width');
+		/*
 		var i,l;
 		if(value !== false){
 			let dim = (typeof value === "number")?"px":"";
@@ -360,9 +324,12 @@ qx.methods = {
 			}
 			return false;
 		}
+		*/
 	},
 	// Get or Set Height of elements
 	height(value=false){
+		return qx.u.widthHeight(this,value,'height');
+		/*
 		var i,l;
 		if(value !== false){
 			let dim = (typeof value === "number")?"px":"";
@@ -382,6 +349,7 @@ qx.methods = {
 			}
 			return false;
 		}
+		*/
 	},
 	// Executing function for each of elements
 	each(callback){
@@ -670,6 +638,35 @@ qx.u = {
 				items[i][set] = str;
 			}
 			return items;
+		}
+	},
+	widthHeight: (items,value=false,type='width') => {
+		let i,l;
+		let get,set;
+		if(type === 'width'){
+			get = 'offsetWidth';
+			set = 'width';
+		} else {
+			get = 'offsetHeight';
+			set = 'height';
+		}
+		if(value !== false){
+			let dim = (typeof value === "number")?"px":"";
+			for(i=0,l=items.length;i<l;i++){
+				items[i].style[set] = value+dim;
+			}
+			return items;
+		} else {
+			let list = [];
+			for(i=0,l=items.length;i<l;i++){
+				list.push(items[i][get]);
+			}
+			if(list.length > 1){
+				return list;
+			} else if(list.length){
+				return list[0];
+			}
+			return false;
 		}
 	}
 }
