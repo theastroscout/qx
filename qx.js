@@ -76,6 +76,12 @@ qx.methods = {
 	},
 	// Adding the class name or list of class names to the element
 	addClass(classNames){
+		qx.u.parseClasses(this,classNames,(item,classNames,currentClassNames) => {
+			classNames = Array.from(new Set([...currentClassNames,...classNames])).join(" ");
+			item.className = classNames;
+		});
+		return this;
+		/*
 		for(var i=0,l=this.length;i<l;i++){
 			let item = this[i];
 			// Split class names into an array
@@ -86,12 +92,20 @@ qx.methods = {
 				classNames = Array.from(new Set([...currentClassNames,...classNameList])).join(" ");
 			}
 			item.className = classNames;
+
 		}
 
 		return this;
+		*/
 	},
 	// Remove the class name or list of class names from elements classList
 	removeClass(classNames){
+		qx.u.parseClasses(this,classNames,(item,classNames,currentClassNames) => {
+			currentClassNames = currentClassNames.filter( (el) => !classNames.includes(el) );
+			item.className = currentClassNames.join(" ");
+		});
+		return this;
+		/*
 		for(var i=0,l=this.length;i<l;i++){
 			let item = this[i];
 			// Split class names into an array
@@ -104,6 +118,7 @@ qx.methods = {
 		}
 
 		return this;
+		*/
 	},
 	// Checking elements for class name available. Returning array of values if it needed.
 	hasClass(className){
@@ -644,5 +659,15 @@ qx.methods = {
 		return this;
 	}
 };
+qx.u = {
+	parseClasses: (items,classNames,cb) => {
+		classNames = classNames.split(" ");
+		for(var i=0,l=items.length;i<l;i++){
+			let item = items[i];
+			let currentClassNames = (item.className.length)?item.className.split(/\s+/):[];
+			cb(item,classNames,currentClassNames);
+		}				
+	}
+}
 window.$ = qx;
 })();
