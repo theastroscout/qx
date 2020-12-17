@@ -1,58 +1,32 @@
 (() => {
 var qx = (selector) =>{
 	if(typeof selector === "object"){
-		return qx.bind([selector]);
+		// return qx.bind([selector]);
+		return new qxo([selector]);
 	}
 	var itemsList = [];
 	var elements = document.querySelectorAll(selector);
 	elements.forEach((currentValue) => {
 		itemsList.push(currentValue);
 	});
-	return qx.bind(itemsList);
+	return new qxo(itemsList);
+	// return qx.bind(itemsList);
 };
-qx.bind = (el) => {
-	let keys = Object.keys(qx.methods);
-	for(let i=0,l=keys.length;i<l;i++){
-		let n = keys[i];
-		el[n] = qx.methods[n];
-	}
-	return el;
+
+var qxo = function(items){
+	this.elmts = items;
 };
-qx.fn = {
-	getPassive: () => {
-		// Determine passive
-		let passiveSupported = false;
-		try {
-			Object.defineProperty({}, "passive", {
-				get: () => {
-					passiveSupported = true;
-					return true;
-				}
-			});
-		} catch(e) {
-			// continue regardless of error
+
+qxo.fn = qxo.prototype = {
+	// Get
+	get(index = false){
+		if(index === false){
+			return this.elmts;
+		} else if(typeof this.elmts[index] !== 'undefined'){
+			return this.elmts[index];
 		}
-		
-		return passiveSupported?{passive:true}:false;
+		return false;
 	},
-	isTouch: () => {
-		return ("ontouchstart" in document.documentElement);
-	},
-	over(e){
-		switch(e.type){
-			case "mouseenter": case "touchstart":
-				qx(this).addClass("hover");
-				break;
-			case "mouseleave": case "mousecancel": case "touchend": case "touchcancel":
-				qx(this).removeClass("hover");
-				break;
-		}
-	}
-};
-qx.ui = {
-	hover: ["mouseenter", "mouseleave", "mousecancel", "touchstart", "touchend", "touchcancel"]
-};
-qx.methods = {
 	// Adding Event Listeners to elements.
 	on(events,fn){
 		let passive = qx.fn.getPassive();
@@ -60,8 +34,8 @@ qx.methods = {
 		// Split events list and add Event Listener for each
 		let eventsList = events.split(' ');
 
-		for(var i=0,l=this.length;i<l;i++){
-			let item = this[i];
+		for(var i=0,l=this.elmts.length;i<l;i++){
+			let item = this.elmts[i];
 			for(var e in eventsList){
 				item.addEventListener(eventsList[e],fn,passive);
 			}
@@ -71,14 +45,14 @@ qx.methods = {
 	// Adding Click Or Tap Listener to elements depending on TouchScreen Device Detected.
 	click(fn){
 		let passive = qx.fn.getPassive();
-		for(var i=0,l=this.length;i<l;i++){
-			this[i].addEventListener("click",fn,passive);
+		for(var i=0,l=this.elmts.length;i<l;i++){
+			this.elmts[i].addEventListener("click",fn,passive);
 		}
 		return this;
 	},
 	// Adding the class name or list of class names to the element
 	addClass(classNames){
-		qx.u.parseClasses(this,classNames,(item,classNames,currentClassNames) => {
+		qx.fn.parseClasses(this.elmts,classNames,(item,classNames,currentClassNames) => {
 			classNames = Array.from(new Set([...currentClassNames,...classNames])).join(" ");
 			item.className = classNames;
 		});
@@ -86,7 +60,7 @@ qx.methods = {
 	},
 	// Remove the class name or list of class names from elements classList
 	removeClass(classNames){
-		qx.u.parseClasses(this,classNames,(item,classNames,currentClassNames) => {
+		qx.fn.parseClasses(this.elmts,classNames,(item,classNames,currentClassNames) => {
 			currentClassNames = currentClassNames.filter( (el) => !classNames.includes(el) );
 			item.className = currentClassNames.join(" ");
 		});
@@ -95,8 +69,8 @@ qx.methods = {
 	// Checking elements for class name available. Returning array of values if it needed.
 	hasClass(className){
 		let checkedList = [];
-		for(var i=0,l=this.length;i<l;i++){
-			if(this[i].classList.contains(className)){
+		for(var i=0,l=this.elmts.length;i<l;i++){
+			if(this.elmts[i].classList.contains(className)){
 				checkedList.push(true)
 			} else {
 				checkedList.push(false);
@@ -112,8 +86,8 @@ qx.methods = {
 	},
 	// Set css to elements
 	css(css){
-		for(var i=0,l=this.length;i<l;i++){
-			let item = this[i];
+		for(var i=0,l=this.elmts.length;i<l;i++){
+			let item = this.elmts[i];
 			for(let c in css){
 				item.style[c] = css[c];
 			}
@@ -123,8 +97,8 @@ qx.methods = {
 	// Get Attribute value of elements
 	getAttr(attrName){
 		let list = [];
-		for(var i=0,l=this.length;i<l;i++){
-			let attr = this[i].getAttribute(attrName);
+		for(var i=0,l=this.elmts.length;i<l;i++){
+			let attr = this.elmts[i].getAttribute(attrName);
 			if(attr != null){
 				if(attr === ""){
 					attr = true;
@@ -142,23 +116,23 @@ qx.methods = {
 	},
 	// Set Attribute to elements
 	setAttr(attrName,value=""){
-		for(var i=0,l=this.length;i<l;i++){
-			this[i].setAttribute(attrName,value);
+		for(var i=0,l=this.elmts.length;i<l;i++){
+			this.elmts[i].setAttribute(attrName,value);
 		}
 		return this;
 	},
 	// Remove Attribute from elements
 	removeAttr(attrName){
-		for(var i=0,l=this.length;i<l;i++){
-			this[i].removeAttribute(attrName);
+		for(var i=0,l=this.elmts.length;i<l;i++){
+			this.elmts[i].removeAttribute(attrName);
 		}
 		return this;
 	},
 	// Add a behavior that switches the class "hover" when you hover the mouse or tap on the element.
 	hover(){
 		let passive = qx.fn.getPassive();
-		for(var i=0,l=this.length;i<l;i++){
-			let item = this[i];
+		for(var i=0,l=this.elmts.length;i<l;i++){
+			let item = this.elmts[i];
 			for(var e in qx.ui.hover){
 				item.addEventListener(qx.ui.hover[e],qx.fn.over,passive);
 			}
@@ -166,37 +140,37 @@ qx.methods = {
 	},
 	// Removes an element from the DOM
 	remove(){
-		for(var i=0,l=this.length;i<l;i++){
-			let item = this[i];
+		for(var i=0,l=this.elmts.length;i<l;i++){
+			let item = this.elmts[i];
 			item.parentNode.removeChild(item);
 		}
 		return true;
 	},
 	// Replace element with new HTML
 	replace(html){
-		for(var i=0,l=this.length;i<l;i++){
-			this[i].outerHTML = html;
+		for(var i=0,l=this.elmts.length;i<l;i++){
+			this.elmts[i].outerHTML = html;
 		}
 		return this;
 	},
 	// Append HTML before End Of Elements
 	append(html){
-		for(var i=0,l=this.length;i<l;i++){
-			this[i].insertAdjacentHTML("beforeEnd", html);
+		for(var i=0,l=this.elmts.length;i<l;i++){
+			this.elmts[i].insertAdjacentHTML("beforeEnd", html);
 		}
 		return this;
 	},
 	// Insert HTML before Beging Of Elements
 	prepend(html){
-		for(var i=0,l=this.length;i<l;i++){
-			this[i].insertAdjacentHTML("beforeBegin", html);
+		for(var i=0,l=this.elmts.length;i<l;i++){
+			this.elmts[i].insertAdjacentHTML("beforeBegin", html);
 		}
 		return this;
 	},
 	// Insert HTML after the End Of Elements
 	after(html){
-		for(var i=0,l=this.length;i<l;i++){
-			this[i].insertAdjacentHTML("afterEnd", html);
+		for(var i=0,l=this.elmts.length;i<l;i++){
+			this.elmts[i].insertAdjacentHTML("afterEnd", html);
 		}
 		return this;
 	},
@@ -204,14 +178,14 @@ qx.methods = {
 	val(v=false){
 		var i,l;
 		if(v !== false){
-			for(i=0,l=this.length;i<l;i++){
-				this[i].value = v;
+			for(i=0,l=this.elmts.length;i<l;i++){
+				this.elmts[i].value = v;
 			}
 			return this;
 		} else {
 			let list = [];
-			for(i=0,l=this.length;i<l;i++){
-				let value = this[i].value;
+			for(i=0,l=this.elmts.length;i<l;i++){
+				let value = this.elmts[i].value;
 				list.push((value)?value:false);
 			}
 			if(list.length > 1){
@@ -224,30 +198,38 @@ qx.methods = {
 	},
 	// Hide elements. Set display to "none".
 	hide(){
-		for(var i=0,l=this.length;i<l;i++){
-			this[i].style.display = "none";
+		for(var i=0,l=this.elmts.length;i<l;i++){
+			this.elmts[i].style.display = "none";
 		}
 		return this;
 	},
 	// Show elements. Set display to "block".
 	show(){
-		for(var i=0,l=this.length;i<l;i++){
-			this[i].style.display = "block";
+		for(var i=0,l=this.elmts.length;i<l;i++){
+			this.elmts[i].style.display = "block";
 		}
 		return this;
 	},
 	// Get or Set plain text of elements
 	text(str=false){
-		return qx.u.textHtml(this,str,'text');
+		let r = qx.fn.textHtml(this.elmts,str,'text');
+		if(r === 'set'){
+			return this;
+		}
+		return r;
 	},
 	// Get or Set HTML of elements
 	html(str=false){
-		return qx.u.textHtml(this,str,'html');
+		let r = qx.fn.textHtml(this.elmts,str,'html');
+		if(r === 'set'){
+			return this;
+		}
+		return r;
 	},
 	// Fade-in element using the transparency
 	fadeIn(duration=1000, cb=false){
-		for(var i=0,l=this.length;i<l;i++){
-			let target = this[i];
+		for(var i=0,l=this.elmts.length;i<l;i++){
+			let target = this.elmts[i];
 			target.style.removeProperty("display");
 			let computedStyle = window.getComputedStyle(target);
 			let display = computedStyle.display;
@@ -275,8 +257,8 @@ qx.methods = {
 	},
 	// Fade-out element using the transparency
 	fadeOut(duration=600, cb=false){
-		for(var i=0,l=this.length;i<l;i++){
-			let target = this[i];
+		for(var i=0,l=this.elmts.length;i<l;i++){
+			let target = this.elmts[i];
 			target.style.removeProperty("display");
 			let computedStyle = window.getComputedStyle(target);
 			let display = computedStyle.display;
@@ -303,58 +285,24 @@ qx.methods = {
 	},
 	// Get or Set Width of elements
 	width(value=false){
-		return qx.u.widthHeight(this,value,'width');
-		/*
-		var i,l;
-		if(value !== false){
-			let dim = (typeof value === "number")?"px":"";
-			for(i=0,l=this.length;i<l;i++){
-				this[i].style.width = value+dim;
-			}
+		let r = qx.fn.widthHeight(this.elmts,value,'width');
+		if(r === 'set'){
 			return this;
-		} else {
-			let list = [];
-			for(i=0,l=this.length;i<l;i++){
-				list.push(this[i].offsetWidth);
-			}
-			if(list.length > 1){
-				return list;
-			} else if(list.length){
-				return list[0];
-			}
-			return false;
 		}
-		*/
+		return r;
 	},
 	// Get or Set Height of elements
 	height(value=false){
-		return qx.u.widthHeight(this,value,'height');
-		/*
-		var i,l;
-		if(value !== false){
-			let dim = (typeof value === "number")?"px":"";
-			for(i=0,l=this.length;i<l;i++){
-				this[i].style.height = value+dim;
-			}
+		let r = qx.fn.widthHeight(this.elmts,value,'height');
+		if(r === 'set'){
 			return this;
-		} else {
-			let list = [];
-			for(i=0,l=this.length;i<l;i++){
-				list.push(this[i].offsetHeight);
-			}
-			if(list.length > 1){
-				return list;
-			} else if(list.length){
-				return list[0];
-			}
-			return false;
 		}
-		*/
+		return r;
 	},
 	// Executing function for each of elements
 	each(callback){
-		for(var i=0,l=this.length;i<l;i++){
-			callback(this[i]);
+		for(var i=0,l=this.elmts.length;i<l;i++){
+			callback(this.elmts[i]);
 		}
 		return this;
 	},
@@ -368,8 +316,8 @@ qx.methods = {
 			removeOnComplete = true;
 			duration = 500;
 		}
-		for(var i=0,l=this.length;i<l;i++){
-			let target = this[i];
+		for(var i=0,l=this.elmts.length;i<l;i++){
+			let target = this.elmts[i];
 			target.style.transitionProperty = "height, margin, padding, opacity";
 			target.style.transitionDuration = duration + "ms";
 			target.style.boxSizing = "border-box";
@@ -414,8 +362,8 @@ qx.methods = {
 			callback = duration;
 			duration = 500;
 		}
-		for(var i=0,l=this.length;i<l;i++){
-			let target = this[i];
+		for(var i=0,l=this.elmts.length;i<l;i++){
+			let target = this.elmts[i];
 			target.style.removeProperty("display");
 			let computedStyle = window.getComputedStyle(target);
 			let display = computedStyle.display;
@@ -464,8 +412,8 @@ qx.methods = {
 	// Returns the size and position of elements
 	getBounds(){
 		let list = [];
-		for(var i=0,l=this.length;i<l;i++){
-			let target = this[i];
+		for(var i=0,l=this.elmts.length;i<l;i++){
+			let target = this.elmts[i];
 			let bound = {};
 			if ("getBoundingClientRect" in target){
 				bound = target.getBoundingClientRect();
@@ -491,16 +439,16 @@ qx.methods = {
 	// Return the list of parent elements
 	parent(){
 		let items = [];
-		for(var i=0,l=this.length;i<l;i++){
-			items.push(this[i].parentNode);
+		for(var i=0,l=this.elmts.length;i<l;i++){
+			items.push(this.elmts[i].parentNode);
 		}
 		return qx.bind(items);
 	},
 	// Return the list of elements width
 	textWidth(){
 		let list = [];
-		for(var i=0,l=this.length;i<l;i++){
-			let item = this[i];
+		for(var i=0,l=this.elmts.length;i<l;i++){
+			let item = this.elmts[i];
 			let str = item.innerText;
 			let text = document.createElement("span");
 			let computedStyle = window.getComputedStyle(item);
@@ -525,8 +473,8 @@ qx.methods = {
 	// Return Offset Top Of Elements
 	top(){
 		let list = [];
-		for(var i=0,l=this.length;i<l;i++){
-			list.push(this[i].offsetTop);
+		for(var i=0,l=this.elmts.length;i<l;i++){
+			list.push(this.elmts[i].offsetTop);
 		}
 		if(list.length > 1){
 			return list;
@@ -538,25 +486,25 @@ qx.methods = {
 	// Find elements inside the list of selected elements
 	find(selector){
 		let items = [];
-		for(var i=0,l=this.length;i<l;i++){
-			let elmts = this[i].querySelectorAll(selector);
+		for(var i=0,l=this.elmts.length;i<l;i++){
+			let elmts = this.elmts[i].querySelectorAll(selector);
 			elmts.forEach((currentValue) => {
 				items.push(currentValue);
 			});
 		}
-		return qx.bind(items);
+		return new qxo(items);
 	},
 	// Set focus at the first element of the list
 	focus(){
-		if(this.length){
-			this[0].focus();
+		if(this.elmts.length){
+			this.elmts[0].focus();
 		}
 		return this;
 	},
 	counter(options){
 		let go = false;
-		for(var i=0,l=this.length;i<l;i++){
-			let item = this[i];
+		for(var i=0,l=this.elmts.length;i<l;i++){
+			let item = this.elmts[i];
 			if(typeof options.count != "object"){
 				options.count = [parseFloat(item.innerText), options.count];
 			}
@@ -603,7 +551,39 @@ qx.methods = {
 		return this;
 	}
 };
-qx.u = {
+qx.ui = {
+	hover: ["mouseenter", "mouseleave", "mousecancel", "touchstart", "touchend", "touchcancel"]
+};
+qx.fn = {
+	getPassive: () => {
+		// Determine passive
+		let passiveSupported = false;
+		try {
+			Object.defineProperty({}, "passive", {
+				get: () => {
+					passiveSupported = true;
+					return true;
+				}
+			});
+		} catch(e) {
+			// continue regardless of error
+		}
+		
+		return passiveSupported?{passive:true}:false;
+	},
+	isTouch: () => {
+		return ("ontouchstart" in document.documentElement);
+	},
+	over(e){
+		switch(e.type){
+			case "mouseenter": case "touchstart":
+				qx(this).addClass("hover");
+				break;
+			case "mouseleave": case "mousecancel": case "touchend": case "touchcancel":
+				qx(this).removeClass("hover");
+				break;
+		}
+	},
 	parseClasses: (items,classNames,cb) => {
 		classNames = classNames.split(" ");
 		for(var i=0,l=items.length;i<l;i++){
@@ -622,13 +602,13 @@ qx.u = {
 			get = set = 'innerText';
 		}
 
-		if(!str){
-			return qx.u.prop(items,get);
+		if(str === false){
+			return qx.fn.prop(items,get);
 		} else {
 			for(i=0,l=items.length;i<l;i++){
 				items[i][set] = str;
 			}
-			return items;
+			return 'set';
 		}
 	},
 	widthHeight: (items,value=false,type='width') => {
@@ -646,9 +626,9 @@ qx.u = {
 			for(i=0,l=items.length;i<l;i++){
 				items[i].style[set] = value+dim;
 			}
-			return items;
+			return 'set';
 		} else {
-			return qx.u.prop(items,get);
+			return qx.fn.prop(items,get);
 		}
 	},
 	prop: (items,get) => {
@@ -664,5 +644,11 @@ qx.u = {
 		return false;
 	}
 }
+
+Object.defineProperty(qxo.fn, 'length', {
+	get: function(){
+		return this.elmts.length;
+	}
+});
 window.$ = qx;
 })();
