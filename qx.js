@@ -1,7 +1,6 @@
 (() => {
 var qx = (selector) =>{
 	if(typeof selector === "object"){
-		// return qx.bind([selector]);
 		return new qxo([selector]);
 	}
 	var itemsList = [];
@@ -10,7 +9,6 @@ var qx = (selector) =>{
 		itemsList.push(currentValue);
 	});
 	return new qxo(itemsList);
-	// return qx.bind(itemsList);
 };
 
 var qxo = function(items){
@@ -318,6 +316,7 @@ qxo.fn = qxo.prototype = {
 		}
 		for(var i=0,l=this.elmts.length;i<l;i++){
 			let target = this.elmts[i];
+			clearTimeout(target.tmo);
 			target.style.transitionProperty = "height, margin, padding, opacity";
 			target.style.transitionDuration = duration + "ms";
 			target.style.boxSizing = "border-box";
@@ -331,26 +330,17 @@ qxo.fn = qxo.prototype = {
 				target.style.paddingBottom = 0;
 				target.style.marginTop = 0;
 				target.style.marginBottom = 0;
-			},10);
-			window.setTimeout( () => {
+			},50);
+			target.tmo = setTimeout( () => {
 				target.style.display = "none";
-				target.style.removeProperty("opacity");
-				target.style.removeProperty("box-sizing");
-				target.style.removeProperty("height");
-				target.style.removeProperty("padding-top");
-				target.style.removeProperty("padding-bottom");
-				target.style.removeProperty("margin-top");
-				target.style.removeProperty("margin-bottom");
-				target.style.removeProperty("overflow");
-				target.style.removeProperty("transition-duration");
-				target.style.removeProperty("transition-property");
+				qx.fn.removeProps(target,["opacity","box-sizing","height","padding-top","padding-bottom","margin-top","margin-bottom","overflow","transition-duration","transition-property"]);
 				if(callback){
 					callback(target);
 				}
 				if(removeOnComplete){
 					target.parentNode.removeChild(target);
 				}
-			}, duration);
+			}, duration+50);
 		}
 		return this;
 	},
@@ -364,7 +354,9 @@ qxo.fn = qxo.prototype = {
 		}
 		for(var i=0,l=this.elmts.length;i<l;i++){
 			let target = this.elmts[i];
-			target.style.removeProperty("display");
+			clearTimeout(target.tmo);
+			// target.style.removeProperty("display");
+			qx.fn.removeProps(target,["display"]);
 			let computedStyle = window.getComputedStyle(target);
 			let display = computedStyle.display;
 
@@ -372,10 +364,10 @@ qxo.fn = qxo.prototype = {
 				display = "block";
 			}
 
+			let padding = parseInt(computedStyle.paddingTop) + parseInt(computedStyle.paddingBottom);
+
 			let opacity = computedStyle.opacity;
 
-			target.style.display = display;
-			let height = target.offsetHeight;
 			target.style.overflow = "hidden";
 			target.style.opacity = 0;
 			target.style.height = 0;
@@ -386,26 +378,21 @@ qxo.fn = qxo.prototype = {
 			target.style.boxSizing = "border-box";
 			target.style.transitionProperty = "height, margin, padding";
 			target.style.transitionDuration = duration + "ms";
+			target.style.display = display;
+
+			let height = target.scrollHeight + padding;
 
 			setTimeout(() => {
 				target.style.opacity = opacity;
 				target.style.height = height + "px";
-				target.style.removeProperty("padding-top");
-				target.style.removeProperty("padding-bottom");
-				target.style.removeProperty("margin-top");
-				target.style.removeProperty("margin-bottom");
-			}, 10);
-			window.setTimeout( () => {
-				target.style.removeProperty("opacity");
-				target.style.removeProperty("box-sizing");
-				target.style.removeProperty("height");
-				target.style.removeProperty("overflow");
-				target.style.removeProperty("transition-duration");
-				target.style.removeProperty("transition-property");
+				qx.fn.removeProps(target,["padding-top","padding-bottom","margin-top","margin-bottom"]);
+			}, 50);
+			target.tmo = setTimeout( () => {
+				qx.fn.removeProps(target,["opacity","box-sizing","height","overflow","transition-duration","transition-property"]);
 				if(callback){
 					callback(target);
 				}
-			}, duration);
+			}, duration+50);
 		}
 		return this;
 	},
@@ -642,11 +629,16 @@ qx.fn = {
 			return list[0];
 		}
 		return false;
+	},
+	removeProps: (target,props=[]) => {
+		for(let i=0,l=props.length;i<l;i++){
+			target.style.removeProperty(props[i]);
+		}
 	}
 }
 
 Object.defineProperty(qxo.fn, 'length', {
-	get: function(){
+	get(){
 		return this.elmts.length;
 	}
 });
