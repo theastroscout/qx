@@ -1,10 +1,10 @@
-(() => {
+((win,doc) => {
 var qx = (selector) =>{
 	if(typeof selector === "object"){
 		return new qxo([selector]);
 	}
 	var itemsList = [];
-	var elements = document.querySelectorAll(selector);
+	var elements = doc.querySelectorAll(selector);
 	elements.forEach((currentValue) => {
 		itemsList.push(currentValue);
 	});
@@ -32,8 +32,8 @@ qxo.fn = qxo.prototype = {
 		// Split events list and add Event Listener for each
 		let eventsList = events.split(' ');
 		this.each((el) => {
-			for(var e in eventsList){
-				el.addEventListener(eventsList[e],fn,passive);
+			for(let i=0,l=eventsList.length;i<l;i++){
+				el.addEventListener(eventsList[i],fn,passive);
 			}
 		});
 		return this;
@@ -96,7 +96,7 @@ qxo.fn = qxo.prototype = {
 		this.each((el) => {
 			let attr = el.getAttribute(attrName);
 			if(attr != null){
-				attr = (attr === "")?true:false;
+				attr = (attr === "")?true:attr;
 			} else if(attr === null){
 				attr = false;
 			}
@@ -128,8 +128,8 @@ qxo.fn = qxo.prototype = {
 	hover(){
 		let passive = qx.fn.getPassive();
 		this.each((el) => {
-			for(var e in qx.ui.hover){
-				el.addEventListener(qx.ui.hover[e],qx.fn.over,passive);
+			for(let i=0,l=qx.ui.hover.length;i<l;i++){
+				el.addEventListener(qx.ui.hover[i],qx.fn.over,passive);
 			}
 		});
 		return this;
@@ -293,6 +293,7 @@ qxo.fn = qxo.prototype = {
 	},
 	// Slide Down Elements and fade-in
 	slideDown(duration=500, callback=false){
+		console.log('?')
 		if(typeof duration === "string"){
 			duration = 500;
 		} else if(typeof duration === "function"){
@@ -302,7 +303,7 @@ qxo.fn = qxo.prototype = {
 		this.each((el) => {
 			clearTimeout(el.tmo);
 			qx.fn.removeProps(el,["display"]);
-			let computedStyle = window.getComputedStyle(el);
+			let computedStyle = win.getComputedStyle(el);
 			let display = computedStyle.display;
 
 			if(display === "none"){
@@ -381,15 +382,15 @@ qxo.fn = qxo.prototype = {
 
 		this.each((el) => {
 			let str = el.innerText;
-			let text = document.createElement("span");
-			let computedStyle = window.getComputedStyle(el);
+			let text = doc.createElement("span");
+			let computedStyle = win.getComputedStyle(el);
 			text.innerHTML = str;
 			text.style.position = "absolute";
 			text.style.visibility = "hidden";
 			text.style.font = computedStyle.font;
-			document.body.appendChild(text); 
+			doc.body.appendChild(text); 
 			let width = text.offsetWidth;
-			document.body.removeChild(text);
+			doc.body.removeChild(text);
 
 			list.push(width);
 		});
@@ -485,10 +486,9 @@ qx.ui = {
 	hover: ["mouseenter", "mouseleave", "mousecancel", "touchstart", "touchend", "touchcancel"]
 };
 qx.fn = {
-	isPassive: null,
 	getPassive: () => {
 		// Determine passive
-		if(qx.fn.isPassive === null){
+		if(typeof qx.fn.isPassive === "undefined"){
 			qx.fn.isPassive = false;
 			try {
 				Object.defineProperty({}, "passive", {
@@ -505,7 +505,7 @@ qx.fn = {
 		return qx.fn.isPassive?{passive:true}:false;
 	},
 	isTouch: () => {
-		return ("ontouchstart" in document.documentElement);
+		return ("ontouchstart" in doc.documentElement);
 	},
 	over(e){
 		switch(e.type){
@@ -584,7 +584,7 @@ qx.fn = {
 	fadeInOut: (target,duration,type="fadeIn",cb) => {
 		target.each((el) => {
 			el.style.removeProperty("display");
-			let computedStyle = window.getComputedStyle(el);
+			let computedStyle = win.getComputedStyle(el);
 			let display = computedStyle.display;
 
 			if (display === "none"){
@@ -599,7 +599,7 @@ qx.fn = {
 				el.style.opacity = (type==="fadeOut")?0:1;
 			}, 10);
 			
-			window.setTimeout(() => {
+			win.setTimeout(() => {
 				let r = ["transition"];
 				if(type==="fadeIn"){
 					r.push("opacity");
@@ -612,12 +612,12 @@ qx.fn = {
 			}, duration);
 		});
 	}
-}
+};
 
 Object.defineProperty(qxo.fn, 'length', {
 	get(){
 		return this.elmts.length;
 	}
 });
-window.$ = qx;
-})();
+win.$ = qx;
+})(window,document);
