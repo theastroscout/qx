@@ -364,7 +364,7 @@ qxo.fn = qxo.prototype = {
 				display = "block";
 			}
 
-			let padding = parseInt(computedStyle.paddingTop) + parseInt(computedStyle.paddingBottom);
+			let padding = parseInt(computedStyle.paddingTop,10) + parseInt(computedStyle.paddingBottom,10);
 
 			let opacity = computedStyle.opacity;
 
