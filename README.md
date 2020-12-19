@@ -2,6 +2,7 @@
 Lightweight JavaScript library for manipulating with HTML
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/1564069f75eb4e6aa24faef6ea43e4be)](https://www.codacy.com/gh/hqdaemon/qx/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=hqdaemon/qx&amp;utm_campaign=Badge_Grade)
+[![DeepScan grade](https://deepscan.io/api/teams/12165/projects/15148/branches/299007/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=12165&pid=15148&bid=299007)
 
 <br />
 
