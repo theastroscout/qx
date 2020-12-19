@@ -31,21 +31,19 @@ qxo.fn = qxo.prototype = {
 
 		// Split events list and add Event Listener for each
 		let eventsList = events.split(' ');
-
-		for(var i=0,l=this.elmts.length;i<l;i++){
-			let item = this.elmts[i];
+		this.each((el) => {
 			for(var e in eventsList){
-				item.addEventListener(eventsList[e],fn,passive);
+				el.addEventListener(eventsList[e],fn,passive);
 			}
-		}
+		});
 		return this;
 	},
 	// Adding Click Or Tap Listener to elements depending on TouchScreen Device Detected.
 	click(fn){
 		let passive = qx.fn.getPassive();
-		for(var i=0,l=this.elmts.length;i<l;i++){
-			this.elmts[i].addEventListener("click",fn,passive);
-		}
+		this.each((el) => {
+			el.addEventListener("click",fn,passive);
+		});
 		return this;
 	},
 	// Adding the class name or list of class names to the element
@@ -67,13 +65,13 @@ qxo.fn = qxo.prototype = {
 	// Checking elements for class name available. Returning array of values if it needed.
 	hasClass(className){
 		let checkedList = [];
-		for(var i=0,l=this.elmts.length;i<l;i++){
-			if(this.elmts[i].classList.contains(className)){
+		this.each((el) => {
+			if(el.classList.contains(className)){
 				checkedList.push(true)
 			} else {
 				checkedList.push(false);
 			}
-		}
+		});
 
 		if(checkedList.length > 1){
 			return checkedList;
@@ -95,15 +93,15 @@ qxo.fn = qxo.prototype = {
 	// Get Attribute value of elements
 	getAttr(attrName){
 		let list = [];
-		for(var i=0,l=this.elmts.length;i<l;i++){
-			let attr = this.elmts[i].getAttribute(attrName);
+		this.each((el) => {
+			let attr = el.getAttribute(attrName);
 			if(attr != null){
-				if(attr === ""){
-					attr = true;
-				}
-				list.push(attr);
+				attr = (attr === "")?true:false;
+			} else if(attr === null){
+				attr = false;
 			}
-		}
+			list.push(attr);
+		});
 
 		if(list.length > 1){
 			return list;
@@ -114,78 +112,75 @@ qxo.fn = qxo.prototype = {
 	},
 	// Set Attribute to elements
 	setAttr(attrName,value=""){
-		for(var i=0,l=this.elmts.length;i<l;i++){
-			this.elmts[i].setAttribute(attrName,value);
-		}
+		this.each((el) => {
+			el.setAttribute(attrName,value);
+		});
 		return this;
 	},
 	// Remove Attribute from elements
 	removeAttr(attrName){
-		for(var i=0,l=this.elmts.length;i<l;i++){
-			this.elmts[i].removeAttribute(attrName);
-		}
+		this.each((el) => {
+			el.removeAttribute(attrName);
+		});
 		return this;
 	},
 	// Add a behavior that switches the class "hover" when you hover the mouse or tap on the element.
 	hover(){
 		let passive = qx.fn.getPassive();
-		for(var i=0,l=this.elmts.length;i<l;i++){
-			let item = this.elmts[i];
+		this.each((el) => {
 			for(var e in qx.ui.hover){
-				item.addEventListener(qx.ui.hover[e],qx.fn.over,passive);
+				el.addEventListener(qx.ui.hover[e],qx.fn.over,passive);
 			}
-		}
+		});
+		return this;
 	},
 	// Removes an element from the DOM
 	remove(){
-		for(var i=0,l=this.elmts.length;i<l;i++){
-			let item = this.elmts[i];
-			item.parentNode.removeChild(item);
-		}
+		this.each((el) => {
+			el.parentNode.removeChild(el);
+		});
 		return true;
 	},
 	// Replace element with new HTML
 	replace(html){
-		for(var i=0,l=this.elmts.length;i<l;i++){
-			this.elmts[i].outerHTML = html;
-		}
+		this.each((el) => {
+			el.outerHTML = html;
+		});
 		return this;
 	},
 	// Append HTML before End Of Elements
 	append(html){
-		for(var i=0,l=this.elmts.length;i<l;i++){
-			this.elmts[i].insertAdjacentHTML("beforeEnd", html);
-		}
+		this.each((el) => {
+			el.insertAdjacentHTML("beforeEnd", html);
+		});
 		return this;
 	},
 	// Insert HTML before Beging Of Elements
 	prepend(html){
-		for(var i=0,l=this.elmts.length;i<l;i++){
-			this.elmts[i].insertAdjacentHTML("beforeBegin", html);
-		}
+		this.each((el) => {
+			el.insertAdjacentHTML("beforeBegin", html);
+		});
 		return this;
 	},
 	// Insert HTML after the End Of Elements
 	after(html){
-		for(var i=0,l=this.elmts.length;i<l;i++){
-			this.elmts[i].insertAdjacentHTML("afterEnd", html);
-		}
+		this.each((el) => {
+			el.insertAdjacentHTML("afterEnd", html);
+		});
 		return this;
 	},
 	// Get or Set value of inputs
 	val(v=false){
-		var i,l;
 		if(v !== false){
-			for(i=0,l=this.elmts.length;i<l;i++){
-				this.elmts[i].value = v;
-			}
+			this.each((el) => {
+				el.value = v;
+			});
 			return this;
 		} else {
 			let list = [];
-			for(i=0,l=this.elmts.length;i<l;i++){
-				let value = this.elmts[i].value;
-				list.push((value)?value:false);
-			}
+			this.each((el) => {
+				list.push((el.value)?el.value:false);
+			});
 			if(list.length > 1){
 				return list;
 			} else if(list.length){
@@ -196,16 +191,16 @@ qxo.fn = qxo.prototype = {
 	},
 	// Hide elements. Set display to "none".
 	hide(){
-		for(var i=0,l=this.elmts.length;i<l;i++){
-			this.elmts[i].style.display = "none";
-		}
+		this.each((el) => {
+			el.style.display = "none";
+		});
 		return this;
 	},
 	// Show elements. Set display to "block".
 	show(){
-		for(var i=0,l=this.elmts.length;i<l;i++){
-			this.elmts[i].style.display = "block";
-		}
+		this.each((el) => {
+			el.style.display = "block";
+		});
 		return this;
 	},
 	// Get or Set plain text of elements
@@ -226,60 +221,13 @@ qxo.fn = qxo.prototype = {
 	},
 	// Fade-in element using the transparency
 	fadeIn(duration=1000, cb=false){
-		for(var i=0,l=this.elmts.length;i<l;i++){
-			let target = this.elmts[i];
-			target.style.removeProperty("display");
-			let computedStyle = window.getComputedStyle(target);
-			let display = computedStyle.display;
-
-			if (display === "none"){
-				display = "block";
-			}
-
-			target.style.opacity = 0;
-			target.style.display = display;
-
-			setTimeout(function(){
-				target.style.transition = `opacity ${duration}ms`;
-				target.style.opacity = 1;
-			}, 10);
-			
-			window.setTimeout(() => {
-				target.style.removeProperty("transition");
-				target.style.removeProperty("opacity");
-				if(typeof cb === "function"){
-					cb(target);
-				}
-			}, duration);
-		}
+		qx.fn.fadeInOut(this,duration,"fadeIn",cb);
+		return this;
 	},
 	// Fade-out element using the transparency
 	fadeOut(duration=600, cb=false){
-		for(var i=0,l=this.elmts.length;i<l;i++){
-			let target = this.elmts[i];
-			target.style.removeProperty("display");
-			let computedStyle = window.getComputedStyle(target);
-			let display = computedStyle.display;
-
-			if (display === "none"){
-				display = "block";
-			}
-
-			target.style.opacity = 1;
-			target.style.display = display;
-
-			setTimeout(function(){
-				target.style.transition = `opacity ${duration}ms`;
-				target.style.opacity = 0;
-			}, 10);
-			
-			window.setTimeout(() => {
-				target.style.removeProperty("transition");
-				if(typeof cb === "function"){
-					cb(target);
-				}
-			}, duration);
-		}
+		qx.fn.fadeInOut(this,duration,"fadeOut",cb);
+		return this;
 	},
 	// Get or Set Width of elements
 	width(value=false){
@@ -298,9 +246,9 @@ qxo.fn = qxo.prototype = {
 		return r;
 	},
 	// Executing function for each of elements
-	each(callback){
-		for(var i=0,l=this.elmts.length;i<l;i++){
-			callback(this.elmts[i]);
+	each(cb){
+		for(let i=0,l=this.elmts.length;i<l;i++){
+			cb(this.elmts[i]);
 		}
 		return this;
 	},
@@ -314,34 +262,33 @@ qxo.fn = qxo.prototype = {
 			removeOnComplete = true;
 			duration = 500;
 		}
-		for(var i=0,l=this.elmts.length;i<l;i++){
-			let target = this.elmts[i];
-			clearTimeout(target.tmo);
-			target.style.transitionProperty = "height, margin, padding, opacity";
-			target.style.transitionDuration = duration + "ms";
-			target.style.boxSizing = "border-box";
-			target.style.height = target.offsetHeight + "px";
-			target.style.overflow = "hidden";
+		this.each((el) => {
+			clearTimeout(el.tmo);
+			el.style.transitionProperty = "height, margin, padding, opacity";
+			el.style.transitionDuration = duration + "ms";
+			el.style.boxSizing = "border-box";
+			el.style.height = el.offsetHeight + "px";
+			el.style.overflow = "hidden";
 
 			setTimeout(() => {
-				target.style.opacity = 0;
-				target.style.height = 0;
-				target.style.paddingTop = 0;
-				target.style.paddingBottom = 0;
-				target.style.marginTop = 0;
-				target.style.marginBottom = 0;
+				el.style.opacity = 0;
+				el.style.height = 0;
+				el.style.paddingTop = 0;
+				el.style.paddingBottom = 0;
+				el.style.marginTop = 0;
+				el.style.marginBottom = 0;
 			},50);
-			target.tmo = setTimeout( () => {
-				target.style.display = "none";
-				qx.fn.removeProps(target,["opacity","box-sizing","height","padding-top","padding-bottom","margin-top","margin-bottom","overflow","transition-duration","transition-property"]);
+			el.tmo = setTimeout( () => {
+				el.style.display = "none";
+				qx.fn.removeProps(el,["opacity","box-sizing","height","padding-top","padding-bottom","margin-top","margin-bottom","overflow","transition-duration","transition-property"]);
 				if(callback){
-					callback(target);
+					callback(el);
 				}
 				if(removeOnComplete){
-					target.parentNode.removeChild(target);
+					el.parentNode.removeChild(el);
 				}
 			}, duration+50);
-		}
+		});
 		return this;
 	},
 	// Slide Down Elements and fade-in
@@ -352,12 +299,10 @@ qxo.fn = qxo.prototype = {
 			callback = duration;
 			duration = 500;
 		}
-		for(var i=0,l=this.elmts.length;i<l;i++){
-			let target = this.elmts[i];
-			clearTimeout(target.tmo);
-			// target.style.removeProperty("display");
-			qx.fn.removeProps(target,["display"]);
-			let computedStyle = window.getComputedStyle(target);
+		this.each((el) => {
+			clearTimeout(el.tmo);
+			qx.fn.removeProps(el,["display"]);
+			let computedStyle = window.getComputedStyle(el);
 			let display = computedStyle.display;
 
 			if(display === "none"){
@@ -368,54 +313,53 @@ qxo.fn = qxo.prototype = {
 
 			let opacity = computedStyle.opacity;
 
-			target.style.overflow = "hidden";
-			target.style.opacity = 0;
-			target.style.height = 0;
-			target.style.paddingTop = 0;
-			target.style.paddingBottom = 0;
-			target.style.marginTop = 0;
-			target.style.marginBottom = 0;
-			target.style.boxSizing = "border-box";
-			target.style.transitionProperty = "height, margin, padding";
-			target.style.transitionDuration = duration + "ms";
-			target.style.display = display;
+			el.style.overflow = "hidden";
+			el.style.opacity = 0;
+			el.style.height = 0;
+			el.style.paddingTop = 0;
+			el.style.paddingBottom = 0;
+			el.style.marginTop = 0;
+			el.style.marginBottom = 0;
+			el.style.boxSizing = "border-box";
+			el.style.transitionProperty = "height, margin, padding";
+			el.style.transitionDuration = duration + "ms";
+			el.style.display = display;
 
-			let height = target.scrollHeight + padding;
+			let height = el.scrollHeight + padding;
 
 			setTimeout(() => {
-				target.style.opacity = opacity;
-				target.style.height = height + "px";
-				qx.fn.removeProps(target,["padding-top","padding-bottom","margin-top","margin-bottom"]);
+				el.style.opacity = opacity;
+				el.style.height = height + "px";
+				qx.fn.removeProps(el,["padding-top","padding-bottom","margin-top","margin-bottom"]);
 			}, 50);
-			target.tmo = setTimeout( () => {
-				qx.fn.removeProps(target,["opacity","box-sizing","height","overflow","transition-duration","transition-property"]);
+			el.tmo = setTimeout( () => {
+				qx.fn.removeProps(el,["opacity","box-sizing","height","overflow","transition-duration","transition-property"]);
 				if(callback){
-					callback(target);
+					callback(el);
 				}
 			}, duration+50);
-		}
+		})
 		return this;
 	},
 	// Returns the size and position of elements
 	getBounds(){
 		let list = [];
-		for(var i=0,l=this.elmts.length;i<l;i++){
-			let target = this.elmts[i];
+		this.each((el) => {
 			let bound = {};
-			if ("getBoundingClientRect" in target){
-				bound = target.getBoundingClientRect();
+			if ("getBoundingClientRect" in el){
+				bound = el.getBoundingClientRect();
 				if(typeof bound.x === "undefined"){
 					bound.x = bound.left;
 					bound.y = bound.top;
 				}
 			} else {
-				bound.x = target.offsetLeft;
-				bound.y = target.offsetTop;
-				bound.width = target.offsetWidth;
-				bound.height = target.offsetHeight;
+				bound.x = el.offsetLeft;
+				bound.y = el.offsetTop;
+				bound.width = el.offsetWidth;
+				bound.height = el.offsetHeight;
 			}
 			list.push(bound);
-		}
+		});
 		if(list.length > 1){
 			return list;
 		} else if(list.length){
@@ -426,19 +370,19 @@ qxo.fn = qxo.prototype = {
 	// Return the list of parent elements
 	parent(){
 		let items = [];
-		for(var i=0,l=this.elmts.length;i<l;i++){
-			items.push(this.elmts[i].parentNode);
-		}
-		return qx.bind(items);
+		this.each((el) => {
+			items.push(el.parentNode);
+		});
+		return new qxo(items);
 	},
 	// Return the list of elements width
 	textWidth(){
 		let list = [];
-		for(var i=0,l=this.elmts.length;i<l;i++){
-			let item = this.elmts[i];
-			let str = item.innerText;
+
+		this.each((el) => {
+			let str = el.innerText;
 			let text = document.createElement("span");
-			let computedStyle = window.getComputedStyle(item);
+			let computedStyle = window.getComputedStyle(el);
 			text.innerHTML = str;
 			text.style.position = "absolute";
 			text.style.visibility = "hidden";
@@ -448,7 +392,7 @@ qxo.fn = qxo.prototype = {
 			document.body.removeChild(text);
 
 			list.push(width);
-		}
+		});
 
 		if(list.length > 1){
 			return list;
@@ -460,9 +404,9 @@ qxo.fn = qxo.prototype = {
 	// Return Offset Top Of Elements
 	top(){
 		let list = [];
-		for(var i=0,l=this.elmts.length;i<l;i++){
-			list.push(this.elmts[i].offsetTop);
-		}
+		this.each((el) => {
+			list.push(el.offsetTop);
+		});
 		if(list.length > 1){
 			return list;
 		} else if(list.length){
@@ -473,12 +417,12 @@ qxo.fn = qxo.prototype = {
 	// Find elements inside the list of selected elements
 	find(selector){
 		let items = [];
-		for(var i=0,l=this.elmts.length;i<l;i++){
-			let elmts = this.elmts[i].querySelectorAll(selector);
+		this.each((el) => {
+			let elmts = el.querySelectorAll(selector);
 			elmts.forEach((currentValue) => {
 				items.push(currentValue);
 			});
-		}
+		});
 		return new qxo(items);
 	},
 	// Set focus at the first element of the list
@@ -490,10 +434,9 @@ qxo.fn = qxo.prototype = {
 	},
 	counter(options){
 		let go = false;
-		for(var i=0,l=this.elmts.length;i<l;i++){
-			let item = this.elmts[i];
+		this.each((el) => {
 			if(typeof options.count != "object"){
-				options.count = [parseFloat(item.innerText), options.count];
+				options.count = [parseFloat(el.innerText), options.count];
 			}
 			
 			if(typeof options.duration === "undefined"){
@@ -503,8 +446,8 @@ qxo.fn = qxo.prototype = {
 			let offset = (options.count[1] - options.count[0])/steps;
 			// console.log(options.count)
 			if(typeof options.current === "undefined"){
-				if(item.tmo){
-					clearTimeout(item.tmo);
+				if(el.tmo){
+					clearTimeout(el.tmo);
 				}
 				options.current = options.count[0];
 			} else {
@@ -522,12 +465,12 @@ qxo.fn = qxo.prototype = {
 			}
 			
 			if(options.current >= options.count[1]){
-				item.innerText = v;
+				el.innerText = v;
 			} else {
-				item.innerText = v;
+				el.innerText = v;
 				go = true;
 			}
-		}
+		});
 
 		if(go){
 			let that = this;
@@ -542,21 +485,24 @@ qx.ui = {
 	hover: ["mouseenter", "mouseleave", "mousecancel", "touchstart", "touchend", "touchcancel"]
 };
 qx.fn = {
+	isPassive: null,
 	getPassive: () => {
 		// Determine passive
-		let passiveSupported = false;
-		try {
-			Object.defineProperty({}, "passive", {
-				get: () => {
-					passiveSupported = true;
-					return true;
-				}
-			});
-		} catch(e) {
-			// continue regardless of error
+		if(qx.fn.isPassive === null){
+			qx.fn.isPassive = false;
+			try {
+				Object.defineProperty({}, "passive", {
+					get: () => {
+						qx.fn.isPassive = true;
+						return true;
+					}
+				});
+			} catch(e) {
+				// continue regardless of error
+			}
 		}
-		
-		return passiveSupported?{passive:true}:false;
+			
+		return qx.fn.isPassive?{passive:true}:false;
 	},
 	isTouch: () => {
 		return ("ontouchstart" in document.documentElement);
@@ -634,6 +580,37 @@ qx.fn = {
 		for(let i=0,l=props.length;i<l;i++){
 			target.style.removeProperty(props[i]);
 		}
+	},
+	fadeInOut: (target,duration,type="fadeIn",cb) => {
+		target.each((el) => {
+			el.style.removeProperty("display");
+			let computedStyle = window.getComputedStyle(el);
+			let display = computedStyle.display;
+
+			if (display === "none"){
+				display = "block";
+			}
+
+			el.style.opacity = (type==="fadeOut")?1:0;
+			el.style.display = display;
+
+			setTimeout(function(){
+				el.style.transition = `opacity ${duration}ms`;
+				el.style.opacity = (type==="fadeOut")?0:1;
+			}, 10);
+			
+			window.setTimeout(() => {
+				let r = ["transition"];
+				if(type==="fadeIn"){
+					r.push("opacity");
+				}
+				qx.fn.removeProps(el,r)
+
+				if(typeof cb === "function"){
+					cb(el);
+				}
+			}, duration);
+		});
 	}
 }
 
