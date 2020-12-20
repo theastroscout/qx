@@ -1,61 +1,90 @@
-.qxSlider{
+.qxSlider {
 	position: relative;
+
 	> .slides {
 		position: relative;
 		width: 100% !important;
 		overflow: hidden;
-		> .wrap{
+
+		> .wrap {
 			position: relative;
-			display: flex; align-items: stretch;
-			transform: translate3d(0,0,0);
+			display: flex;
+			align-items: stretch;
+			transform: translate3d(0, 0, 0);
 			transition: transform .5s;
-			> .item{
+
+			> .item {
 				flex-shrink: 0;
 				width: 100% !important;
 				box-sizing: border-box;
 			}
 		}
+
 		&.drag {
 			> .wrap {
 				transition: none !important;
 			}
 		}
 	}
-	> .circles{
-		display: flex; align-items: center; justify-content: center;
+
+	> .circles {
+		display: flex;
+		align-items: center;
+		justify-content: center;
 		padding: 20px 0;
+
 		> .i {
 			margin: 0 2px;
-			width: 6px; height: 6px;
+			width: 6px;
+			height: 6px;
 			border-radius: 50%;
-			background: #ffffff;
+			background: #fff;
 			opacity: .3;
 			transform: scale(.7);
 			transition: opacity .6s, transform .6s;
 		}
-		> .i.active{
+
+		> .i.active {
 			transform: scale(1);
 			opacity: 1;
 		}
 	}
+
 	> .nav {
-		position: absolute; top: calc(50% - 15px);
-		display: flex; align-items: center; justify-content: center;
-		width: 30px; height: 30px;
-		background: rgba(0,0,0,.8);
+		position: absolute;
+		top: calc(50% - 15px);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 30px;
+		height: 30px;
+		background: rgba(0, 0, 0, .8);
 		font-size: 10px;
-		color: #ffffff;
+		color: #fff;
 		cursor: pointer;
+
 		&.prev {
-			left: 0px;
+			left: 0;
 		}
+
 		&.next {
-			right: 0px;
+			right: 0;
 		}
 	}
-	/* clean-css ignore:start */-webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;/* clean-css ignore:end */
+
+	/* clean-css ignore:start */
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+
+	/* clean-css ignore:end */
 }
 
-@media (max-width: 620px){
-	.qxSlider > .nav {display: none;}
+@media (max-width: 620px) {
+	.qxSlider > .nav {
+		display: none;
+	}
 }
