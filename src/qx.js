@@ -577,45 +577,68 @@ QX.slider.fn = QX.slider.prototype = {
 		startTime: false,
 		move: false,
 		posX: 0,
+		newX: 0,
 		wrapX: 0,
-		offsetX: 0,
 		on(e){
-			let target = e.currentTarget;
-			let slider = target.slider;
-			let passive, direction, posX, velocity, offsetX;
+			// let target = e.currentTarget;
+			let target, slider, passive, direction, posX, velocity, offsetX, percX;
 			switch(e.type){
 				case 'mousedown': case 'touchstart':
+					passive = QX.fn.getPassive();
+
+					win.target = target = e.currentTarget;
+					slider = target.slider;
+
 					slider.drag.startTime = new Date();
 					slider.drag.move = true;
 					slider.drag.posX = e.clientX || e.touches[0].clientX;
+					// slider.drag.posX += slider.slides.getBounds().x;
 
-					slider.drag.wrapX = slider.wrap.getBounds().x;
+					slider.drag.wrapX = slider.wrap.getBounds().x - slider.slides.getBounds().x;
 					slider.slides.addClass("drag");
 
-					passive = QX.fn.getPassive();
-					target.addEventListener("mousemove",slider.drag.on,passive);
-					target.addEventListener("touchmove",slider.drag.on,passive);
+					
+					win.addEventListener("mousemove",slider.drag.on,passive);
+					win.addEventListener("mouseup",slider.drag.on,passive);
+					win.addEventListener("touchmove",slider.drag.on,passive);
+					win.addEventListener("touchend",slider.drag.on,passive);
+					win.addEventListener("touchcancel",slider.drag.on,passive);
 					break;
 				case 'mousemove': case 'touchmove':
-					posX = e.clientX || e.touches[0].clientX;
-					slider.drag.offsetX = posX - slider.drag.posX;
-					posX = slider.drag.wrapX + slider.drag.offsetX;
+					target = win.target;
+					slider = target.slider;
+
+					slider.drag.newX = e.clientX || e.touches[0].clientX;
+					posX = slider.drag.wrapX + slider.drag.newX - slider.drag.posX;
 					slider.wrap.css({
 						transform:`translate3d(${posX}px,0,0)`,
 						webkitTransition:`translate3d(${posX}px,0,0)`
 					});
+
 					e.preventDefault();
 					break;
 				case 'mouseup': case 'touchend': case 'touchcancel':
+					passive = QX.fn.getPassive();
+
+					target = win.target;
+					slider = target.slider;
+
+					target = win.target;
 					slider.drag.move = false;
-					target.removeEventListener("mousemove",slider.drag.on,passive);
-					target.removeEventListener("touchmove",slider.drag.on,passive);
+					win.removeEventListener("mousemove",slider.drag.on,passive);
+					win.removeEventListener("mouseup",slider.drag.on,passive);
+					win.removeEventListener("touchmove",slider.drag.on,passive);
+					win.removeEventListener("touchend",slider.drag.on,passive);
+					win.removeEventListener("touchcancel",slider.drag.on,passive);
 					slider.slides.removeClass("drag");
 
 					velocity = (slider.drag.startTime)?new Date() - slider.drag.startTime:1000;
-					offsetX = Math.abs(slider.drag.offsetX/slider.target.width());
-					if(offsetX > .2 || (Math.abs(slider.drag.offsetX) > 20 && velocity < 100)){
-						direction = (slider.drag.offsetX < 0)?"next":"prev";
+
+					offsetX = slider.drag.newX - slider.drag.posX;
+					percX = Math.abs(offsetX/slider.target.width());
+					// console.log();
+					if(percX > .2 || (Math.abs(offsetX) > 20 && velocity < 100)){
+						direction = (offsetX < 0)?"next":"prev";
 					} else {
 						direction = slider.currentIndex;
 					}
@@ -623,9 +646,11 @@ QX.slider.fn = QX.slider.prototype = {
 					slider.drag.startTime = false;
 					slider.drag.offsetX = 0;
 					slider.drag.posX = 0;
+					slider.drag.newX = 0;
 					slider.drag.wrapX = 0;
 					slider.goTo(direction);
 					e.stopPropagation();
+					delete win.target;
 					break;
 			}
 		}
@@ -697,6 +722,7 @@ QX.slider.fn = QX.slider.prototype = {
 		QX(circleTarget).addClass('active');
 
 		slider.move();
+		return true;
 	},
 	move(){
 		let slider = this;
@@ -737,7 +763,7 @@ QX.slider.fn = QX.slider.prototype = {
 
 QX.ui = {
 	hover: ["mouseenter", "mouseleave", "mousecancel", "touchstart", "touchend", "touchcancel"],
-	drag: ["mousedown","mouseup","touchstart","touchend","touchcancel"]
+	drag: ["mousedown","touchstart"]
 };
 QX.fn = {
 	getPassive: () => {
