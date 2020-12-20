@@ -597,12 +597,14 @@ QX.slider.fn = QX.slider.prototype = {
 					slider.drag.wrapX = slider.wrap.getBounds().x - slider.slides.getBounds().x;
 					slider.slides.addClass("drag");
 
-					
-					win.addEventListener("mousemove",slider.drag.on,passive);
-					win.addEventListener("mouseup",slider.drag.on,passive);
-					win.addEventListener("touchmove",slider.drag.on,passive);
-					win.addEventListener("touchend",slider.drag.on,passive);
-					win.addEventListener("touchcancel",slider.drag.on,passive);
+					if(QX.fn.getMobile()){
+						win.addEventListener("touchmove",slider.drag.on,passive);
+						win.addEventListener("touchend",slider.drag.on,passive);
+						win.addEventListener("touchcancel",slider.drag.on,passive);
+					} else {
+						win.addEventListener("mousemove",slider.drag.on,passive);
+						win.addEventListener("mouseup",slider.drag.on,passive);
+					}
 					break;
 				case 'mousemove': case 'touchmove':
 					target = win.target;
@@ -623,13 +625,15 @@ QX.slider.fn = QX.slider.prototype = {
 					target = win.target;
 					slider = target.slider;
 
-					target = win.target;
 					slider.drag.move = false;
-					win.removeEventListener("mousemove",slider.drag.on,passive);
-					win.removeEventListener("mouseup",slider.drag.on,passive);
-					win.removeEventListener("touchmove",slider.drag.on,passive);
-					win.removeEventListener("touchend",slider.drag.on,passive);
-					win.removeEventListener("touchcancel",slider.drag.on,passive);
+					if(QX.fn.getMobile()){
+						win.removeEventListener("touchmove",slider.drag.on,passive);
+						win.removeEventListener("touchend",slider.drag.on,passive);
+						win.removeEventListener("touchcancel",slider.drag.on,passive);
+					} else {
+						win.removeEventListener("mousemove",slider.drag.on,passive);
+						win.removeEventListener("mouseup",slider.drag.on,passive);
+					}
 					slider.slides.removeClass("drag");
 
 					velocity = (slider.drag.startTime)?new Date() - slider.drag.startTime:1000;
@@ -642,7 +646,6 @@ QX.slider.fn = QX.slider.prototype = {
 					} else {
 						direction = slider.currentIndex;
 					}
-					console.log('End', direction, e.type)
 					slider.drag.startTime = false;
 					slider.drag.offsetX = 0;
 					slider.drag.posX = 0;
@@ -766,6 +769,12 @@ QX.ui = {
 	drag: ["mousedown","touchstart"]
 };
 QX.fn = {
+	getMobile: () => {
+		if(typeof QX.fn.isMobile === "undefined"){
+			QX.fn.isMobile = ("ontouchstart" in document.documentElement);
+		}
+		return QX.fn.isMobile;
+	},
 	getPassive: () => {
 		// Determine passive
 		if(typeof QX.fn.isPassive === "undefined"){
