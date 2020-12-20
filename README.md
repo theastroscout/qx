@@ -186,7 +186,7 @@ $(selector).slideDown(duration=500, callback=false);
 ```
 
 ### getBounds()
-Returns the size and position of elements
+Return the size and position of elements
 ```javascript
 $(selector).getBounds();
 ```
@@ -219,6 +219,47 @@ $(selector).find(selector);
 Set focus at the first element of the list
 ```javascript
 $(selector).focus();
+```
+
+### copy()
+Return deep copies of elements
+```javascript
+$(selector).copy();
+```
+
+<br />
+<br />
+<br />
+
+# Loop Sliders
+Create a Adaptive Loop Slider that works on desktop and touch devices.
+To work correctly add the qx.min.css file.
+Return an array of created sliders.
+```html
+<link rel="stylesheet" type="text/css" href="/path_to_css/qx.min.css" />
+<div class="slider">
+	<div class="slides">
+		<div class="wrap">
+			<div class="item">1</div>
+			<div class="item">2</div>
+			<div class="item">3</div>
+			<div class="item">4</div>
+		</div>
+	</div>
+	<div class="circles"></div>
+	<div class="nav prev">◀</div>
+	<div class="nav next">▶</div>
+</div>
+```
+```javascript
+let sliders = $(".slider").slider();
+let slider = sliders[0];
+// Return [QX.slider]
+```
+### slider.goTo()
+Change the slider to the specified one. Accepts the slide number, "prev" or "next" values.
+```javascript
+slider.goTo(index);
 ```
 
 <br />
