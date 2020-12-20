@@ -1,13 +1,15 @@
 .qxSlider {
 	position: relative;
-/* clean-css ignore:start */
+
+	/* clean-css ignore:start */
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
 	-khtml-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
-/* clean-css ignore:end */;
+
+	/* clean-css ignore:end */
 }
 
 .qxSlider > .slides {
@@ -46,9 +48,9 @@
 	width: 6px;
 	height: 6px;
 	border-radius: 50%;
-	background: #ffffff;
+	background: #fff;
 	opacity: .3;
-	transform: scale(0.7);
+	transform: scale(.7);
 	transition: opacity .6s, transform .6s;
 }
 
@@ -65,18 +67,18 @@
 	justify-content: center;
 	width: 30px;
 	height: 30px;
-	background: rgba(0, 0, 0, 0.8);
+	background: rgba(0, 0, 0, .8);
 	font-size: 10px;
-	color: #ffffff;
+	color: #fff;
 	cursor: pointer;
 }
 
 .qxSlider > .nav.prev {
-	left: 0px;
+	left: 0;
 }
 
 .qxSlider > .nav.next {
-	right: 0px;
+	right: 0;
 }
 
 @media (max-width: 620px) {
