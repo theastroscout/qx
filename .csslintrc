@@ -1,3 +1,10 @@
 {
-  "ignore": "adjoining-classes,box-sizing,bulletproof-font-face,compatible-vendor-prefixes,display-property-grouping,duplicate-background-images,duplicate-properties,empty-rules,fallback-colors,floats,font-faces,font-sizes,gradients,ids,import,important,known-properties,non-link-hover,outline-none,overqualified-elements,qualified-headings,regex-selectors,shorthand,star-property-hack,text-indent,underscore-property-hack,vendor-prefix,unique-headings,universal-selector,unqualified-attributes,zero-units"
+	"ignore": [
+		"adjoining-classes",
+		"box-sizing",
+		"fallback-colors",
+		"important",
+		"zero-units",
+		"order-alphabetical"
+	]
 }
