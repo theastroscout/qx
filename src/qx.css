@@ -1,13 +1,13 @@
 .qxSlider {
 	position: relative;
-  /* clean-css ignore:start */
+/* clean-css ignore:start */
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
 	-khtml-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
-  /* clean-css ignore:end */;
+/* clean-css ignore:end */;
 }
 
 .qxSlider > .slides {

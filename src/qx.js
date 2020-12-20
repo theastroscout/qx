@@ -1,7 +1,7 @@
 ((win,doc) => {
 function QXo(items){
 	this.elmts = items;
-};
+}
 var QX = (selector) =>{
 	if(typeof selector === "object"){
 		return new QXo([selector]);
