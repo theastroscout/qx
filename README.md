@@ -20,6 +20,24 @@ $(selector) - Like JQuery. Using **querySelectorAll** [documentation](https://de
 
 ## Methods
 
+### $.isTouch()
+Return True if it's Touch Device or False if not.
+```javascript
+$.isTouch();
+```
+
+### $.isDark()
+Return True if the Client uses Dark Mode or False if not
+```javascript
+$.isDark();
+```
+
+### $.isPassive()
+Return {passive:false} if Passive is available or False if not
+```javascript
+$.isPassive();
+```
+
 ### on(eventNames, function)
 Adding Event Listeners to elements.
 ```javascript
