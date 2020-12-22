@@ -29,6 +29,15 @@ QX.sliders = {
 		},400);
 	}
 };
+QX.isTouch = () => {
+	return QX.fn.getMobile();
+};
+QX.isPassive = () => {
+	return QX.fn.getPassive();
+};
+QX.isDark = () => {
+	return (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+};
 
 QXo.fn = QXo.prototype = {
 	// Get
