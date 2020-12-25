@@ -13,6 +13,9 @@ var QX = (selector) =>{
 	});
 	return new QXo(itemsList);
 };
+QX.init = () => {
+	QX.ui.setHover();
+};
 QX.sliders = {
 	ready: false,
 	list: [],
@@ -27,6 +30,11 @@ QX.sliders = {
 				s.goTo(s.index);
 			}
 		},400);
+	},
+	captureClick(e){
+		e.stopPropagation(); // Stop the click from being propagated.
+		console.log('click captured');
+		win.removeEventListener("click", QX.captureClick, true); // cleanup
 	}
 };
 QX.isTouch = () => {
@@ -153,7 +161,9 @@ QXo.fn = QXo.prototype = {
 		let passive = QX.fn.getPassive();
 		this.each((el) => {
 			for(let i=0,l=QX.ui.hover.length;i<l;i++){
-				el.addEventListener(QX.ui.hover[i],QX.fn.over,passive);
+				let e = QX.ui.hover[i];
+				let pass = (e === "touchstart")?{passive:true}:passive;
+				el.addEventListener(e,QX.fn.over,pass);
 			}
 		});
 		return this;
@@ -324,7 +334,6 @@ QXo.fn = QXo.prototype = {
 	},
 	// Slide Down Elements and fade-in
 	slideDown(duration=500, callback=false){
-		console.log('?')
 		if(typeof duration === "string"){
 			duration = 500;
 		} else if(typeof duration === "function"){
@@ -580,7 +589,9 @@ QX.slider.fn = QX.slider.prototype = {
 			let passive = QX.fn.getPassive();
 			slides = slides.get(0);
 			for(let i=0,l=QX.ui.drag.length;i<l;i++){
-				slides.addEventListener(QX.ui.drag[i],slides.slider.drag.on,passive);
+				let e = QX.ui.drag[i];
+				let pass = (e === "touchstart")?{passive:true}:passive;
+				slides.addEventListener(e,slides.slider.drag.on,pass);
 			}
 		},
 		startTime: false,
@@ -600,7 +611,7 @@ QX.slider.fn = QX.slider.prototype = {
 
 					slider.drag.startTime = new Date();
 					slider.drag.move = true;
-					slider.drag.posX = e.clientX || e.touches[0].clientX;
+					slider.drag.posX = slider.drag.newX = e.clientX || e.touches[0].clientX;
 					// slider.drag.posX += slider.slides.getBounds().x;
 
 					slider.drag.wrapX = slider.wrap.getBounds().x - slider.slides.getBounds().x;
@@ -626,6 +637,10 @@ QX.slider.fn = QX.slider.prototype = {
 						webkitTransition:`translate3d(${posX}px,0,0)`
 					});
 
+					if(Math.abs(slider.drag.newX - slider.drag.posX) > 20){
+						slider.target.addClass("preventClick");
+					}
+
 					e.preventDefault();
 					break;
 				case 'mouseup': case 'touchend': case 'touchcancel':
@@ -649,12 +664,13 @@ QX.slider.fn = QX.slider.prototype = {
 
 					offsetX = slider.drag.newX - slider.drag.posX;
 					percX = Math.abs(offsetX/slider.target.width());
-					// console.log();
+					
 					if(percX > .2 || (Math.abs(offsetX) > 20 && velocity < 100)){
 						direction = (offsetX < 0)?"next":"prev";
 					} else {
 						direction = slider.currentIndex;
 					}
+
 					slider.drag.startTime = false;
 					slider.drag.offsetX = 0;
 					slider.drag.posX = 0;
@@ -663,6 +679,7 @@ QX.slider.fn = QX.slider.prototype = {
 					slider.goTo(direction);
 					e.stopPropagation();
 					delete win.target;
+					slider.target.removeClass("preventClick");
 					break;
 			}
 		}
@@ -708,7 +725,7 @@ QX.slider.fn = QX.slider.prototype = {
 	goTo(target){
 		let slider, index;
 		if(typeof target === 'object'){
-			let t = target.target;
+			let t = target.currentTarget;
 			slider = t.slider;
 			index = (QX(t).hasClass("prev"))?"prev":"next";
 			target.preventDefault();
@@ -725,13 +742,14 @@ QX.slider.fn = QX.slider.prototype = {
 			index = slider.index + 1;
 		}
 
-		slider.circles.removeClass('active');
-
 		slider.index = index;
 		slider.currentIndex = (slider.index > slider.amount)?1:(slider.index === 0)?slider.amount:slider.index;
 
-		let circleTarget = slider.circles.get(slider.currentIndex-1);
-		QX(circleTarget).addClass('active');
+		if(slider.circles){
+			slider.circles.removeClass('active');
+			let circleTarget = slider.circles.get(slider.currentIndex-1);
+			QX(circleTarget).addClass('active');
+		}
 
 		slider.move();
 		return true;
@@ -745,7 +763,9 @@ QX.slider.fn = QX.slider.prototype = {
 		});
 	},
 	end(e){
-		let slider = e.target.slider;
+		let t = e.currentTarget;
+		e.stopPropagation();
+		let slider = t.slider;
 		let needGo = false;
 		let posX;
 		if(slider.index === 0){
@@ -774,8 +794,16 @@ QX.slider.fn = QX.slider.prototype = {
 
 
 QX.ui = {
-	hover: ["mouseenter", "mouseleave", "mousecancel", "touchstart", "touchend", "touchcancel"],
-	drag: ["mousedown","touchstart"]
+	hoverEvents: {
+		desktop: ["mouseenter", "mouseleave", "mousecancel"],
+		touch: ["touchstart", "touchend", "touchcancel"]
+	},
+	drag: ["mousedown","touchstart"],
+	setHover: () => {
+		if(typeof QX.ui.hover === "undefined"){
+			QX.ui.hover = (QX.isTouch())?QX.ui.hoverEvents.touch:QX.ui.hoverEvents.desktop;
+		}
+	}
 };
 QX.fn = {
 	getMobile: () => {
@@ -917,5 +945,6 @@ Object.defineProperty(QXo.fn, 'length', {
 		return this.elmts.length;
 	}
 });
+QX.init();
 win.$ = QX;
 })(window,document);
