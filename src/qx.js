@@ -660,22 +660,22 @@ QX.slider = function(el,options={}){
 
 	this.createCircles();
 
-	if(options.break && options.break.length){
+	if(this.options.break && this.options.break.length){
 		let breakOptions;
-		for(let b=0,bl=options.break.length;b<bl;b++){
-			let el = options.break[b];
+		for(let b=0,bl=this.options.break.length;b<bl;b++){
+			let el = this.options.break[b];
 			if(el.width > window.innerWidth){
 				breakOptions = el;
 			}
 		}
 		if(typeof breakOptions === "undefined"){
-			breakOptions = options;
+			breakOptions = this.options;
 		}
 		this.divide = breakOptions.view;
 	} else {
 		this.divide = 1;
-		if(options.view){
-			this.divide = options.view;
+		if(this.options.view){
+			this.divide = this.options.view;
 		}
 	}
 
@@ -683,17 +683,17 @@ QX.slider = function(el,options={}){
 		if(this.amount < this.divide){
 			this.divide = this.amount;
 		}
-		this.target.setAttr("data-type",options.view);
+		this.target.setAttr("data-type",this.options.view);
 
 		this.circleOffset = Math.ceil(this.divide/2);
 	} else {
 		this.circleOffset = 1;
 	}
 
-	options.index = options.index-1 || 0;
-	options.index = Math.min(options.index,this.amount);
-	this.index = this.divide+options.index;
-	this.currentIndex = 1+options.index;
+	this.options.index = this.options.index-1 || 0;
+	this.options.index = Math.min(this.options.index,this.amount);
+	this.index = this.divide+this.options.index;
+	this.currentIndex = 1+this.options.index;
 
 	this.extend();
 	this.navBind();
