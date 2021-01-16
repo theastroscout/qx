@@ -1,6 +1,8 @@
 /*
+
 QX • Lightweight JavaScript library for manipulating with HTML
 HQ © https://hqmode.com
+
 */
 ((win,doc) => {
 function QXo(items){
@@ -88,7 +90,7 @@ QXo.fn = QXo.prototype = {
 		let passive = QX.fn.getPassive();
 
 		// Split events list and add Event Listener for each
-		let eventsList = events.split(' ');
+		let eventsList = events.split(" ");
 		this.each((el) => {
 			for(let i=0,l=eventsList.length;i<l;i++){
 				el.addEventListener(eventsList[i],fn,passive);
@@ -274,7 +276,7 @@ QXo.fn = QXo.prototype = {
 	// Get or Set plain text of elements
 	text(str=false){
 		let r = QX.fn.textHtml(this.elmts,str,"text");
-		if(r === 'set'){
+		if(r === "set"){
 			return this;
 		}
 		return r;
@@ -282,7 +284,7 @@ QXo.fn = QXo.prototype = {
 	// Get or Set HTML of elements
 	html(str=false){
 		let r = QX.fn.textHtml(this.elmts,str,"html");
-		if(r === 'set'){
+		if(r === "set"){
 			return this;
 		}
 		return r;
@@ -300,7 +302,7 @@ QXo.fn = QXo.prototype = {
 	// Get or Set Width of elements
 	width(value=false){
 		let r = QX.fn.widthHeight(this.elmts,value,"width");
-		if(r === 'set'){
+		if(r === "set"){
 			return this;
 		}
 		return r;
@@ -308,7 +310,7 @@ QXo.fn = QXo.prototype = {
 	// Get or Set Height of elements
 	height(value=false){
 		let r = QX.fn.widthHeight(this.elmts,value,"height");
-		if(r === 'set'){
+		if(r === "set"){
 			return this;
 		}
 		return r;
@@ -818,7 +820,7 @@ QX.slider.fn = QX.slider.prototype = {
 				circles.push(circle);
 			}
 			circlesEl.html(circles.join(""));
-			this.circles = circlesEl.find('.i');
+			this.circles = circlesEl.find(".i");
 		}
 	},
 	extend(){
@@ -1084,7 +1086,7 @@ QX.fn = {
 			el.style.opacity = (type==="fadeOut")?1:0;
 			el.style.display = display;
 
-			setTimeout(function(){
+			setTimeout(() => {
 				el.style.transition = `opacity ${duration}ms`;
 				el.style.opacity = (type==="fadeOut")?0:1;
 			}, 10);
