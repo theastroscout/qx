@@ -602,7 +602,7 @@ QX.gallery = {
 	slider: null,
 	init(){
 		let items = [];
-		let t = $(this);
+		let t = QX(this);
 		let itemsBlock = t.parent();
 		let index = t.getAttr("data-index");
 		itemsBlock.find(":scope > *").each((el) => {
@@ -850,7 +850,7 @@ QX.slider.fn = QX.slider.prototype = {
 		let n = 0;
 		slider.wrap.find(".item").each((el) => {
 			if(n < divide || n >= divide + slider.amount){
-				$(el).remove();
+				QX(el).remove();
 			}
 			n++;
 		});
