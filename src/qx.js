@@ -1,3 +1,7 @@
+/*
+QX • Lightweight JavaScript library for manipulating with HTML
+HQ © https://hqmode.com
+*/
 ((win,doc) => {
 function QXo(items){
 	this.elmts = items;
@@ -6,6 +10,9 @@ var QX = (selector) =>{
 	if(typeof selector === "object"){
 		return new QXo([selector]);
 	}
+
+	selector = QX.fixSelector(selector);
+
 	var itemsList = [];
 	var elements = doc.querySelectorAll(selector);
 	elements.forEach((currentValue) => {
@@ -16,25 +23,44 @@ var QX = (selector) =>{
 QX.init = () => {
 	QX.ui.setHover();
 };
+QX.fixSelector = (selector) => {
+	let chunks = selector.split(",");
+	for(var i=0,l=chunks.length;i<l;i++){
+		chunks[i] = chunks[i].trim().replace(/^>(.*)/,":scope>$1");
+	}
+	return chunks.join(",");
+};
 QX.sliders = {
 	ready: false,
 	list: [],
+	tmo: null,
 	resize: () => {
-		if(typeof QX.sliders.tmo !== "undefined"){
-			clearTimeout(QX.sliders.tmo);
-		}
+		clearTimeout(QX.sliders.tmo);
 		QX.sliders.tmo = setTimeout(() => {
-			// console.log(win.innerWidth, win.innerHeight);
 			for(let i=0,l=QX.sliders.list.length;i<l;i++){
 				let s = QX.sliders.list[i];
+				if(s.options.break && s.options.break.length){
+					let breakOptions;
+					for(let b=0,bl=s.options.break.length;b<bl;b++){
+						let el = s.options.break[b];
+						if(el.width > window.innerWidth){
+							breakOptions = el;
+						}
+					}
+					if(typeof breakOptions === "undefined"){
+						breakOptions = s.options;
+					}
+					if(s.divide != breakOptions.view){
+						s.fixExtends(s.divide);
+						s.divide = breakOptions.view;
+						s.circleOffset = (s.divide > 1)?Math.ceil(s.divide/2):1;
+						s.extend();
+						s.target.setAttr("data-type",s.divide);
+					}
+				}
 				s.goTo(s.index);
 			}
 		},400);
-	},
-	captureClick(e){
-		e.stopPropagation(); // Stop the click from being propagated.
-		console.log('click captured');
-		win.removeEventListener("click", QX.captureClick, true); // cleanup
 	}
 };
 QX.isTouch = () => {
@@ -44,7 +70,7 @@ QX.isPassive = () => {
 	return QX.fn.getPassive();
 };
 QX.isDark = () => {
-	return (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+	return (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
 };
 
 QXo.fn = QXo.prototype = {
@@ -52,7 +78,7 @@ QXo.fn = QXo.prototype = {
 	get(index = false){
 		if(index === false){
 			return this.elmts;
-		} else if(typeof this.elmts[index] !== 'undefined'){
+		} else if(typeof this.elmts[index] !== "undefined"){
 			return this.elmts[index];
 		}
 		return false;
@@ -157,13 +183,14 @@ QXo.fn = QXo.prototype = {
 		return this;
 	},
 	// Add a behavior that switches the class "hover" when you hover the mouse or tap on the element.
-	hover(){
+	hover(type="default"){
 		let passive = QX.fn.getPassive();
+		let overFunction = (type === "default")?QX.fn.over:QX.fn.svgOver;
 		this.each((el) => {
 			for(let i=0,l=QX.ui.hover.length;i<l;i++){
 				let e = QX.ui.hover[i];
 				let pass = (e === "touchstart")?{passive:true}:passive;
-				el.addEventListener(e,QX.fn.over,pass);
+				el.addEventListener(e,overFunction,pass);
 			}
 		});
 		return this;
@@ -246,7 +273,7 @@ QXo.fn = QXo.prototype = {
 	},
 	// Get or Set plain text of elements
 	text(str=false){
-		let r = QX.fn.textHtml(this.elmts,str,'text');
+		let r = QX.fn.textHtml(this.elmts,str,"text");
 		if(r === 'set'){
 			return this;
 		}
@@ -254,7 +281,7 @@ QXo.fn = QXo.prototype = {
 	},
 	// Get or Set HTML of elements
 	html(str=false){
-		let r = QX.fn.textHtml(this.elmts,str,'html');
+		let r = QX.fn.textHtml(this.elmts,str,"html");
 		if(r === 'set'){
 			return this;
 		}
@@ -272,7 +299,7 @@ QXo.fn = QXo.prototype = {
 	},
 	// Get or Set Width of elements
 	width(value=false){
-		let r = QX.fn.widthHeight(this.elmts,value,'width');
+		let r = QX.fn.widthHeight(this.elmts,value,"width");
 		if(r === 'set'){
 			return this;
 		}
@@ -280,7 +307,7 @@ QXo.fn = QXo.prototype = {
 	},
 	// Get or Set Height of elements
 	height(value=false){
-		let r = QX.fn.widthHeight(this.elmts,value,'height');
+		let r = QX.fn.widthHeight(this.elmts,value,"height");
 		if(r === 'set'){
 			return this;
 		}
@@ -409,10 +436,14 @@ QXo.fn = QXo.prototype = {
 		return false;
 	},
 	// Return the list of parent elements
-	parent(){
+	parent(className=false){
 		let items = [];
 		this.each((el) => {
-			items.push(el.parentNode);
+			if(className){
+				items.push(el.closest(className));
+			} else {
+				items.push(el.parentNode);
+			}
 		});
 		return new QXo(items);
 	},
@@ -458,6 +489,7 @@ QXo.fn = QXo.prototype = {
 	// Find elements inside the list of selected elements
 	find(selector){
 		let items = [];
+		selector = QX.fixSelector(selector);
 		this.each((el) => {
 			let elmts = el.querySelectorAll(selector);
 			elmts.forEach((currentValue) => {
@@ -518,7 +550,7 @@ QXo.fn = QXo.prototype = {
 		}
 		return this;
 	},
-	// Returns copies of elements
+	// Return copies of elements
 	copy(){
 		let list = [];
 		this.each((el) => {
@@ -531,10 +563,12 @@ QXo.fn = QXo.prototype = {
 		}
 		return false;
 	},
+	// Create slider
 	slider(options){
 		let list = [];
 		this.each((el) => {
 			let slider = new QX.slider(el,options);
+			slider.id = QX.sliders.list.length+1;
 			QX.sliders.list.push(slider);
 			list.push(slider);
 		});
@@ -549,10 +583,61 @@ QXo.fn = QXo.prototype = {
 			return list[0];
 		}
 		return false;
+	},
+	// Create Full Screen Gallery
+	gallery(){
+		let passive = QX.fn.getPassive();
+		let n = 1;
+		this.each((el) => {
+			el.setAttribute("data-index",n);
+			el.addEventListener("click",QX.gallery.init,passive);
+			n++;
+		});
+		return this;
 	}
 };
 
-QX.slider = function(el,options){
+// Gallery
+QX.gallery = {
+	slider: null,
+	init(){
+		let items = [];
+		let t = $(this);
+		let itemsBlock = t.parent();
+		let index = t.getAttr("data-index");
+		itemsBlock.find(":scope > *").each((el) => {
+			let img = el.getAttribute("data-img");
+			let item = `<div class="item"><img src="${img}" alt="" /></div>`;
+			items.push(item);
+		});
+		let galleryEl = `<div id="QXGallery">
+			<div class="slider">
+				<div class="slides">
+					<div class="wrap">
+						${items.join("")}
+					</div>
+				</div>
+				<div class="nav prev"></div>
+				<div class="nav next"></div>
+				<div class="circles"></div>
+			</div>
+			<div class="close">
+				<div class="n">Close</div>
+				<div class="i"></div>
+			</div>
+		</div>`;
+		QX("body").append(galleryEl);
+		QX.gallery.slider = QX("#QXGallery>.slider").slider({index: index});
+		QX("#QXGallery>.close").hover().click(QX.gallery.close);
+	},
+	close(){
+		QX.gallery.slider.destroy();
+		QX("#QXGallery").hide().remove();
+	}
+};
+
+// Slider
+QX.slider = function(el,options={}){
 	let passive = QX.fn.getPassive();
 
 	this.target = QX(el);
@@ -560,28 +645,62 @@ QX.slider = function(el,options){
 
 	this.options = options || {};
 
-	this.slides = this.target.find('.slides');
+	this.slides = this.target.find(".slides");
 	this.slides.get(0).slider = this;
 	
-	this.wrap = this.target.find('.slides>.wrap');
+	this.wrap = this.target.find(".slides>.wrap");
 	let wrapEl = this.wrap.get(0);
 	wrapEl.slider = this;
 	wrapEl.addEventListener("transitionend", QX.slider.fn.end, passive);
 
-	this.items = this.target.find('.slides>.wrap>.item');
+	this.items = this.target.find(".slides>.wrap>.item");
 	this.amount = this.items.length;
-	this.target.addClass('qxSlider');
-	this.nav = this.target.find('.nav');
+	this.target.addClass("qxSlider");
+	this.nav = this.target.find(".nav");
 
 	this.createCircles();
-	this.index = 1;
-	this.currentIndex = 1;
+
+	if(options.break && options.break.length){
+		let breakOptions;
+		for(let b=0,bl=options.break.length;b<bl;b++){
+			let el = options.break[b];
+			if(el.width > window.innerWidth){
+				breakOptions = el;
+			}
+		}
+		if(typeof breakOptions === "undefined"){
+			breakOptions = options;
+		}
+		this.divide = breakOptions.view;
+	} else {
+		this.divide = 1;
+		if(options.view){
+			this.divide = options.view;
+		}
+	}
+
+	if(this.divide > 1){
+		if(this.amount < this.divide){
+			this.divide = this.amount;
+		}
+		this.target.setAttr("data-type",options.view);
+
+		this.circleOffset = Math.ceil(this.divide/2);
+	} else {
+		this.circleOffset = 1;
+	}
+
+	options.index = options.index-1 || 0;
+	options.index = Math.min(options.index,this.amount);
+	this.index = this.divide+options.index;
+	this.currentIndex = 1+options.index;
 
 	this.extend();
 	this.navBind();
 	this.drag.bind(this.slides);
 
-	this.goTo(this.currentIndex);
+	
+	this.goTo(this.index);
 };
 QX.slider.fn = QX.slider.prototype = {
 	drag: {
@@ -603,7 +722,7 @@ QX.slider.fn = QX.slider.prototype = {
 			// let target = e.currentTarget;
 			let target, slider, passive, direction, posX, velocity, offsetX, percX;
 			switch(e.type){
-				case 'mousedown': case 'touchstart':
+				case "mousedown": case "touchstart":
 					passive = QX.fn.getPassive();
 
 					win.target = target = e.currentTarget;
@@ -612,7 +731,6 @@ QX.slider.fn = QX.slider.prototype = {
 					slider.drag.startTime = new Date();
 					slider.drag.move = true;
 					slider.drag.posX = slider.drag.newX = e.clientX || e.touches[0].clientX;
-					// slider.drag.posX += slider.slides.getBounds().x;
 
 					slider.drag.wrapX = slider.wrap.getBounds().x - slider.slides.getBounds().x;
 					slider.slides.addClass("drag");
@@ -626,7 +744,7 @@ QX.slider.fn = QX.slider.prototype = {
 						win.addEventListener("mouseup",slider.drag.on,passive);
 					}
 					break;
-				case 'mousemove': case 'touchmove':
+				case "mousemove": case "touchmove":
 					target = win.target;
 					slider = target.slider;
 
@@ -643,7 +761,7 @@ QX.slider.fn = QX.slider.prototype = {
 
 					e.preventDefault();
 					break;
-				case 'mouseup': case 'touchend': case 'touchcancel':
+				case "mouseup": case "touchend": case "touchcancel":
 					passive = QX.fn.getPassive();
 
 					target = win.target;
@@ -665,10 +783,10 @@ QX.slider.fn = QX.slider.prototype = {
 					offsetX = slider.drag.newX - slider.drag.posX;
 					percX = Math.abs(offsetX/slider.target.width());
 					
-					if(percX > .2 || (Math.abs(offsetX) > 20 && velocity < 100)){
+					if(percX > .2/slider.divide || (Math.abs(offsetX) > 20 && velocity < 100)){
 						direction = (offsetX < 0)?"next":"prev";
 					} else {
-						direction = slider.currentIndex;
+						direction = slider.index;
 					}
 
 					slider.drag.startTime = false;
@@ -685,14 +803,14 @@ QX.slider.fn = QX.slider.prototype = {
 		}
 	},
 	navBind(){
-		this.nav.on('click',QX.slider.fn.goTo);
+		this.nav.hover().click(QX.slider.fn.goTo);
 		this.nav.each((el) => {
 			el.slider = this;
 		});
 	},
 	createCircles(){
 		// Circles
-		let circlesEl = this.target.find('.circles');
+		let circlesEl = this.target.find(".circles");
 		if(circlesEl.length){
 			let circle = `<div class="i"></div>`;
 			let circles = [];
@@ -704,27 +822,42 @@ QX.slider.fn = QX.slider.prototype = {
 		}
 	},
 	extend(){
+		let i,l;
 		let slider = this;
 		slider.slides.addClass("drag");
-		let lastEl = slider.items.get(slider.amount-1);
-		slider.wrap.afterbegin(lastEl.outerHTML);
 
-		let firstEl = slider.items.get(0);
-		slider.wrap.append(firstEl.outerHTML);
+		for(i=0,l=slider.divide;i<l;i++){
+			let lastEl = slider.items.get(slider.amount-1-i);
+			slider.wrap.afterbegin(lastEl.outerHTML);
 
-		let posX = -slider.slides.width();
+			let firstEl = slider.items.get(i);
+			slider.wrap.append(firstEl.outerHTML);
+		}
+
+		// let posX = -slider.slides.width();
+		let posX = -slider.index*(slider.slides.width()/this.divide);
 		slider.wrap.css({
 			transform:`translate3d(${posX}px,0,0)`,
 			webkitTransition:`translate3d(${posX}px,0,0)`
 		});
-		// slider.wrap.removeAttr("style");
 		setTimeout(() => {
 			slider.slides.removeClass("drag");
 		},0);
 	},
+	fixExtends(divide){
+		let slider = this;
+		slider.slides.addClass("drag");
+		let n = 0;
+		slider.wrap.find(".item").each((el) => {
+			if(n < divide || n >= divide + slider.amount){
+				$(el).remove();
+			}
+			n++;
+		});
+	},
 	goTo(target){
 		let slider, index;
-		if(typeof target === 'object'){
+		if(typeof target === "object"){
 			let t = target.currentTarget;
 			slider = t.slider;
 			index = (QX(t).hasClass("prev"))?"prev":"next";
@@ -734,21 +867,30 @@ QX.slider.fn = QX.slider.prototype = {
 			slider = this;
 			index = target;
 		}
-		if(typeof index === 'number'){
+		if(typeof index === "number"){
 			// index = 
-		} else if(index === 'prev'){
+		} else if(index === "prev"){
 			index = slider.index - 1;
-		} else if(index === 'next'){
+		} else if(index === "next"){
 			index = slider.index + 1;
 		}
 
 		slider.index = index;
-		slider.currentIndex = (slider.index > slider.amount)?1:(slider.index === 0)?slider.amount:slider.index;
+
+		let offset = (slider.index - slider.divide);
+
+		if(slider.index <= slider.divide - slider.circleOffset){
+			slider.currentIndex = offset + slider.circleOffset + slider.amount;
+		} else if(offset + slider.circleOffset > slider.amount){
+			slider.currentIndex = offset + slider.circleOffset - slider.amount;
+		} else {
+			slider.currentIndex = offset + slider.circleOffset;
+		}
 
 		if(slider.circles){
-			slider.circles.removeClass('active');
+			slider.circles.removeClass("active");
 			let circleTarget = slider.circles.get(slider.currentIndex-1);
-			QX(circleTarget).addClass('active');
+			QX(circleTarget).addClass("active");
 		}
 
 		slider.move();
@@ -756,7 +898,7 @@ QX.slider.fn = QX.slider.prototype = {
 	},
 	move(){
 		let slider = this;
-		let posX = -slider.index*slider.slides.width();
+		let posX = -slider.index*(slider.slides.width()/this.divide);
 		slider.wrap.css({
 			transform:`translate3d(${posX}px,0,0)`,
 			webkitTransform:`translate3d(${posX}px,0,0)`
@@ -770,12 +912,12 @@ QX.slider.fn = QX.slider.prototype = {
 		let posX;
 		if(slider.index === 0){
 			slider.index = slider.amount;
-			posX = -slider.amount*slider.slides.width();
+			posX = -slider.amount*slider.slides.width()/slider.divide;
 			needGo = true;
 			
-		} else if(slider.index > slider.amount){
-			slider.index = 1;
-			posX = -slider.slides.width();
+		} else if(slider.index > slider.amount+(slider.divide-1)){
+			slider.index = slider.divide;
+			posX = -slider.index*slider.slides.width()/slider.divide;
 			needGo = true;
 		}
 		if(needGo){
@@ -785,9 +927,21 @@ QX.slider.fn = QX.slider.prototype = {
 				transform:`translate3d(${posX}px,0,0)`,
 				"webkitTransform":`translate3d(${posX}px,0,0)`
 			});
+
 			setTimeout(() => {
 				slider.slides.removeClass("drag");
 			},0);
+		}
+	},
+	destroy(){
+		let index = this.id-1;
+		if(QX.sliders.list[index]){
+			QX.sliders.list.splice(index,1);
+			let n = 1;
+			for(let i of QX.sliders.list){
+				i.id = n;
+				n++;
+			}
 		}
 	}
 };
@@ -835,11 +989,21 @@ QX.fn = {
 	},
 	over(e){
 		switch(e.type){
-			case "mouseenter": case "touchstart":
+			case "mouseenter": case "mouseover": case "touchstart":
 				QX(this).addClass("hover");
 				break;
 			case "mouseleave": case "mousecancel": case "touchend": case "touchcancel":
 				QX(this).removeClass("hover");
+				break;
+		}
+	},
+	svgOver(e){
+		switch(e.type){
+			case "mouseenter": case "touchstart":
+				QX(this).setAttr("data-hover");
+				break;
+			case "mouseleave": case "mousecancel": case "touchend": case "touchcancel":
+				QX(this).removeAttr("data-hover");
 				break;
 		}
 	},
@@ -851,14 +1015,14 @@ QX.fn = {
 			cb(item,classNames,currentClassNames);
 		}				
 	},
-	textHtml: (items,str,type='html') => {
+	textHtml: (items,str,type="html") => {
 		let i,l;
 		let get,set;
-		if(type==='html'){
-			get = 'outerHTML';
-			set = 'innerHTML';
+		if(type==="html"){
+			get = "outerHTML";
+			set = "innerHTML";
 		} else {
-			get = set = 'innerText';
+			get = set = "innerText";
 		}
 
 		if(str === false){
@@ -867,25 +1031,25 @@ QX.fn = {
 			for(i=0,l=items.length;i<l;i++){
 				items[i][set] = str;
 			}
-			return 'set';
+			return "set";
 		}
 	},
-	widthHeight: (items,value=false,type='width') => {
+	widthHeight: (items,value=false,type="width") => {
 		let i,l;
 		let get,set;
-		if(type === 'width'){
-			get = 'offsetWidth';
-			set = 'width';
+		if(type === "width"){
+			get = "offsetWidth";
+			set = "width";
 		} else {
-			get = 'offsetHeight';
-			set = 'height';
+			get = "offsetHeight";
+			set = "height";
 		}
 		if(value !== false){
 			let dim = (typeof value === "number")?"px":"";
 			for(i=0,l=items.length;i<l;i++){
 				items[i].style[set] = value+dim;
 			}
-			return 'set';
+			return "set";
 		} else {
 			return QX.fn.prop(items,get);
 		}
@@ -940,7 +1104,7 @@ QX.fn = {
 	}
 };
 
-Object.defineProperty(QXo.fn, 'length', {
+Object.defineProperty(QXo.fn, "length", {
 	get(){
 		return this.elmts.length;
 	}
