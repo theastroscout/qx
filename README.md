@@ -280,6 +280,26 @@ Change the slider to the specified one. Accepts the slide number, "prev" or "nex
 slider.goTo(index);
 ```
 
+<br/>
+<br/>
+<br/>
+
+# Gallery
+Create Fullscreen / Swap / Loop Gallery
+```html
+<link rel="stylesheet" type="text/css" href="/path_to_css/qx.min.css" />
+<div class="gallery">
+	<div data-img="path_to_img_1"></div>
+	<div data-img="path_to_img_2"></div>
+	<div data-img="path_to_img_3"></div>
+	<!-- ... -->
+	<div data-img="path_to_img_n"></div>
+</div>
+```
+```javascript
+$(".gallery > div").gallery();
+````
+
 <br />
 <br />
 <br />
