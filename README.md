@@ -21,7 +21,7 @@ $(selector) - Like JQuery. Using **querySelectorAll** [documentation](https://de
 ## Methods
 
 ### $.isTouch()
-Return True if it's Touch Device or False if not.
+Return True if it is a Touch Device or False if not.
 ```javascript
 $.isTouch();
 ```

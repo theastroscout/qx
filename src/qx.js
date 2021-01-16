@@ -66,7 +66,10 @@ QX.sliders = {
 	}
 };
 QX.isTouch = () => {
-	return QX.fn.getMobile();
+	if(QX.isTouch.state === undefined){
+		QX.isTouch.state = (doc.documentElement && "ontouchstart" in doc.documentElement);
+	}
+	return QX.isTouch.state;
 };
 QX.isPassive = () => {
 	return QX.fn.getPassive();
@@ -737,7 +740,7 @@ QX.slider.fn = QX.slider.prototype = {
 					slider.drag.wrapX = slider.wrap.getBounds().x - slider.slides.getBounds().x;
 					slider.slides.addClass("drag");
 
-					if(QX.fn.getMobile()){
+					if(QX.isTouch()){
 						win.addEventListener("touchmove",slider.drag.on,passive);
 						win.addEventListener("touchend",slider.drag.on,passive);
 						win.addEventListener("touchcancel",slider.drag.on,passive);
@@ -770,7 +773,7 @@ QX.slider.fn = QX.slider.prototype = {
 					slider = target.slider;
 
 					slider.drag.move = false;
-					if(QX.fn.getMobile()){
+					if(QX.isTouch()){
 						win.removeEventListener("touchmove",slider.drag.on,passive);
 						win.removeEventListener("touchend",slider.drag.on,passive);
 						win.removeEventListener("touchcancel",slider.drag.on,passive);
@@ -962,12 +965,6 @@ QX.ui = {
 	}
 };
 QX.fn = {
-	getMobile: () => {
-		if(typeof QX.fn.isMobile === "undefined"){
-			QX.fn.isMobile = ("ontouchstart" in document.documentElement);
-		}
-		return QX.fn.isMobile;
-	},
 	getPassive: () => {
 		// Determine passive
 		if(typeof QX.fn.isPassive === "undefined"){
@@ -985,9 +982,6 @@ QX.fn = {
 		}
 
 		return QX.fn.isPassive?{passive:false}:false;
-	},
-	isTouch: () => {
-		return ("ontouchstart" in doc.documentElement);
 	},
 	over(e){
 		switch(e.type){
