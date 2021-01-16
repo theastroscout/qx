@@ -285,7 +285,7 @@ slider.goTo(index);
 <br/>
 
 # Gallery
-Create Fullscreen / Swap / Loop Gallery
+Create Swap'n'Loop'n'Fullscreen Gallery
 ```html
 <link rel="stylesheet" type="text/css" href="/path_to_css/qx.min.css" />
 <div class="gallery">
@@ -307,7 +307,7 @@ $(".gallery > div").gallery();
 
 ## MIT License
 
-Copyright (c) 2020 HQ
+Copyright (c) HQ • [hqmode.com](https://hqmode.com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
