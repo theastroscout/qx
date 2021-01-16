@@ -1,0 +1,19 @@
+{
+  "name": "qx",
+  "version": "1.0.0",
+  "description": "Lightweight JavaScript library for manipulating with HTML",
+  "main": "qx.min.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hqdaemon/qx.git"
+  },
+  "author": "HQ • https://hqmode.com/",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hqdaemon/qx/issues"
+  },
+  "homepage": "https://github.com/hqdaemon/qx#readme"
+}
