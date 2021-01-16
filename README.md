@@ -1,5 +1,5 @@
-# qx
-Lightweight JavaScript library for manipulating with HTML
+# QX
+Lightweight JavaScript library for manipulating with HTML<br />
 Swap Slider & Swap'n'Loop'n'Fullscreen Gallery On Board
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/1564069f75eb4e6aa24faef6ea43e4be)](https://www.codacy.com/gh/hqdaemon/qx/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=hqdaemon/qx&amp;utm_campaign=Badge_Grade)
@@ -251,8 +251,8 @@ $(selector).copy();
 <br />
 
 # Loop Sliders
-Create a Adaptive Loop Slider that works on desktop and touch devices.
-To work correctly add the qx.min.css file.
+Create a Adaptive Loop Slider that works on desktop and touch devices.<br/>
+To work correctly add the qx.min.css file.<br/>
 Return an array of created sliders.
 ```html
 <link rel="stylesheet" type="text/css" href="/path_to_css/qx.min.css" />
