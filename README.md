@@ -11,6 +11,10 @@ Just add the script into your HTML
 ```html
 <script src="/path_to_script/qx.min.js"></script>
 ```
+## Or install via npm
+```
+npm install @hqdaemon/qx
+```
 <br />
 
 ## Using

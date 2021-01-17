@@ -10,7 +10,17 @@
     "type": "git",
     "url": "git+https://github.com/hqdaemon/qx.git"
   },
-  "author": "HQ • https://hqmode.com/",
+  "keywords": [
+    "DOM",
+    "HTML",
+    "swiper",
+    "slider",
+    "gallery"
+  ],
+  "author": {
+    "name": "HQ",
+    "url": "https://hqmode.com"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/hqdaemon/qx/issues"
