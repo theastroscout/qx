@@ -337,6 +337,10 @@ QXo.fn = QXo.prototype = {
 		}
 		this.each((el) => {
 			clearTimeout(el.tmo);
+			if(!el.getAttribute("data-display")){
+				let computedStyle = win.getComputedStyle(el);
+				el.setAttribute("data-display",computedStyle.display);
+			}
 			el.style.transitionProperty = "height, margin, padding, opacity";
 			el.style.transitionDuration = duration + "ms";
 			el.style.boxSizing = "border-box";
@@ -374,16 +378,10 @@ QXo.fn = QXo.prototype = {
 		}
 		this.each((el) => {
 			clearTimeout(el.tmo);
-			QX.fn.removeProps(el,["display"]);
+			el.style.display = "none";
 			let computedStyle = win.getComputedStyle(el);
-			let display = computedStyle.display;
-
-			if(display === "none"){
-				display = "block";
-			}
-
+			
 			let padding = parseInt(computedStyle.paddingTop,10) + parseInt(computedStyle.paddingBottom,10);
-
 			let opacity = computedStyle.opacity;
 
 			el.style.overflow = "hidden";
@@ -396,9 +394,15 @@ QXo.fn = QXo.prototype = {
 			el.style.boxSizing = "border-box";
 			el.style.transitionProperty = "height, margin, padding";
 			el.style.transitionDuration = duration + "ms";
-			el.style.display = display;
 
+			
+			el.style.display = "block";
 			let height = el.scrollHeight + padding;
+
+			let display = el.getAttribute("data-display");
+			if(display){
+				el.style.display = display;
+			}			
 
 			setTimeout(() => {
 				el.style.opacity = opacity;
