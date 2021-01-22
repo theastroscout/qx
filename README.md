@@ -43,9 +43,15 @@ $.isPassive();
 ```
 
 ### on(eventNames, function)
-Adding Event Listeners to elements.
+Add Event Listeners to elements.
 ```javascript
 $(selector).on(eventNames,functionName);
+```
+
+### off(eventNames, function)
+Remove Event Listeners from elements.
+```javascript
+$(selector).off(eventNames,functionName);
 ```
 
 ### click(function)
