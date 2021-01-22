@@ -101,6 +101,19 @@ QXo.fn = QXo.prototype = {
 		});
 		return this;
 	},
+	// Remove Event Listeners from elements.
+	off(events,fn){
+		let passive = QX.fn.getPassive();
+
+		// Split events list and add Event Listener for each
+		let eventsList = events.split(" ");
+		this.each((el) => {
+			for(let i=0,l=eventsList.length;i<l;i++){
+				el.removeEventListener(eventsList[i],fn,passive);
+			}
+		});
+		return this;
+	},
 	// Adding Click Or Tap Listener to elements depending on TouchScreen Device Detected.
 	click(fn){
 		let passive = QX.fn.getPassive();
@@ -446,14 +459,18 @@ QXo.fn = QXo.prototype = {
 	},
 	// Return the list of parent elements
 	parent(className=false){
-		let items = [];
+		let items = [], parentEl;
 		this.each((el) => {
 			if(className){
-				items.push(el.closest(className));
+				parentEl = el.closest(className);
+				if(parentEl){
+					items.push(parentEl);
+				}
 			} else {
 				items.push(el.parentNode);
 			}
 		});
+
 		return new QXo(items);
 	},
 	// Return the list of elements width
