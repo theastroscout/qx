@@ -1,6 +1,6 @@
 {
   "name": "@hqdaemon/qx",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Lightweight JavaScript library for manipulating with HTML",
   "main": "qx.min.js",
   "scripts": {
