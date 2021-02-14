@@ -139,7 +139,8 @@ $(selector).after(HTML);
 ```
 
 ### val(value)
-Get or Set value of inputs
+Get or Set value of inputs.
+Return typed values, e.g. (string) "1.23" becomes (float) 1.23, "true" > true and "false" > false
 ```javascript
 $(selector).val(newValue); // Set value
 $(selector).val(); // Get value
