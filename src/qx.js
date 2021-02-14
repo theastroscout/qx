@@ -265,7 +265,18 @@ QXo.fn = QXo.prototype = {
 		} else {
 			let list = [];
 			this.each((el) => {
-				list.push((el.value)?el.value:false);
+				let val = (el.value)?el.value:false;
+				if(typeof val === "string"){
+					if(!isNaN(val) && !isNaN(parseFloat(val))){
+						val = parseFloat(val,10);
+					} else {
+						let isBool = val.match(/^(true|false)$/);
+						if(isBool !== null){
+							val = (isBool[1] === "false")?false:true;
+						}
+					}
+				}
+				list.push(val);
 			});
 			if(list.length > 1){
 				return list;
