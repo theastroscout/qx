@@ -4,82 +4,68 @@ QX • Lightweight JavaScript library for manipulating with HTML
 HQ © https://hqmode.com
 
 */
+
 ((win,doc) => {
+
 function QXo(items){
 	this.elmts = items;
 }
-var QX = (selector) =>{
+
+let QX = (selector) =>{
 	if(typeof selector === "object"){
 		return new QXo([selector]);
 	}
 
 	selector = QX.fixSelector(selector);
 
-	var itemsList = [];
-	var elements = doc.querySelectorAll(selector);
-	elements.forEach((currentValue) => {
+	let itemsList = [];
+	let elements = doc.querySelectorAll(selector);
+	elements.forEach(currentValue => {
 		itemsList.push(currentValue);
 	});
 	return new QXo(itemsList);
 };
+
 QX.init = () => {
 	QX.ui.setHover();
 };
+
 QX.fixSelector = (selector) => {
 	let chunks = selector.split(",");
-	for(var i=0,l=chunks.length;i<l;i++){
+	for(let i=0,l=chunks.length;i<l;i++){
 		chunks[i] = chunks[i].trim().replace(/^>(.*)/,":scope>$1");
 	}
 	return chunks.join(",");
 };
-QX.sliders = {
-	ready: false,
-	list: [],
-	tmo: null,
-	resize: () => {
-		clearTimeout(QX.sliders.tmo);
-		QX.sliders.tmo = setTimeout(() => {
-			for(let i=0,l=QX.sliders.list.length;i<l;i++){
-				let s = QX.sliders.list[i];
-				if(s.options.break && s.options.break.length){
-					let breakOptions;
-					for(let b=0,bl=s.options.break.length;b<bl;b++){
-						let el = s.options.break[b];
-						if(el.width > window.innerWidth){
-							breakOptions = el;
-						}
-					}
-					if(typeof breakOptions === "undefined"){
-						breakOptions = s.options;
-					}
-					if(s.divide != breakOptions.view){
-						s.fixExtends(s.divide);
-						s.divide = breakOptions.view;
-						s.circleOffset = (s.divide > 1)?Math.ceil(s.divide/2):1;
-						s.extend();
-						s.target.setAttr("data-type",s.divide);
-					}
-				}
-				s.goTo(s.index);
-			}
-		},400);
-	}
-};
+
 QX.isTouch = () => {
 	if(QX.isTouch.state === undefined){
 		QX.isTouch.state = (doc.documentElement && "ontouchstart" in doc.documentElement);
 	}
 	return QX.isTouch.state;
 };
+
 QX.isPassive = () => {
 	return QX.fn.getPassive();
 };
+
 QX.isDark = () => {
 	return (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
 };
 
+/*
+
+Functions
+
+*/
+
 QXo.fn = QXo.prototype = {
-	// Get
+	/*
+
+	Get element by index
+
+	*/
+
 	get(index = false){
 		if(index === false){
 			return this.elmts;
@@ -88,60 +74,132 @@ QXo.fn = QXo.prototype = {
 		}
 		return false;
 	},
-	// Adding Event Listeners to elements.
+
+	/*
+
+	Add Event Listeners to elements
+
+	*/
+
 	on(events,fn){
 		let passive = QX.fn.getPassive();
 
 		// Split events list and add Event Listener for each
 		let eventsList = events.split(" ");
-		this.each((el) => {
+		this.each(el => {
 			for(let i=0,l=eventsList.length;i<l;i++){
 				el.addEventListener(eventsList[i],fn,passive);
 			}
 		});
 		return this;
 	},
-	// Remove Event Listeners from elements.
+
+	/*
+
+	Remove Event Listeners from elements
+
+	*/
+
 	off(events,fn){
 		let passive = QX.fn.getPassive();
 
 		// Split events list and add Event Listener for each
 		let eventsList = events.split(" ");
-		this.each((el) => {
+		this.each(el => {
 			for(let i=0,l=eventsList.length;i<l;i++){
 				el.removeEventListener(eventsList[i],fn,passive);
 			}
 		});
 		return this;
 	},
-	// Adding Click Or Tap Listener to elements depending on TouchScreen Device Detected.
+
+	/*
+
+	Add Click Listener
+
+	*/
+
 	click(fn){
 		let passive = QX.fn.getPassive();
-		this.each((el) => {
+		this.each(el => {
 			el.addEventListener("click",fn,passive);
 		});
 		return this;
 	},
-	// Adding the class name or list of class names to the element
+
+	/*
+
+	Remove Click Listener
+
+	*/
+
+	clickOff(fn){
+		let passive = QX.fn.getPassive();
+		this.each(el => {
+			el.removeEventListener("click",fn,passive);
+		});
+		return this;
+	},
+	
+	/*
+
+	Adding the class name or list of class names to the element
+
+	*/
+
 	addClass(classNames){
-		QX.fn.parseClasses(this.elmts,classNames,(item,classes,currentClassNames) => {
-			classes = Array.from(new Set([...currentClassNames,...classes])).join(" ");
-			item.className = classes;
+		classNames = classNames.toString().split(" ");
+		this.each(el => {
+			for(let className of classNames){
+				el.classList.add(className);
+			}
 		});
+
 		return this;
 	},
-	// Remove the class name or list of class names from elements classList
+
+	/*
+
+	Remove the class name or list of class names from elements classList
+
+	*/
+
 	removeClass(classNames){
-		QX.fn.parseClasses(this.elmts,classNames,(item,classes,currentClassNames) => {
-			currentClassNames = currentClassNames.filter( (el) => !classes.includes(el) );
-			item.className = currentClassNames.join(" ");
+		classNames = classNames.toString().split(" ");
+		this.each(el => {
+			for(let className of classNames){
+				el.classList.remove(className);
+			}
 		});
 		return this;
 	},
-	// Checking elements for class name available. Returning array of values if it needed.
+	
+	/*
+
+	Toggle the class name in elements classList
+
+	*/
+
+	toggleClass(className){
+		let result = [];
+		this.each(el => {
+			result.push(el.classList.toggle(className));
+		});
+		if(result.length === 1){
+			return result[0];
+		}
+		return result;
+	},
+
+	/*
+
+	Checking elements for class name available. Returning array of values if it needed.
+
+	*/
+
 	hasClass(className){
 		let checkedList = [];
-		this.each((el) => {
+		this.each(el => {
 			if(el.classList.contains(className)){
 				checkedList.push(true)
 			} else {
@@ -156,9 +214,15 @@ QXo.fn = QXo.prototype = {
 		}
 		return false;
 	},
-	// Set css to elements
+	
+	/*
+
+	Set css to elements
+
+	*/
+
 	css(css){
-		for(var i=0,l=this.elmts.length;i<l;i++){
+		for(let i=0,l=this.elmts.length;i<l;i++){
 			let item = this.elmts[i];
 			for(let c in css){
 				item.style[c] = css[c];
@@ -166,10 +230,16 @@ QXo.fn = QXo.prototype = {
 		}
 		return this;
 	},
-	// Get Attribute value of elements
+	
+	/*
+
+	Get Attribute value of elements
+
+	*/
+
 	getAttr(attrName){
 		let list = [];
-		this.each((el) => {
+		this.each(el => {
 			let attr = el.getAttribute(attrName);
 			if(attr != null){
 				attr = (attr === "")?true:attr;
@@ -184,23 +254,42 @@ QXo.fn = QXo.prototype = {
 		} else if(list.length){
 			return list[0];
 		}
+
 		return false;
 	},
-	// Set Attribute to elements
+	
+	/*
+
+	Set Attribute to elements
+
+	*/
+
 	setAttr(attrName,value=""){
 		this.each((el) => {
 			el.setAttribute(attrName,value);
 		});
 		return this;
 	},
-	// Remove Attribute from elements
+	
+	/*
+
+	Remove Elements' Attribute
+
+	*/
+
 	removeAttr(attrName){
 		this.each((el) => {
 			el.removeAttribute(attrName);
 		});
 		return this;
 	},
-	// Add a behavior that switches the class "hover" when you hover the mouse or tap on the element.
+	
+	/*
+
+	Add a behavior that switches the class "hover" when you hover the mouse or tap on the element.
+
+	*/
+
 	hover(type="default"){
 		let passive = QX.fn.getPassive();
 		let overFunction = (type === "default")?QX.fn.over:QX.fn.svgOver;
@@ -213,94 +302,117 @@ QXo.fn = QXo.prototype = {
 		});
 		return this;
 	},
-	// Removes an element from the DOM
+	
+	/*
+
+	Removes an element from the DOM
+
+	*/
+
 	remove(){
 		this.each((el) => {
 			el.parentNode.removeChild(el);
 		});
 		return true;
 	},
-	// Replace element with new HTML
+	
+	/*
+
+	Replace element with new HTML
+
+	*/
+
 	replace(html){
 		this.each((el) => {
 			el.outerHTML = html;
 		});
 		return this;
 	},
-	// Append HTML before End Of Elements
+	
+	/*
+
+	Append HTML before End Of Elements
+
+	*/
+
 	append(html){
 		this.each((el) => {
 			el.insertAdjacentHTML("beforeEnd", html);
 		});
 		return this;
 	},
-	// Insert HTML before Beging Of Elements
+	
+	/*
+
+	Insert HTML before Beging Of Elements
+
+	*/
+
 	prepend(html){
 		this.each((el) => {
 			el.insertAdjacentHTML("beforeBegin", html);
 		});
 		return this;
 	},
-	// Insert HTML After Beging Of Elements
+	
+	/*
+
+	Insert HTML After Beging Of Elements
+
+	*/
+
 	afterbegin(html){
 		this.each((el) => {
 			el.insertAdjacentHTML("afterbegin", html);
 		});
 		return this;
 	},
-	// Insert HTML after the End Of Elements
+
+	/*
+
+	Insert HTML after the End Of Elements
+
+	*/
+
 	after(html){
 		this.each((el) => {
 			el.insertAdjacentHTML("afterEnd", html);
 		});
 		return this;
 	},
-	// Get or Set value of inputs
-	val(v=false){
-		if(v !== false){
-			this.each((el) => {
-				el.value = v;
-			});
-			return this;
-		} else {
-			let list = [];
-			this.each((el) => {
-				let val = (el.value)?el.value:false;
-				if(typeof val === "string"){
-					if(!isNaN(val) && !isNaN(parseFloat(val))){
-						val = parseFloat(val,10);
-					} else {
-						let isBool = val.match(/^(true|false)$/);
-						if(isBool !== null){
-							val = (isBool[1] === "false")?false:true;
-						}
-					}
-				}
-				list.push(val);
-			});
-			if(list.length > 1){
-				return list;
-			} else if(list.length){
-				return list[0];
-			}
-			return false;
-		}
-	},
-	// Hide elements. Set display to "none".
+
+	/*
+
+	Hide elements. Set display to "none"
+
+	*/
+
 	hide(){
 		this.each((el) => {
 			el.style.display = "none";
 		});
 		return this;
 	},
-	// Show elements. Set display to "block".
+
+	/*
+
+	Show elements. Set display to "block"
+
+	*/
+
 	show(){
 		this.each((el) => {
 			el.style.display = "block";
 		});
 		return this;
 	},
-	// Get or Set plain text of elements
+
+	/*
+
+	Get or Set plain text of elements
+
+	*/
+
 	text(str=false){
 		let r = QX.fn.textHtml(this.elmts,str,"text");
 		if(r === "set"){
@@ -308,7 +420,13 @@ QXo.fn = QXo.prototype = {
 		}
 		return r;
 	},
-	// Get or Set HTML of elements
+
+	/*
+
+	Get or Set HTML of elements
+
+	*/
+
 	html(str=false){
 		let r = QX.fn.textHtml(this.elmts,str,"html");
 		if(r === "set"){
@@ -316,17 +434,35 @@ QXo.fn = QXo.prototype = {
 		}
 		return r;
 	},
-	// Fade-in element using the transparency
+
+	/*
+
+	Fade-in element using the transparency
+
+	*/
+
 	fadeIn(duration=1000, cb=false){
 		QX.fn.fadeInOut(this,duration,"fadeIn",cb);
 		return this;
 	},
-	// Fade-out element using the transparency
+
+	/*
+
+	Fade-out element using the transparency
+
+	*/
+
 	fadeOut(duration=600, cb=false){
 		QX.fn.fadeInOut(this,duration,"fadeOut",cb);
 		return this;
 	},
-	// Get or Set Width of elements
+
+	/*
+
+	Get or Set Width of elements
+
+	*/
+
 	width(value=false){
 		let r = QX.fn.widthHeight(this.elmts,value,"width");
 		if(r === "set"){
@@ -334,7 +470,13 @@ QXo.fn = QXo.prototype = {
 		}
 		return r;
 	},
-	// Get or Set Height of elements
+	
+	/*
+
+	Get or Set Height of elements
+
+	*/
+
 	height(value=false){
 		let r = QX.fn.widthHeight(this.elmts,value,"height");
 		if(r === "set"){
@@ -342,14 +484,26 @@ QXo.fn = QXo.prototype = {
 		}
 		return r;
 	},
-	// Executing function for each of elements
+
+	/*
+
+	Executing function for each of elements
+
+	*/
+
 	each(cb){
 		for(let i=0,l=this.elmts.length;i<l;i++){
 			cb(this.elmts[i]);
 		}
 		return this;
 	},
-	// Slide Up Elements and fade-out
+	
+	/*
+
+	Slide Up Elements and fade-out
+
+	*/
+
 	slideUp(duration=500, callback=false){
 		let removeOnComplete = false;
 		if(typeof duration === "function"){
@@ -392,7 +546,13 @@ QXo.fn = QXo.prototype = {
 		});
 		return this;
 	},
-	// Slide Down Elements and fade-in
+	
+	/*
+
+	Slide Down Elements and fade-in
+
+	*/
+
 	slideDown(duration=500, callback=false){
 		if(typeof duration === "string"){
 			duration = 500;
@@ -442,7 +602,13 @@ QXo.fn = QXo.prototype = {
 		})
 		return this;
 	},
-	// Returns the size and position of elements
+
+	/*
+
+	Returns the size and position of elements
+
+	*/
+
 	getBounds(){
 		let list = [];
 		this.each((el) => {
@@ -468,7 +634,13 @@ QXo.fn = QXo.prototype = {
 		}
 		return false;
 	},
-	// Return the list of parent elements
+	
+	/*
+
+	Return the list of parent elements
+
+	*/
+
 	parent(className=false){
 		let items = [], parentEl;
 		this.each((el) => {
@@ -484,7 +656,13 @@ QXo.fn = QXo.prototype = {
 
 		return new QXo(items);
 	},
-	// Return the list of elements width
+
+	/*
+
+	Return the list of elements width
+
+	*/
+
 	textWidth(){
 		let list = [];
 
@@ -510,7 +688,13 @@ QXo.fn = QXo.prototype = {
 		}
 		return false;
 	},
-	// Return Offset Top Of Elements
+
+	/*
+
+	Return Offset Top Of Elements
+
+	*/
+
 	top(){
 		let list = [];
 		this.each((el) => {
@@ -523,7 +707,13 @@ QXo.fn = QXo.prototype = {
 		}
 		return false;
 	},
-	// Find elements inside the list of selected elements
+
+	/*
+
+	Find elements inside the list of selected elements
+
+	*/
+
 	find(selector){
 		let items = [];
 		selector = QX.fixSelector(selector);
@@ -535,59 +725,26 @@ QXo.fn = QXo.prototype = {
 		});
 		return new QXo(items);
 	},
-	// Set focus at the first element of the list
+
+	/*
+
+	Set focus at the first element of the list
+
+	*/
+
 	focus(){
 		if(this.elmts.length){
 			this.elmts[0].focus();
 		}
 		return this;
 	},
-	counter(options){
-		let go = false;
-		this.each((el) => {
-			if(typeof options.count !== "object"){
-				options.count = [parseFloat(el.innerText), options.count];
-			}
-			
-			if(typeof options.duration === "undefined"){
-				options.duration = 1000;
-			}
-			var steps = options.duration/50;
-			let offset = (options.count[1] - options.count[0])/steps;
-			if(typeof options.current === "undefined"){
-				if(el.tmo){
-					clearTimeout(el.tmo);
-				}
-				options.current = options.count[0];
-			} else {
-				options.current += offset;
-			}
-			let v = options.current;
-			if(options.current >= options.count[1]){
-				v = options.count[1];
-			}
-			if(options.round){
-				v = v.toFixed(options.round);
-			}
-			if(options.mask){
-				v = options.mask.replace(/n/,v);
-			}
-			
-			if(options.current < options.count[1]){
-				go = true;
-			}
-			el.innerText = v;
-		});
 
-		if(go){
-			let that = this;
-			setTimeout(() => {
-				that.counter(options);
-			}, 50)
-		}
-		return this;
-	},
-	// Return copies of elements
+	/*
+
+	Return copies of elements
+
+	*/
+
 	copy(){
 		let list = [];
 		this.each((el) => {
@@ -599,390 +756,14 @@ QXo.fn = QXo.prototype = {
 			return list[0];
 		}
 		return false;
-	},
-	// Create slider
-	slider(options){
-		let list = [];
-		this.each((el) => {
-			let slider = new QX.slider(el,options);
-			slider.id = QX.sliders.list.length+1;
-			QX.sliders.list.push(slider);
-			list.push(slider);
-		});
-		let passive = QX.fn.getPassive();
-		if(!QX.sliders.ready){
-			win.addEventListener("resize",QX.sliders.resize,passive);
-			QX.sliders.ready = true;
-		}
-		if(list.length > 1){
-			return list;
-		} else if(list.length){
-			return list[0];
-		}
-		return false;
-	},
-	// Create Full Screen Gallery
-	gallery(){
-		let passive = QX.fn.getPassive();
-		let n = 1;
-		this.each((el) => {
-			el.setAttribute("data-index",n);
-			el.addEventListener("click",QX.gallery.init,passive);
-			n++;
-		});
-		return this;
 	}
 };
 
-// Gallery
-QX.gallery = {
-	slider: null,
-	init(){
-		let items = [];
-		let t = QX(this);
-		let itemsBlock = t.parent();
-		let index = t.getAttr("data-index");
-		itemsBlock.find(":scope > *").each((el) => {
-			let img = el.getAttribute("data-img");
-			let item = `<div class="item"><img src="${img}" alt="" /></div>`;
-			items.push(item);
-		});
-		let galleryEl = `<div id="QXGallery">
-			<div class="slider">
-				<div class="slides">
-					<div class="wrap">
-						${items.join("")}
-					</div>
-				</div>
-				<div class="nav prev"></div>
-				<div class="nav next"></div>
-				<div class="circles"></div>
-			</div>
-			<div class="close">
-				<div class="n">Close</div>
-				<div class="i"></div>
-			</div>
-		</div>`;
-		QX("body").append(galleryEl);
-		QX.gallery.slider = QX("#QXGallery>.slider").slider({index: index});
-		QX("#QXGallery>.close").hover().click(QX.gallery.close);
-	},
-	close(){
-		QX.gallery.slider.destroy();
-		QX("#QXGallery").hide().remove();
-	}
-};
+/*
 
-// Slider
-QX.slider = function(el,options={}){
-	let passive = QX.fn.getPassive();
+UI
 
-	this.target = QX(el);
-	this.target.get(0).slider = this;
-
-	this.options = options || {};
-
-	this.slides = this.target.find(".slides");
-	this.slides.get(0).slider = this;
-	
-	this.wrap = this.target.find(".slides>.wrap");
-	let wrapEl = this.wrap.get(0);
-	wrapEl.slider = this;
-	wrapEl.addEventListener("transitionend", QX.slider.fn.end, passive);
-
-	this.items = this.target.find(".slides>.wrap>.item");
-	this.amount = this.items.length;
-	this.target.addClass("qxSlider");
-	this.nav = this.target.find(".nav");
-
-	this.createCircles();
-
-	if(this.options.break && this.options.break.length){
-		let breakOptions;
-		for(let b=0,bl=this.options.break.length;b<bl;b++){
-			let el = this.options.break[b];
-			if(el.width > window.innerWidth){
-				breakOptions = el;
-			}
-		}
-		if(typeof breakOptions === "undefined"){
-			breakOptions = this.options;
-		}
-		this.divide = breakOptions.view;
-	} else {
-		this.divide = 1;
-		if(this.options.view){
-			this.divide = this.options.view;
-		}
-	}
-
-	if(this.divide > 1){
-		if(this.amount < this.divide){
-			this.divide = this.amount;
-		}
-		this.target.setAttr("data-type",this.options.view);
-
-		this.circleOffset = Math.ceil(this.divide/2);
-	} else {
-		this.circleOffset = 1;
-	}
-
-	this.options.index = this.options.index-1 || 0;
-	this.options.index = Math.min(this.options.index,this.amount);
-	this.index = this.divide+this.options.index;
-	this.currentIndex = 1+this.options.index;
-
-	this.extend();
-	this.navBind();
-	this.drag.bind(this.slides);
-
-	
-	this.goTo(this.index);
-};
-QX.slider.fn = QX.slider.prototype = {
-	drag: {
-		bind(slides){
-			let passive = QX.fn.getPassive();
-			slides = slides.get(0);
-			for(let i=0,l=QX.ui.drag.length;i<l;i++){
-				let e = QX.ui.drag[i];
-				let pass = (e === "touchstart")?{passive:true}:passive;
-				slides.addEventListener(e,slides.slider.drag.on,pass);
-			}
-		},
-		startTime: false,
-		move: false,
-		posX: 0,
-		newX: 0,
-		wrapX: 0,
-		on(e){
-			// let target = e.currentTarget;
-			let target, slider, passive, direction, posX, velocity, offsetX, percX;
-			switch(e.type){
-				case "mousedown": case "touchstart":
-					passive = QX.fn.getPassive();
-
-					win.target = target = e.currentTarget;
-					slider = target.slider;
-
-					slider.drag.startTime = new Date();
-					slider.drag.move = true;
-					slider.drag.posX = slider.drag.newX = e.clientX || e.touches[0].clientX;
-
-					slider.drag.wrapX = slider.wrap.getBounds().x - slider.slides.getBounds().x;
-					slider.slides.addClass("drag");
-
-					if(QX.isTouch()){
-						win.addEventListener("touchmove",slider.drag.on,passive);
-						win.addEventListener("touchend",slider.drag.on,passive);
-						win.addEventListener("touchcancel",slider.drag.on,passive);
-					} else {
-						win.addEventListener("mousemove",slider.drag.on,passive);
-						win.addEventListener("mouseup",slider.drag.on,passive);
-					}
-					break;
-				case "mousemove": case "touchmove":
-					target = win.target;
-					slider = target.slider;
-
-					slider.drag.newX = e.clientX || e.touches[0].clientX;
-					posX = slider.drag.wrapX + slider.drag.newX - slider.drag.posX;
-					slider.wrap.css({
-						transform:`translate3d(${posX}px,0,0)`,
-						webkitTransition:`translate3d(${posX}px,0,0)`
-					});
-
-					if(Math.abs(slider.drag.newX - slider.drag.posX) > 20){
-						slider.target.addClass("preventClick");
-					}
-
-					e.preventDefault();
-					break;
-				case "mouseup": case "touchend": case "touchcancel":
-					passive = QX.fn.getPassive();
-
-					target = win.target;
-					slider = target.slider;
-
-					slider.drag.move = false;
-					if(QX.isTouch()){
-						win.removeEventListener("touchmove",slider.drag.on,passive);
-						win.removeEventListener("touchend",slider.drag.on,passive);
-						win.removeEventListener("touchcancel",slider.drag.on,passive);
-					} else {
-						win.removeEventListener("mousemove",slider.drag.on,passive);
-						win.removeEventListener("mouseup",slider.drag.on,passive);
-					}
-					slider.slides.removeClass("drag");
-
-					velocity = (slider.drag.startTime)?new Date() - slider.drag.startTime:1000;
-
-					offsetX = slider.drag.newX - slider.drag.posX;
-					percX = Math.abs(offsetX/slider.target.width());
-					
-					if(percX > .2/slider.divide || (Math.abs(offsetX) > 20 && velocity < 100)){
-						direction = (offsetX < 0)?"next":"prev";
-					} else {
-						direction = slider.index;
-					}
-
-					slider.drag.startTime = false;
-					slider.drag.offsetX = 0;
-					slider.drag.posX = 0;
-					slider.drag.newX = 0;
-					slider.drag.wrapX = 0;
-					slider.goTo(direction);
-					e.stopPropagation();
-					delete win.target;
-					slider.target.removeClass("preventClick");
-					break;
-			}
-		}
-	},
-	navBind(){
-		this.nav.hover().click(QX.slider.fn.goTo);
-		this.nav.each((el) => {
-			el.slider = this;
-		});
-	},
-	createCircles(){
-		// Circles
-		let circlesEl = this.target.find(".circles");
-		if(circlesEl.length){
-			let circle = `<div class="i"></div>`;
-			let circles = [];
-			for(let i=0;i<this.amount;i++){
-				circles.push(circle);
-			}
-			circlesEl.html(circles.join(""));
-			this.circles = circlesEl.find(".i");
-		}
-	},
-	extend(){
-		let i,l;
-		let slider = this;
-		slider.slides.addClass("drag");
-
-		for(i=0,l=slider.divide;i<l;i++){
-			let lastEl = slider.items.get(slider.amount-1-i);
-			slider.wrap.afterbegin(lastEl.outerHTML);
-
-			let firstEl = slider.items.get(i);
-			slider.wrap.append(firstEl.outerHTML);
-		}
-
-		// let posX = -slider.slides.width();
-		let posX = -slider.index*(slider.slides.width()/this.divide);
-		slider.wrap.css({
-			transform:`translate3d(${posX}px,0,0)`,
-			webkitTransition:`translate3d(${posX}px,0,0)`
-		});
-		setTimeout(() => {
-			slider.slides.removeClass("drag");
-		},0);
-	},
-	fixExtends(divide){
-		let slider = this;
-		slider.slides.addClass("drag");
-		let n = 0;
-		slider.wrap.find(".item").each((el) => {
-			if(n < divide || n >= divide + slider.amount){
-				QX(el).remove();
-			}
-			n++;
-		});
-	},
-	goTo(target){
-		let slider, index;
-		if(typeof target === "object"){
-			let t = target.currentTarget;
-			slider = t.slider;
-			index = (QX(t).hasClass("prev"))?"prev":"next";
-			target.preventDefault();
-			target.stopPropagation();
-		} else {
-			slider = this;
-			index = target;
-		}
-		if(typeof index === "number"){
-			// index = 
-		} else if(index === "prev"){
-			index = slider.index - 1;
-		} else if(index === "next"){
-			index = slider.index + 1;
-		}
-
-		slider.index = index;
-
-		let offset = (slider.index - slider.divide);
-
-		if(slider.index <= slider.divide - slider.circleOffset){
-			slider.currentIndex = offset + slider.circleOffset + slider.amount;
-		} else if(offset + slider.circleOffset > slider.amount){
-			slider.currentIndex = offset + slider.circleOffset - slider.amount;
-		} else {
-			slider.currentIndex = offset + slider.circleOffset;
-		}
-
-		if(slider.circles){
-			slider.circles.removeClass("active");
-			let circleTarget = slider.circles.get(slider.currentIndex-1);
-			QX(circleTarget).addClass("active");
-		}
-
-		slider.move();
-		return true;
-	},
-	move(){
-		let slider = this;
-		let posX = -slider.index*(slider.slides.width()/this.divide);
-		slider.wrap.css({
-			transform:`translate3d(${posX}px,0,0)`,
-			webkitTransform:`translate3d(${posX}px,0,0)`
-		});
-	},
-	end(e){
-		let t = e.currentTarget;
-		e.stopPropagation();
-		let slider = t.slider;
-		let needGo = false;
-		let posX;
-		if(slider.index === 0){
-			slider.index = slider.amount;
-			posX = -slider.amount*slider.slides.width()/slider.divide;
-			needGo = true;
-			
-		} else if(slider.index > slider.amount+(slider.divide-1)){
-			slider.index = slider.divide;
-			posX = -slider.index*slider.slides.width()/slider.divide;
-			needGo = true;
-		}
-		if(needGo){
-			slider.slides.addClass("drag");
-			
-			slider.wrap.css({
-				transform:`translate3d(${posX}px,0,0)`,
-				"webkitTransform":`translate3d(${posX}px,0,0)`
-			});
-
-			setTimeout(() => {
-				slider.slides.removeClass("drag");
-			},0);
-		}
-	},
-	destroy(){
-		let index = this.id-1;
-		if(QX.sliders.list[index]){
-			QX.sliders.list.splice(index,1);
-			let n = 1;
-			for(let i of QX.sliders.list){
-				i.id = n;
-				n++;
-			}
-		}
-	}
-};
-
+*/
 
 QX.ui = {
 	hoverEvents: {
@@ -996,6 +777,13 @@ QX.ui = {
 		}
 	}
 };
+
+/*
+
+Functions
+
+*/
+
 QX.fn = {
 	getPassive: () => {
 		// Determine passive
@@ -1018,10 +806,10 @@ QX.fn = {
 	over(e){
 		switch(e.type){
 			case "mouseenter": case "mouseover": case "touchstart":
-				QX(this).addClass("hover");
+				this.classList.add("hover");
 				break;
 			case "mouseleave": case "mousecancel": case "touchend": case "touchcancel":
-				QX(this).removeClass("hover");
+				this.classList.remove("hover");
 				break;
 		}
 	},
@@ -1034,14 +822,6 @@ QX.fn = {
 				QX(this).removeAttr("data-hover");
 				break;
 		}
-	},
-	parseClasses: (items,classNames,cb) => {
-		classNames = classNames.split(" ");
-		for(var i=0,l=items.length;i<l;i++){
-			let item = items[i];
-			let currentClassNames = (item.className.length)?item.className.split(/\s+/):[];
-			cb(item,classNames,currentClassNames);
-		}				
 	},
 	textHtml: (items,str,type="html") => {
 		let i,l;
@@ -1094,13 +874,27 @@ QX.fn = {
 		}
 		return false;
 	},
+
+	/*
+
+	Remove Properties
+
+	*/
+	
 	removeProps: (target,props=[]) => {
 		for(let i=0,l=props.length;i<l;i++){
 			target.style.removeProperty(props[i]);
 		}
 	},
+
+	/*
+
+	Fade Out
+
+	*/
+
 	fadeInOut: (target,duration,type="fadeIn",cb) => {
-		target.each((el) => {
+		target.each(el => {
 			el.style.removeProperty("display");
 			let computedStyle = win.getComputedStyle(el);
 			let display = computedStyle.display;
@@ -1132,11 +926,55 @@ QX.fn = {
 	}
 };
 
+/*
+
+Get Length of Elements
+
+*/
+
 Object.defineProperty(QXo.fn, "length", {
 	get(){
 		return this.elmts.length;
 	}
 });
+
+/*
+
+Get value
+
+*/
+
+Object.defineProperty(QXo.fn, "value", {
+	get(){
+		let values = [];
+		this.each(el => {
+			values.push(el.value);
+		});
+
+		if(values.length === 1){
+			return values[0];
+		} else if(values.length){
+			return values;
+		}
+		return false;
+	}
+});
+
+/*
+
+Set Dataset
+
+*/
+
+Object.defineProperty(QXo.fn, "dataset", {
+	get(){
+		if(this.elmts.length > 1){
+			return this.elmts[0].dataset;
+		}
+		return this.elmts[0].dataset;
+	}
+});
+
 QX.init();
 win.$ = QX;
 })(window,document);
