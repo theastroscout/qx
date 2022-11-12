@@ -1,7 +1,7 @@
 /*
 
 QX • Lightweight JavaScript library for manipulating with HTML
-HQ © https://hqmode.com
+Alexander Yermolenko © https://surfy.one
 
 */
 
