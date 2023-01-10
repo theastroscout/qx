@@ -1,7 +1,7 @@
 /*
 
 QX • Lightweight JavaScript library for manipulating with HTML
-Alexander Yermolenko © https://surfy.one
+HQ © https://hqmode.com
 
 */
 
@@ -935,6 +935,40 @@ Get Length of Elements
 Object.defineProperty(QXo.fn, "length", {
 	get(){
 		return this.elmts.length;
+	}
+});
+
+
+Object.defineProperty(QXo.fn, "scrollWidth", {
+	get(){
+		let values = [];
+		this.each(el => {
+			values.push(el.scrollWidth);
+		});
+
+		if(values.length === 1){
+			return values[0];
+		} else if(values.length){
+			return values;
+		}
+		return false;
+	}
+});
+
+
+Object.defineProperty(QXo.fn, "scrollHeight", {
+	get(){
+		let values = [];
+		this.each(el => {
+			values.push(el.scrollHeight);
+		});
+
+		if(values.length === 1){
+			return values[0];
+		} else if(values.length){
+			return values;
+		}
+		return false;
 	}
 });
 
