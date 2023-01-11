@@ -42,6 +42,18 @@ QX.fixSelector = (selector) => {
 
 /*
 
+Functions List
+
+*/
+
+let fnList = {
+	isTouch: 'Return True if it is a Touch Device or False if not.',
+	isPassive: 'Return {passive:false} if Passive is available or False if not',
+	isDark: 'Return True if the Client uses Dark Mode or False if not'
+};
+
+/*
+
 UI
 
 */
@@ -243,7 +255,7 @@ QXo.fn = QXo.prototype = {
 			for(let c in css){
 				el.style[c] = css[c];
 			}
-		}
+		});
 
 		return this;
 	},
@@ -820,6 +832,7 @@ QX.fn = {
 
 		return QX.fn.isPassive?{passive:false}:false;
 	},
+
 	over(e){
 		switch(e.type){
 			case 'mouseenter': case 'mouseover': case 'touchstart':
@@ -830,6 +843,7 @@ QX.fn = {
 				break;
 		}
 	},
+
 	svgOver(e){
 		switch(e.type){
 			case 'mouseenter': case 'touchstart':
@@ -840,6 +854,7 @@ QX.fn = {
 				break;
 		}
 	},
+
 	textHtml: (items,str,type='html') => {
 		let i,l;
 		let get,set;
@@ -859,6 +874,7 @@ QX.fn = {
 			return 'set';
 		}
 	},
+
 	widthHeight: (items,value=false,type='width') => {
 		let i,l;
 		let get,set;
@@ -1034,6 +1050,37 @@ Object.defineProperty(QXo.fn, 'dataset', {
 		return this;
 	}
 });
+
+/*
+
+Helper
+
+*/
+
+let helper = {
+	get(target, key){
+		
+		if(key === 'list'){
+			return fnList;
+		}
+
+		if (typeof target[key] === 'object' && target[key] !== null) {
+			return new Proxy(target[key], validator)
+		} else {
+			return target[key];
+		}
+	},
+	set(target, key, value){
+		target[key] = value;
+		return true
+	},
+	deleteProperty(target,key){
+		delete target[key];
+		return true;
+	}
+};
+
+QX.help = new Proxy(fnList, helper)
 
 QX.init();
 win.$ = QX;
