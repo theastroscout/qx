@@ -39,6 +39,12 @@ QX.fixSelector = (selector) => {
 	return chunks.join(',');
 };
 
+/*
+
+UI
+
+*/
+
 QX.isTouch = () => {
 	if(QX.isTouch.state === undefined){
 		QX.isTouch.state = (doc.documentElement && 'ontouchstart' in doc.documentElement);
@@ -61,6 +67,7 @@ Functions
 */
 
 QXo.fn = QXo.prototype = {
+
 	/*
 
 	Get element by index
@@ -1007,6 +1014,15 @@ Object.defineProperty(QXo.fn, 'dataset', {
 			return this.elmts[0].dataset;
 		}
 		return this.elmts[0].dataset;
+	},
+
+	set(data){
+		this.each(el => {
+			for(let key in data){
+				el.dataset[key] = data[key];
+			}
+		});
+		return this;
 	}
 });
 

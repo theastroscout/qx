@@ -24,6 +24,8 @@ $(selector) - Like JQuery. Using **querySelectorAll** [documentation](https://de
 
 ## Methods
 
+## UI
+
 ### $.isTouch()
 Return True if it is a Touch Device or False if not.
 ```javascript
@@ -42,6 +44,8 @@ Return {passive:false} if Passive is available or False if not
 $.isPassive();
 ```
 
+## Listeners
+
 ### on(eventNames, function)
 Add Event Listeners to elements.
 ```javascript
@@ -59,6 +63,8 @@ Adding Click Or Tap Listener to elements depending on TouchScreen Device Detecte
 ```javascript
 $(selector).click(functionName);
 ```
+
+## Classes
 
 ### addClass(classNames)
 Adding the class name or list of class names to the element.
@@ -108,6 +114,8 @@ Add a behavior that switches the class "hover" when you hover the mouse or tap o
 $(selector).hover();
 ```
 
+## DOM
+
 ### remove()
 Removes an element from the DOM
 ```javascript
@@ -138,6 +146,8 @@ Insert HTML after the End Of Elements
 $(selector).after(HTML);
 ```
 
+## Properties
+
 ### val(value)
 Get or Set value of inputs.
 Return typed values, e.g. (string) "1.23" becomes (float) 1.23, "true" > true and "false" > false
@@ -145,6 +155,8 @@ Return typed values, e.g. (string) "1.23" becomes (float) 1.23, "true" > true an
 $(selector).val(newValue); // Set value
 $(selector).val(); // Get value
 ```
+
+## UI
 
 ### hide()
 Hide elements. Set display to "none".
@@ -171,6 +183,9 @@ Get or Set HTML of elements
 $(selector).html(newHtml); // Set HTML inner elements
 $(selector).html(); // Get Outer HTML
 ```
+
+## UI
+
 
 ### fadeIn(duration, callback)
 Fade-in element using the transparency.
@@ -254,6 +269,24 @@ $(selector).focus();
 Return deep copies of elements
 ```javascript
 $(selector).copy();
+```
+
+## Dataset
+
+### dataset
+Get and Set dataset properties
+```javascript
+
+// Set
+$(selector).dataset = {var1: 1, var2: 2};
+
+// Get
+$(selector).dataset.var1;
+
+// Delete
+delete $(selector).dataset.var1;
+
+
 ```
 
 <br />
