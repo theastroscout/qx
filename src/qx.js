@@ -24,6 +24,7 @@ let QX = (selector) =>{
 	elements.forEach(currentValue => {
 		itemsList.push(currentValue);
 	});
+
 	return new QXo(itemsList);
 };
 
@@ -108,7 +109,7 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	off(events,fn){
+	off(events, fn){
 		let passive = QX.fn.getPassive();
 
 		// Split events list and add Event Listener for each
@@ -174,11 +175,13 @@ QXo.fn = QXo.prototype = {
 
 	removeClass(classNames){
 		classNames = classNames.toString().split(' ');
+
 		this.each(el => {
 			for(let className of classNames){
 				el.classList.remove(className);
 			}
 		});
+
 		return this;
 	},
 	
@@ -190,12 +193,15 @@ QXo.fn = QXo.prototype = {
 
 	toggleClass(className){
 		let result = [];
+
 		this.each(el => {
 			result.push(el.classList.toggle(className));
 		});
+
 		if(result.length === 1){
 			return result[0];
 		}
+
 		return result;
 	},
 
@@ -207,6 +213,7 @@ QXo.fn = QXo.prototype = {
 
 	hasClass(className){
 		let checkedList = [];
+
 		this.each(el => {
 			if(el.classList.contains(className)){
 				checkedList.push(true)
@@ -220,22 +227,24 @@ QXo.fn = QXo.prototype = {
 		} else if(checkedList[0]){
 			return true;
 		}
+
 		return false;
 	},
 	
 	/*
 
-	Set css to elements
+	Set CSS to elements
 
 	*/
 
 	css(css){
-		for(let i=0,l=this.elmts.length;i<l;i++){
-			let item = this.elmts[i];
+
+		this.each(el => {
 			for(let c in css){
-				item.style[c] = css[c];
+				el.style[c] = css[c];
 			}
 		}
+
 		return this;
 	},
 	
