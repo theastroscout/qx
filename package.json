@@ -1,6 +1,6 @@
 {
-  "name": "@hqdaemon/qx",
-  "version": "1.0.8",
+  "name": "@surfy/qx",
+  "version": "1.0.1",
   "description": "Lightweight JavaScript library for manipulating with HTML",
   "main": "qx.min.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hqdaemon/qx.git"
+    "url": "git+https://github.com/theastroscout/qx.git"
   },
   "keywords": [
     "DOM",
@@ -18,12 +18,12 @@
     "gallery"
   ],
   "author": {
-    "name": "Alexander",
+    "name": "Alexander Yermolenko",
     "url": "https://surfy.one"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/hqdaemon/qx/issues"
+    "url": "https://github.com/theastroscout/qx/issues"
   },
-  "homepage": "https://github.com/hqdaemon/qx#readme"
+  "homepage": "https://github.com/theastroscout/qx#readme"
 }

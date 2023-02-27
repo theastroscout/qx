@@ -1,3 +1,3 @@
 global.window = {};
 global.document = {};
-require("../src/qx.js");
+require('../src/qx.js');
