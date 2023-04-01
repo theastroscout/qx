@@ -291,65 +291,10 @@ delete $(selector).dataset.var1;
 
 <br />
 <br />
-<br />
-
-# Loop Sliders
-Create a Adaptive Loop Slider that works on desktop and touch devices.<br/>
-To work correctly add the qx.min.css file.<br/>
-Return an array of created sliders.
-```html
-<link rel="stylesheet" type="text/css" href="/path_to_css/qx.min.css" />
-<div class="slider">
-	<div class="slides">
-		<div class="wrap">
-			<div class="item">1</div>
-			<div class="item">2</div>
-			<div class="item">3</div>
-			<div class="item">4</div>
-		</div>
-	</div>
-	<div class="circles"></div>
-	<div class="nav prev">◀</div>
-	<div class="nav next">▶</div>
-</div>
-```
-```javascript
-let sliders = $(".slider").slider();
-let slider = sliders[0];
-// Return [QX.slider]
-```
-### slider.goTo()
-Change the slider to the specified one. Accepts the slide number, "prev" or "next" values.
-```javascript
-slider.goTo(index);
-```
-
-<br/>
-<br/>
-<br/>
-
-# Gallery
-Create Swap'n'Loop'n'Fullscreen Gallery
-```html
-<link rel="stylesheet" type="text/css" href="/path_to_css/qx.min.css" />
-<div class="gallery">
-	<div data-img="path_to_img_1"></div>
-	<div data-img="path_to_img_2"></div>
-	<div data-img="path_to_img_3"></div>
-	<!-- ... -->
-	<div data-img="path_to_img_n"></div>
-</div>
-```
-```javascript
-$(".gallery > div").gallery();
-````
-
-<br />
-<br />
 
 ## MIT License
 
-Copyright (c) Alexander Yermolenko • [surfy.one](https://surfy.one)
+Alexander Yermolenko • [surfy.one](https://surfy.one)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
