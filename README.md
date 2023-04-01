@@ -13,7 +13,7 @@ Just add the script into your HTML
 ```
 ## Or install via npm
 ```
-npm install @hqdaemon/qx
+npm install @surfy/qx
 ```
 <br />
 
