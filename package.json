@@ -1,6 +1,6 @@
 {
   "name": "@surfy/qx",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Lightweight JavaScript library for manipulating with HTML",
   "main": "qx.min.js",
   "scripts": {

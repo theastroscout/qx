@@ -12,7 +12,7 @@ function QXo(items){
 	this.elmts = items;
 }
 
-let QX = (selector) =>{
+let QX = selector =>{
 	if(typeof selector === 'object'){
 		return new QXo([selector]);
 	}
@@ -32,7 +32,7 @@ QX.init = () => {
 	QX.ui.setHover();
 };
 
-QX.fixSelector = (selector) => {
+QX.fixSelector = selector => {
 	let chunks = selector.split(',');
 	for(let i=0,l=chunks.length;i<l;i++){
 		chunks[i] = chunks[i].trim().replace(/^>(.*)/,':scope>$1');
@@ -271,7 +271,7 @@ QXo.fn = QXo.prototype = {
 		this.each(el => {
 			let attr = el.getAttribute(attrName);
 			if(attr != null){
-				attr = (attr === '')?true:attr;
+				attr = (attr === '') ? true : attr;
 			} else if(attr === null){
 				attr = false;
 			}
@@ -293,10 +293,12 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	setAttr(attrName,value=''){
-		this.each((el) => {
+	setAttr(attrName, value=''){
+		
+		this.each(el => {
 			el.setAttribute(attrName,value);
 		});
+
 		return this;
 	},
 	
@@ -307,9 +309,11 @@ QXo.fn = QXo.prototype = {
 	*/
 
 	removeAttr(attrName){
-		this.each((el) => {
+
+		this.each(el => {
 			el.removeAttribute(attrName);
 		});
+
 		return this;
 	},
 	
@@ -321,14 +325,18 @@ QXo.fn = QXo.prototype = {
 
 	hover(type='default'){
 		let passive = QX.fn.getPassive();
-		let overFunction = (type === 'default')?QX.fn.over:QX.fn.svgOver;
-		this.each((el) => {
-			for(let i=0,l=QX.ui.hover.length;i<l;i++){
+		let overFunction = (type === 'default') ? QX.fn.over: QX.fn.svgOver;
+
+		this.each(el => {
+
+			for(let i=0, l=QX.ui.hover.length; i<l; i++){
 				let e = QX.ui.hover[i];
-				let pass = (e === 'touchstart')?{passive:true}:passive;
-				el.addEventListener(e,overFunction,pass);
+				let pass = (e === 'touchstart') ? { passive: true } : passive;
+				el.addEventListener(e, overFunction, pass);
 			}
+
 		});
+
 		return this;
 	},
 	
@@ -339,9 +347,10 @@ QXo.fn = QXo.prototype = {
 	*/
 
 	remove(){
-		this.each((el) => {
+		this.each(el => {
 			el.parentNode.removeChild(el);
 		});
+
 		return true;
 	},
 	
@@ -352,9 +361,10 @@ QXo.fn = QXo.prototype = {
 	*/
 
 	replace(html){
-		this.each((el) => {
+		this.each(el => {
 			el.outerHTML = html;
 		});
+
 		return this;
 	},
 	
@@ -365,9 +375,10 @@ QXo.fn = QXo.prototype = {
 	*/
 
 	append(html){
-		this.each((el) => {
+		this.each(el => {
 			el.insertAdjacentHTML('beforeEnd', html);
 		});
+
 		return this;
 	},
 	
@@ -378,9 +389,10 @@ QXo.fn = QXo.prototype = {
 	*/
 
 	prepend(html){
-		this.each((el) => {
+		this.each(el => {
 			el.insertAdjacentHTML('beforeBegin', html);
 		});
+
 		return this;
 	},
 	
@@ -391,9 +403,10 @@ QXo.fn = QXo.prototype = {
 	*/
 
 	afterbegin(html){
-		this.each((el) => {
+		this.each(el => {
 			el.insertAdjacentHTML('afterbegin', html);
 		});
+
 		return this;
 	},
 
@@ -404,9 +417,10 @@ QXo.fn = QXo.prototype = {
 	*/
 
 	after(html){
-		this.each((el) => {
+		this.each(el => {
 			el.insertAdjacentHTML('afterEnd', html);
 		});
+
 		return this;
 	},
 
@@ -417,9 +431,10 @@ QXo.fn = QXo.prototype = {
 	*/
 
 	hide(){
-		this.each((el) => {
+		this.each(el => {
 			el.style.display = 'none';
 		});
+
 		return this;
 	},
 
@@ -430,9 +445,10 @@ QXo.fn = QXo.prototype = {
 	*/
 
 	show(){
-		this.each((el) => {
+		this.each(el => {
 			el.style.display = 'block';
 		});
+
 		return this;
 	},
 
@@ -443,10 +459,11 @@ QXo.fn = QXo.prototype = {
 	*/
 
 	text(str=false){
-		let r = QX.fn.textHtml(this.elmts,str,'text');
+		let r = QX.fn.textHtml(this.elmts, str, 'text');
 		if(r === 'set'){
 			return this;
 		}
+
 		return r;
 	},
 
@@ -457,10 +474,11 @@ QXo.fn = QXo.prototype = {
 	*/
 
 	html(str=false){
-		let r = QX.fn.textHtml(this.elmts,str,'html');
+		let r = QX.fn.textHtml(this.elmts, str, 'html');
 		if(r === 'set'){
 			return this;
 		}
+
 		return r;
 	},
 
@@ -471,7 +489,7 @@ QXo.fn = QXo.prototype = {
 	*/
 
 	fadeIn(duration=1000, cb=false){
-		QX.fn.fadeInOut(this,duration,'fadeIn',cb);
+		QX.fn.fadeInOut(this, duration, 'fadeIn', cb);
 		return this;
 	},
 
@@ -482,7 +500,7 @@ QXo.fn = QXo.prototype = {
 	*/
 
 	fadeOut(duration=600, cb=false){
-		QX.fn.fadeInOut(this,duration,'fadeOut',cb);
+		QX.fn.fadeInOut(this, duration, 'fadeOut', cb);
 		return this;
 	},
 
@@ -493,7 +511,7 @@ QXo.fn = QXo.prototype = {
 	*/
 
 	width(value=false){
-		let r = QX.fn.widthHeight(this.elmts,value,'width');
+		let r = QX.fn.widthHeight(this.elmts, value, 'width');
 		if(r === 'set'){
 			return this;
 		}
@@ -507,10 +525,11 @@ QXo.fn = QXo.prototype = {
 	*/
 
 	height(value=false){
-		let r = QX.fn.widthHeight(this.elmts,value,'height');
+		let r = QX.fn.widthHeight(this.elmts, value, 'height');
 		if(r === 'set'){
 			return this;
 		}
+
 		return r;
 	},
 
@@ -521,7 +540,7 @@ QXo.fn = QXo.prototype = {
 	*/
 
 	each(cb){
-		for(let i=0,l=this.elmts.length;i<l;i++){
+		for(let i=0, l=this.elmts.length; i<l; i++){
 			cb(this.elmts[i]);
 		}
 		return this;
@@ -535,6 +554,7 @@ QXo.fn = QXo.prototype = {
 
 	slideUp(duration=500, callback=false){
 		let removeOnComplete = false;
+
 		if(typeof duration === 'function'){
 			callback = duration;
 			duration = 500;
@@ -542,12 +562,16 @@ QXo.fn = QXo.prototype = {
 			removeOnComplete = true;
 			duration = 500;
 		}
-		this.each((el) => {
+
+		this.each(el => {
+
 			clearTimeout(el.tmo);
+
 			if(!el.getAttribute('data-display')){
 				let computedStyle = win.getComputedStyle(el);
 				el.setAttribute('data-display',computedStyle.display);
 			}
+
 			el.style.transitionProperty = 'height, margin, padding, opacity';
 			el.style.transitionDuration = duration + 'ms';
 			el.style.boxSizing = 'border-box';
@@ -561,18 +585,23 @@ QXo.fn = QXo.prototype = {
 				el.style.paddingBottom = 0;
 				el.style.marginTop = 0;
 				el.style.marginBottom = 0;
-			},50);
+			}, 50);
+
 			el.tmo = setTimeout( () => {
 				el.style.display = 'none';
 				QX.fn.removeProps(el,['opacity','box-sizing','height','padding-top','padding-bottom','margin-top','margin-bottom','overflow','transition-duration','transition-property']);
+				
 				if(callback){
 					callback(el);
 				}
+
 				if(removeOnComplete){
 					el.parentNode.removeChild(el);
 				}
-			}, duration+50);
+
+			}, duration + 50);
 		});
+
 		return this;
 	},
 	
@@ -589,7 +618,7 @@ QXo.fn = QXo.prototype = {
 			callback = duration;
 			duration = 500;
 		}
-		this.each((el) => {
+		this.each(el => {
 			clearTimeout(el.tmo);
 			el.style.display = 'none';
 			let computedStyle = win.getComputedStyle(el);
@@ -622,12 +651,15 @@ QXo.fn = QXo.prototype = {
 				el.style.height = height + 'px';
 				QX.fn.removeProps(el,['padding-top','padding-bottom','margin-top','margin-bottom']);
 			}, 50);
+
 			el.tmo = setTimeout( () => {
 				QX.fn.removeProps(el,['opacity','box-sizing','height','overflow','transition-duration','transition-property']);
+
 				if(callback){
 					callback(el);
 				}
-			}, duration+50);
+
+			}, duration + 50);
 		})
 		return this;
 	},
@@ -640,7 +672,8 @@ QXo.fn = QXo.prototype = {
 
 	getBounds(){
 		let list = [];
-		this.each((el) => {
+
+		this.each(el => {
 			let bound = {};
 			if ('getBoundingClientRect' in el){
 				bound = el.getBoundingClientRect();
@@ -654,13 +687,16 @@ QXo.fn = QXo.prototype = {
 				bound.width = el.offsetWidth;
 				bound.height = el.offsetHeight;
 			}
+
 			list.push(bound);
 		});
+
 		if(list.length > 1){
 			return list;
 		} else if(list.length){
 			return list[0];
 		}
+
 		return false;
 	},
 	
@@ -672,7 +708,8 @@ QXo.fn = QXo.prototype = {
 
 	parent(className=false){
 		let items = [], parentEl;
-		this.each((el) => {
+		this.each(el => {
+
 			if(className){
 				parentEl = el.closest(className);
 				if(parentEl){
@@ -681,6 +718,7 @@ QXo.fn = QXo.prototype = {
 			} else {
 				items.push(el.parentNode);
 			}
+
 		});
 
 		return new QXo(items);
@@ -695,7 +733,7 @@ QXo.fn = QXo.prototype = {
 	textWidth(){
 		let list = [];
 
-		this.each((el) => {
+		this.each(el => {
 			let str = el.innerText;
 			let text = doc.createElement('span');
 			let computedStyle = win.getComputedStyle(el);
@@ -715,6 +753,7 @@ QXo.fn = QXo.prototype = {
 		} else if(list.length){
 			return list[0];
 		}
+
 		return false;
 	},
 
@@ -726,14 +765,17 @@ QXo.fn = QXo.prototype = {
 
 	top(){
 		let list = [];
+
 		this.each((el) => {
 			list.push(el.offsetTop);
 		});
+
 		if(list.length > 1){
 			return list;
 		} else if(list.length){
 			return list[0];
 		}
+
 		return false;
 	},
 
@@ -746,12 +788,14 @@ QXo.fn = QXo.prototype = {
 	find(selector){
 		let items = [];
 		selector = QX.fixSelector(selector);
-		this.each((el) => {
+
+		this.each(el => {
 			let elmts = el.querySelectorAll(selector);
-			elmts.forEach((currentValue) => {
+			elmts.forEach(currentValue => {
 				items.push(currentValue);
 			});
 		});
+
 		return new QXo(items);
 	},
 
@@ -776,14 +820,16 @@ QXo.fn = QXo.prototype = {
 
 	copy(){
 		let list = [];
-		this.each((el) => {
+		this.each(el => {
 			list.push(el.cloneNode(true));
 		});
+
 		if(list.length > 1){
 			return list;
 		} else if(list.length){
 			return list[0];
 		}
+
 		return false;
 	}
 };
@@ -795,16 +841,20 @@ UI
 */
 
 QX.ui = {
+
 	hoverEvents: {
 		desktop: ['mouseenter', 'mouseleave', 'mousecancel'],
 		touch: ['touchstart', 'touchend', 'touchcancel']
 	},
+
 	drag: ['mousedown','touchstart'],
+
 	setHover: () => {
 		if(typeof QX.ui.hover === 'undefined'){
-			QX.ui.hover = (QX.isTouch())?QX.ui.hoverEvents.touch:QX.ui.hoverEvents.desktop;
+			QX.ui.hover = QX.isTouch() ? QX.ui.hoverEvents.touch : QX.ui.hoverEvents.desktop;
 		}
 	}
+
 };
 
 /*
@@ -818,6 +868,7 @@ QX.fn = {
 		// Determine passive
 		if(typeof QX.fn.isPassive === 'undefined'){
 			QX.fn.isPassive = false;
+
 			try {
 				Object.defineProperty({}, 'passive', {
 					get: () => {
@@ -866,18 +917,19 @@ QX.fn = {
 		}
 
 		if(str === false){
-			return QX.fn.prop(items,get);
+			return QX.fn.prop(items, get);
 		} else {
-			for(i=0,l=items.length;i<l;i++){
+			for(i=0, l=items.length; i<l; i++){
 				items[i][set] = str;
 			}
 			return 'set';
 		}
 	},
 
-	widthHeight: (items,value=false,type='width') => {
-		let i,l;
-		let get,set;
+	widthHeight: (items, value=false, type='width') => {
+		let i, l;
+		let get, set;
+
 		if(type === 'width'){
 			get = 'offsetWidth';
 			set = 'width';
@@ -885,9 +937,10 @@ QX.fn = {
 			get = 'offsetHeight';
 			set = 'height';
 		}
+
 		if(value !== false){
-			let dim = (typeof value === 'number')?'px':'';
-			for(i=0,l=items.length;i<l;i++){
+			let dim = typeof value === 'number' ? 'px' : '';
+			for(i=0, l=items.length; i<l; i++){
 				items[i].style[set] = value+dim;
 			}
 			return 'set';
@@ -895,16 +948,18 @@ QX.fn = {
 			return QX.fn.prop(items,get);
 		}
 	},
-	prop: (items,get) => {
+	prop: (items, get) => {
 		let list = [];
-		for(let i=0,l=items.length;i<l;i++){
+		for(let i=0, l=items.length; i<l; i++){
 			list.push(items[i][get]);
 		}
+
 		if(list.length > 1){
 			return list;
 		} else if(list.length){
 			return list[0];
 		}
+
 		return false;
 	},
 
@@ -914,8 +969,8 @@ QX.fn = {
 
 	*/
 	
-	removeProps: (target,props=[]) => {
-		for(let i=0,l=props.length;i<l;i++){
+	removeProps: (target, props=[]) => {
+		for(let i=0, l=props.length; i<l; i++){
 			target.style.removeProperty(props[i]);
 		}
 	},
@@ -926,22 +981,23 @@ QX.fn = {
 
 	*/
 
-	fadeInOut: (target,duration,type='fadeIn',cb) => {
+	fadeInOut: (target, duration, type='fadeIn', cb) => {
+
 		target.each(el => {
 			el.style.removeProperty('display');
 			let computedStyle = win.getComputedStyle(el);
 			let display = computedStyle.display;
 
-			if (display === 'none'){
+			if(display === 'none'){
 				display = 'block';
 			}
 
-			el.style.opacity = (type==='fadeOut')?1:0;
+			el.style.opacity = type === 'fadeOut' ? 1 : 0;
 			el.style.display = display;
 
 			setTimeout(() => {
 				el.style.transition = `opacity ${duration}ms`;
-				el.style.opacity = (type==='fadeOut')?0:1;
+				el.style.opacity = type === 'fadeOut' ? 0 : 1;
 			}, 10);
 			
 			win.setTimeout(() => {
@@ -949,6 +1005,7 @@ QX.fn = {
 				if(type==='fadeIn'){
 					r.push('opacity');
 				}
+
 				QX.fn.removeProps(el,r)
 
 				if(typeof cb === 'function'){
@@ -1058,6 +1115,7 @@ Helper
 */
 
 let helper = {
+
 	get(target, key){
 		
 		if(key === 'list'){
@@ -1070,10 +1128,12 @@ let helper = {
 			return target[key];
 		}
 	},
+
 	set(target, key, value){
 		target[key] = value;
 		return true
 	},
+
 	deleteProperty(target,key){
 		delete target[key];
 		return true;
@@ -1084,4 +1144,5 @@ QX.help = new Proxy(fnList, helper)
 
 QX.init();
 win.$ = QX;
+
 })(window,document);
