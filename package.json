@@ -4,7 +4,8 @@
   "description": "Lightweight JavaScript library for manipulating with HTML",
   "main": "qx.min.js",
   "scripts": {
-    "test": "node test/app"
+    "test": "node test/app",
+    "build": "minify src/qx.js > qx.min.js"
   },
   "repository": {
     "type": "git",
