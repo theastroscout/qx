@@ -695,19 +695,38 @@ QXo.fn = QXo.prototype = {
 		let list = [];
 
 		this.each(el => {
-			let bound = {};
+			let bound = {
+				top: 0,
+				right: 0,
+				bottom: 0,
+				left: 0,
+				x: 0,
+				y: 0,
+				width: 0,
+				height:  0
+			};
+
 			if ('getBoundingClientRect' in el){
-				bound = el.getBoundingClientRect();
+				let rect = el.getBoundingClientRect();
+				for(let p in bound){
+					bound[p] = rect[p]
+				}
 				if(typeof bound.x === 'undefined'){
-					bound.x = bound.left;
-					bound.y = bound.top;
+					bound.x = bound.left * 1;
+					bound.y = bound.top * 1;
 				}
 			} else {
+				bound.x = bound.left = el.offsetLeft;
+				bound.y = bound.top = el.offsetTop;
 				bound.x = el.offsetLeft;
 				bound.y = el.offsetTop;
 				bound.width = el.offsetWidth;
 				bound.height = el.offsetHeight;
 			}
+
+			// Real position from top/left of the page
+			bound.x += window.scrollX;
+			bound.y += window.scrollY;
 
 			list.push(bound);
 		});
