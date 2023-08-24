@@ -299,11 +299,13 @@ QXo.fn = QXo.prototype = {
 		let list = [];
 		this.each(el => {
 			let attr = el.getAttribute(attrName);
+
 			if(attr != null){
-				attr = (attr === '') ? true : attr;
+				attr = attr === '' ? true : attr;
 			} else if(attr === null){
 				attr = false;
 			}
+
 			list.push(attr);
 		});
 
@@ -823,6 +825,25 @@ QXo.fn = QXo.prototype = {
 
 	/*
 
+	Filter
+
+	*/
+
+	filter(selector){
+
+		let items = [];
+		
+		this.each(el => {
+			if(el.matches(selector)){
+				items.push(el);
+			}
+		});
+
+		return new QXo(items);
+	},
+
+	/*
+
 	Set focus at the first element of the list
 
 	*/
@@ -886,6 +907,7 @@ Functions
 */
 
 QX.fn = {
+
 	getPassive: () => {
 		// Determine passive
 		if(typeof QX.fn.isPassive === 'undefined'){
