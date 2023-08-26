@@ -1,7 +1,7 @@
 {
   "name": "@surfy/qx",
   "version": "1.0.1",
-  "description": "Lightweight JavaScript library for manipulating with HTML",
+  "description": "Lightweight JavaScript library for handling HTML",
   "main": "qx.min.js",
   "scripts": {
     "test": "node test/app",
@@ -22,7 +22,7 @@
     "name": "Alexander Yermolenko",
     "url": "https://surfy.one"
   },
-  "license": "MIT",
+  "license": "",
   "bugs": {
     "url": "https://github.com/theastroscout/qx/issues"
   },
