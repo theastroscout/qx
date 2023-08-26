@@ -13,16 +13,29 @@ function QXo(items){
 }
 
 let QX = selector =>{
+
+	/*
+
+	If it's an element
+
+	*/
+
 	if(typeof selector === 'object'){
+		if(!selector.listeners){
+			selector.listeners = {};
+		}
 		return new QXo([selector]);
 	}
 
 	selector = QX.fixSelector(selector);
 
 	let itemsList = [];
-	let elements = doc.querySelectorAll(selector);
-	elements.forEach(currentValue => {
-		itemsList.push(currentValue);
+	let elements = document.querySelectorAll(selector);
+	elements.forEach(el => {
+		if(!el.listeners){
+			el.listeners = {};
+		}
+		itemsList.push(el);
 	});
 
 	return new QXo(itemsList);
@@ -34,7 +47,7 @@ QX.init = () => {
 
 QX.fixSelector = selector => {
 	let chunks = selector.split(',');
-	for(let i=0,l=chunks.length;i<l;i++){
+	for(let i=0, l=chunks.length; i<l; i++){
 		chunks[i] = chunks[i].trim().replace(/^>(.*)/,':scope>$1');
 	}
 	return chunks.join(',');
@@ -60,7 +73,7 @@ UI
 
 QX.isTouch = () => {
 	if(QX.isTouch.state === undefined){
-		QX.isTouch.state = (doc.documentElement && 'ontouchstart' in doc.documentElement);
+		QX.isTouch.state = (document.documentElement && 'ontouchstart' in document.documentElement);
 	}
 	return QX.isTouch.state;
 };
@@ -102,15 +115,29 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	on(events,fn){
-		let passive = QX.fn.getPassive();
+	on(events, fn, passive){
+		passive = { passive: passive || false };
 
 		// Split events list and add Event Listener for each
-		let eventsList = events.split(' ');
+		let eventsList = typeof events === 'string' ? events.split(' ') : events;
+
 		this.each(el => {
-			for(let i=0,l=eventsList.length;i<l;i++){
-				el.addEventListener(eventsList[i],fn,passive);
+
+			for(let i = 0, l = eventsList.length; i<l; i++){
+				let eventName = eventsList[i];
+
+				el.addEventListener(eventName, fn, passive);
+
+				if(!el.listeners[eventName]){
+					el.listeners[eventName] = [];
+				}
+
+				el.listeners[eventName].push({
+					fn: fn,
+					passive: passive
+				});
 			}
+
 		});
 		return this;
 	},
@@ -122,13 +149,23 @@ QXo.fn = QXo.prototype = {
 	*/
 
 	off(events, fn){
-		let passive = QX.fn.getPassive();
 
 		// Split events list and add Event Listener for each
 		let eventsList = events.split(' ');
 		this.each(el => {
-			for(let i=0,l=eventsList.length;i<l;i++){
-				el.removeEventListener(eventsList[i],fn,passive);
+			for(let i=0, l=eventsList.length; i<l; i++){
+				let eventName = eventsList[i];
+				
+				if(!el.listeners[eventName]){
+					return true;
+				}
+				
+				for(let [i, e] of el.listeners[eventName].entries()){
+					if(e.fn === fn){
+						el.listeners[eventName].splice(i, 1);
+						el.removeEventListener(eventName, fn, e.passive);
+					}
+				}
 			}
 		});
 		return this;
@@ -140,11 +177,8 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	click(fn){
-		let passive = QX.fn.getPassive();
-		this.each(el => {
-			el.addEventListener('click',fn,passive);
-		});
+	click(fn, passive){
+		this.on('click', fn, passive);
 		return this;
 	},
 
@@ -155,10 +189,7 @@ QXo.fn = QXo.prototype = {
 	*/
 
 	clickOff(fn){
-		let passive = QX.fn.getPassive();
-		this.each(el => {
-			el.removeEventListener('click',fn,passive);
-		});
+		this.off('click', fn);
 		return this;
 	},
 	
@@ -270,11 +301,13 @@ QXo.fn = QXo.prototype = {
 		let list = [];
 		this.each(el => {
 			let attr = el.getAttribute(attrName);
+
 			if(attr != null){
-				attr = (attr === '') ? true : attr;
+				attr = attr === '' ? true : attr;
 			} else if(attr === null){
 				attr = false;
 			}
+
 			list.push(attr);
 		});
 
@@ -323,19 +356,9 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	hover(type='default'){
-		let passive = QX.fn.getPassive();
-		let overFunction = (type === 'default') ? QX.fn.over: QX.fn.svgOver;
-
-		this.each(el => {
-
-			for(let i=0, l=QX.ui.hover.length; i<l; i++){
-				let e = QX.ui.hover[i];
-				let pass = (e === 'touchstart') ? { passive: true } : passive;
-				el.addEventListener(e, overFunction, pass);
-			}
-
-		});
+	hover(type='default', passive){
+		let overFunction = type === 'default' ? QX.fn.over: QX.fn.svgOver;
+		this.on(QX.ui.hover, overFunction, passive === undefined ? true : passive);
 
 		return this;
 	},
@@ -568,7 +591,7 @@ QXo.fn = QXo.prototype = {
 			clearTimeout(el.tmo);
 
 			if(!el.getAttribute('data-display')){
-				let computedStyle = win.getComputedStyle(el);
+				let computedStyle = window.getComputedStyle(el);
 				el.setAttribute('data-display',computedStyle.display);
 			}
 
@@ -621,7 +644,7 @@ QXo.fn = QXo.prototype = {
 		this.each(el => {
 			clearTimeout(el.tmo);
 			el.style.display = 'none';
-			let computedStyle = win.getComputedStyle(el);
+			let computedStyle = window.getComputedStyle(el);
 			
 			let padding = parseInt(computedStyle.paddingTop,10) + parseInt(computedStyle.paddingBottom,10);
 			let opacity = computedStyle.opacity;
@@ -674,19 +697,38 @@ QXo.fn = QXo.prototype = {
 		let list = [];
 
 		this.each(el => {
-			let bound = {};
+			let bound = {
+				top: 0,
+				right: 0,
+				bottom: 0,
+				left: 0,
+				x: 0,
+				y: 0,
+				width: 0,
+				height:  0
+			};
+
 			if ('getBoundingClientRect' in el){
-				bound = el.getBoundingClientRect();
+				let rect = el.getBoundingClientRect();
+				for(let p in bound){
+					bound[p] = rect[p]
+				}
 				if(typeof bound.x === 'undefined'){
-					bound.x = bound.left;
-					bound.y = bound.top;
+					bound.x = bound.left * 1;
+					bound.y = bound.top * 1;
 				}
 			} else {
+				bound.x = bound.left = el.offsetLeft;
+				bound.y = bound.top = el.offsetTop;
 				bound.x = el.offsetLeft;
 				bound.y = el.offsetTop;
 				bound.width = el.offsetWidth;
 				bound.height = el.offsetHeight;
 			}
+
+			// Real position from top/left of the page
+			bound.x += window.scrollX;
+			bound.y += window.scrollY;
 
 			list.push(bound);
 		});
@@ -735,15 +777,15 @@ QXo.fn = QXo.prototype = {
 
 		this.each(el => {
 			let str = el.innerText;
-			let text = doc.createElement('span');
-			let computedStyle = win.getComputedStyle(el);
+			let text = document.createElement('span');
+			let computedStyle = window.getComputedStyle(el);
 			text.innerHTML = str;
 			text.style.position = 'absolute';
 			text.style.visibility = 'hidden';
 			text.style.font = computedStyle.font;
-			doc.body.appendChild(text); 
+			document.body.appendChild(text); 
 			let width = text.offsetWidth;
-			doc.body.removeChild(text);
+			document.body.removeChild(text);
 
 			list.push(width);
 		});
@@ -791,9 +833,31 @@ QXo.fn = QXo.prototype = {
 
 		this.each(el => {
 			let elmts = el.querySelectorAll(selector);
-			elmts.forEach(currentValue => {
-				items.push(currentValue);
+			elmts.forEach(subEl => {
+				if(!subEl.listeners){
+					subEl.listeners = {};
+				}
+				items.push(subEl);
 			});
+		});
+
+		return new QXo(items);
+	},
+
+	/*
+
+	Filter
+
+	*/
+
+	filter(selector){
+
+		let items = [];
+		
+		this.each(el => {
+			if(el.matches(selector)){
+				items.push(el);
+			}
 		});
 
 		return new QXo(items);
@@ -864,6 +928,7 @@ Functions
 */
 
 QX.fn = {
+
 	getPassive: () => {
 		// Determine passive
 		if(typeof QX.fn.isPassive === 'undefined'){
@@ -881,7 +946,7 @@ QX.fn = {
 			}
 		}
 
-		return QX.fn.isPassive?{passive:false}:false;
+		return QX.fn.isPassive ? { passive: false } : false;
 	},
 
 	over(e){
@@ -948,6 +1013,7 @@ QX.fn = {
 			return QX.fn.prop(items,get);
 		}
 	},
+
 	prop: (items, get) => {
 		let list = [];
 		for(let i=0, l=items.length; i<l; i++){
@@ -985,7 +1051,7 @@ QX.fn = {
 
 		target.each(el => {
 			el.style.removeProperty('display');
-			let computedStyle = win.getComputedStyle(el);
+			let computedStyle = window.getComputedStyle(el);
 			let display = computedStyle.display;
 
 			if(display === 'none'){
@@ -1000,7 +1066,7 @@ QX.fn = {
 				el.style.opacity = type === 'fadeOut' ? 0 : 1;
 			}, 10);
 			
-			win.setTimeout(() => {
+			window.setTimeout(() => {
 				let r = ['transition'];
 				if(type==='fadeIn'){
 					r.push('opacity');
@@ -1143,6 +1209,6 @@ let helper = {
 QX.help = new Proxy(fnList, helper)
 
 QX.init();
-win.$ = QX;
+window.$ = QX;
 
 })(window,document);
