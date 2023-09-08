@@ -25,6 +25,12 @@ let QX = selector =>{
 		return new QXo([selector]);
 	}
 
+	/*
+
+	Selector
+
+	*/
+
 	selector = QX.fixSelector(selector);
 
 	let itemsList = [];
@@ -159,13 +165,14 @@ QXo.fn = QXo.prototype = {
 				}
 				
 				for(let [i, e] of el.listeners[eventName].entries()){
-					if(e.fn === fn){
+					if(!fn || e.fn === fn){
 						el.listeners[eventName].splice(i, 1);
-						el.removeEventListener(eventName, fn, e.passive);
+						el.removeEventListener(eventName, e.fn, e.passive);
 					}
 				}
 			}
 		});
+
 		return this;
 	},
 
@@ -350,13 +357,26 @@ QXo.fn = QXo.prototype = {
 	
 	/*
 
-	Add a behavior that switches the class 'hover' when you hover the mouse or tap on the element.
+	Add a behaviour that switches the class 'hover' when you hover the mouse or tap on the element.
 
 	*/
 
 	hover(type='default', passive){
 		let overFunction = type === 'default' ? QX.fn.over: QX.fn.svgOver;
-		this.on(QX.ui.hover, overFunction, passive === undefined ? true : passive);
+		this.on(QX.ui.hover, overFunction, passive);
+
+		return this;
+	},
+	
+	/*
+
+	Remove 'Hover' behaviour
+
+	*/
+
+	hoverOff(type='default'){
+		let overFunction = type === 'default' ? QX.fn.over: QX.fn.svgOver;
+		this.off(QX.ui.hover, overFunction);
 
 		return this;
 	},
@@ -423,7 +443,7 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	afterbegin(html){
+	afterBegin(html){
 		this.each(el => {
 			el.insertAdjacentHTML('afterbegin', html);
 		});

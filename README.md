@@ -11,8 +11,12 @@ Just add the script into your HTML
 <script src="/path_to_script/qx.min.js"></script>
 ```
 ## Or install via npm
-```
+```sh
 npm install @surfy/qx
+```
+## ES6
+```js
+import '@surfy/qx';
 ```
 <br />
 
