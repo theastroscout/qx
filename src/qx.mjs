@@ -1165,6 +1165,13 @@ Object.defineProperty(QXo.fn, 'value', {
 			return values;
 		}
 		return false;
+	},
+
+	set(value){
+		this.each(el => {
+			el.value = value;
+		});
+		return this;
 	}
 });
 
