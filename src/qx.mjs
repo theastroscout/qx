@@ -197,6 +197,19 @@ QXo.fn = QXo.prototype = {
 		this.off('click', fn);
 		return this;
 	},
+
+	/*
+
+	Submit
+
+	*/
+
+	submit(fn){
+		this.each(el => {
+			el.requestSubmit();
+		});
+		return this;
+	},
 	
 	/*
 
