@@ -32,7 +32,7 @@ let QX = selector =>{
 	Selector
 
 	*/
-	
+
 	selector = QX.fixSelector(selector);
 
 	let itemsList = [];
@@ -197,6 +197,19 @@ QXo.fn = QXo.prototype = {
 
 	clickOff(fn){
 		this.off('click', fn);
+		return this;
+	},
+
+	/*
+
+	Submit
+
+	*/
+
+	submit(fn){
+		this.each(el => {
+			el.requestSubmit();
+		});
 		return this;
 	},
 	
@@ -1167,6 +1180,13 @@ Object.defineProperty(QXo.fn, 'value', {
 			return values;
 		}
 		return false;
+	},
+
+	set(value){
+		this.each(el => {
+			el.value = value;
+		});
+		return this;
 	}
 });
 
