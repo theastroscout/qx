@@ -595,7 +595,7 @@ QXo.fn = QXo.prototype = {
 
 	each(cb){
 		for(let i=0, l=this.elmts.length; i<l; i++){
-			cb(this.elmts[i]);
+			cb(this.elmts[i], i);
 		}
 		return this;
 	},
