@@ -370,7 +370,7 @@ QXo.fn = QXo.prototype = {
 	
 	/*
 
-	Add a behaviour that switches the class 'hover' when you hover the mouse or tap on the element.
+	Add a behaviour that switches 'hover' class when you hover the mouse or tap on the element.
 
 	*/
 
