@@ -1079,6 +1079,14 @@ QX.fn = {
 	*/
 
 	fadeInOut: (target, duration, type='fadeIn', cb) => {
+		let remove = false;
+		if (duration === 'remove') {
+			remove = true;
+			duration = 600;
+		} else if (cb === 'remove') {
+			remove = true;
+			cb = false;
+		}
 
 		target.each(el => {
 			el.style.removeProperty('display');
@@ -1105,9 +1113,14 @@ QX.fn = {
 
 				QX.fn.removeProps(el,r)
 
-				if(typeof cb === 'function'){
+				if (typeof cb === 'function') {
 					cb(el);
 				}
+
+				if (remove) {
+					el.remove();
+				}
+
 			}, duration);
 		});
 	}
