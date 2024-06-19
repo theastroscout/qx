@@ -644,13 +644,13 @@ QXo.fn = QXo.prototype = {
 			el.tmo = setTimeout( () => {
 				el.style.display = 'none';
 				QX.fn.removeProps(el,['opacity','box-sizing','height','padding-top','padding-bottom','margin-top','margin-bottom','overflow','transition-duration','transition-property']);
-				
-				if(callback){
-					callback(el);
-				}
 
 				if(removeOnComplete){
 					el.parentNode.removeChild(el);
+				}
+
+				if(callback){
+					callback(el);
 				}
 
 			}, duration + 50);
