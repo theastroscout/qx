@@ -77,7 +77,8 @@ UI
 
 QX.isTouch = () => {
 	if(QX.isTouch.state === undefined){
-		QX.isTouch.state = (document.documentElement && 'ontouchstart' in document.documentElement);
+		// QX.isTouch.state = (document.documentElement && 'ontouchstart' in document.documentElement);
+		QX.isTouch.state = window.matchMedia('(hover: none)').matches && window.matchMedia('(pointer: coarse)').matches;
 	}
 	return QX.isTouch.state;
 };
