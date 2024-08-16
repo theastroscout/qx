@@ -1213,6 +1213,11 @@ Object.defineProperty(QXo.fn, 'dataset', {
 		if(this.elmts.length > 1){
 			return this.elmts[0].dataset;
 		}
+
+		if (!this.elmts[0]) {
+			return null;
+		}
+
 		return this.elmts[0].dataset;
 	},
 
