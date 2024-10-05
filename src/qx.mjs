@@ -2,11 +2,11 @@
 
 QX • Lightweight JavaScript library for manipulating with HTML
 Alexander Yermolenko
-Surfy © https://surfy.one
+Surfy @ https://hello.surfy.one
 
 */
 
-function QXo(items){
+function QXo(items) {
 	this.elmts = items;
 }
 
@@ -18,8 +18,8 @@ let QX = selector =>{
 
 	*/
 
-	if(typeof selector === 'object'){
-		if(!selector.listeners){
+	if (typeof selector === 'object') {
+		if (!selector.listeners) {
 			selector.listeners = {};
 		}
 		return new QXo([selector]);
@@ -36,7 +36,7 @@ let QX = selector =>{
 	let itemsList = [];
 	let elements = document.querySelectorAll(selector);
 	elements.forEach(el => {
-		if(!el.listeners){
+		if (!el.listeners) {
 			el.listeners = {};
 		}
 		itemsList.push(el);
@@ -105,10 +105,10 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	get(index = false){
-		if(index === false){
+	get(index = false) {
+		if (index === false) {
 			return this.elmts;
-		} else if(typeof this.elmts[index] !== 'undefined'){
+		} else if (typeof this.elmts[index] !== 'undefined') {
 			return this.elmts[index];
 		}
 		return false;
@@ -120,7 +120,7 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	on(events, fn, passive){
+	on(events, fn, passive) {
 		passive = { passive: passive || false };
 
 		// Split events list and add Event Listener for each
@@ -345,11 +345,23 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	setAttr(attrName, value=''){
+	setAttr(attr, value=''){
 		
-		this.each(el => {
-			el.setAttribute(attrName,value);
-		});
+		if (typeof attr === 'object') {
+			
+			this.each(el => {
+				for (let field in attr) {
+					el.setAttribute(field, attr[field]);
+				}
+			});
+
+		} else {
+			
+			this.each(el => {
+				el.setAttribute(attr, value);
+			});
+
+		}
 
 		return this;
 	},
@@ -360,10 +372,14 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	removeAttr(attrName){
+	removeAttr(attrNames) {
+		
+		const attributes = attrNames.split(' ');
 
 		this.each(el => {
-			el.removeAttribute(attrName);
+			for (const attr of attributes) {
+				el.removeAttribute(attr);
+			}
 		});
 
 		return this;
@@ -375,7 +391,7 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	hover(type='default', passive){
+	hover(type='default', passive) {
 		let overFunction = type === 'default' ? QX.fn.over: QX.fn.svgOver;
 		this.on(QX.ui.hover, overFunction, passive);
 
@@ -882,7 +898,7 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	filter(selector){
+	filter(selector) {
 
 		let items = [];
 		
@@ -901,8 +917,8 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	focus(){
-		if(this.elmts.length){
+	focus() {
+		if (this.elmts.length) {
 			this.elmts[0].focus();
 		}
 		return this;
