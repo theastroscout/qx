@@ -1249,6 +1249,41 @@ Object.defineProperty(QXo.fn, 'dataset', {
 
 /*
 
+ScrollTop
+
+*/
+
+Object.defineProperty(QXo.fn, 'scrollTop', {
+	get() {
+
+		if (!this.elmts[0]) {
+			return false;
+		}
+
+		if (this.elmts.length > 1) {
+			
+			let results = [];
+			
+			this.each(el => {
+				results.push(el.scrollTop);
+			});
+
+			return results;
+		}
+
+		return this.elmts[0].scrollTop;
+	},
+
+	set(value) {
+		this.each(el => {
+			el.scrollTop = value;
+		});
+		return this;
+	}
+});
+
+/*
+
 Helper
 
 */
