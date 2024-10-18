@@ -156,7 +156,8 @@ QXo.fn = QXo.prototype = {
 	off(events, fn){
 
 		// Split events list and add Event Listener for each
-		let eventsList = events.split(' ');
+		let eventsList = typeof events === 'string' ? events.split(' ') : events;
+
 		this.each(el => {
 			for(let i=0, l=eventsList.length; i<l; i++){
 				let eventName = eventsList[i];
@@ -404,9 +405,10 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	hoverOff(type='default'){
+	hoverOff(type='default') {
 		let overFunction = type === 'default' ? QX.fn.over: QX.fn.svgOver;
 		this.off(QX.ui.hover, overFunction);
+		this.removeClass('hover');
 
 		return this;
 	},
@@ -417,7 +419,7 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	remove(){
+	remove() {
 		this.each(el => {
 			el.parentNode.removeChild(el);
 		});
@@ -431,7 +433,7 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	replace(html){
+	replace(html) {
 		this.each(el => {
 			el.outerHTML = html;
 		});
@@ -445,7 +447,7 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	append(html){
+	append(html) {
 		this.each(el => {
 			el.insertAdjacentHTML('beforeEnd', html);
 		});
@@ -459,7 +461,7 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	prepend(html){
+	prepend(html) {
 		this.each(el => {
 			el.insertAdjacentHTML('beforeBegin', html);
 		});
@@ -473,7 +475,7 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	afterBegin(html){
+	afterBegin(html) {
 		this.each(el => {
 			el.insertAdjacentHTML('afterbegin', html);
 		});
@@ -487,7 +489,7 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	after(html){
+	after(html) {
 		this.each(el => {
 			el.insertAdjacentHTML('afterEnd', html);
 		});
@@ -501,7 +503,7 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	hide(){
+	hide() {
 		this.each(el => {
 			el.style.display = 'none';
 		});
@@ -515,7 +517,7 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	show(){
+	show() {
 		this.each(el => {
 			el.style.display = 'block';
 		});
@@ -529,9 +531,9 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	text(str=false){
+	text(str=false) {
 		let r = QX.fn.textHtml(this.elmts, str, 'text');
-		if(r === 'set'){
+		if (r === 'set') {
 			return this;
 		}
 
@@ -544,9 +546,9 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	html(str=false){
+	html(str=false) {
 		let r = QX.fn.textHtml(this.elmts, str, 'html');
-		if(r === 'set'){
+		if (r === 'set') {
 			return this;
 		}
 
@@ -559,7 +561,7 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	fadeIn(duration=1000, cb=false){
+	fadeIn(duration=1000, cb=false) {
 		QX.fn.fadeInOut(this, duration, 'fadeIn', cb);
 		return this;
 	},
@@ -570,7 +572,7 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	fadeOut(duration=600, cb=false){
+	fadeOut(duration=600, cb=false) {
 		QX.fn.fadeInOut(this, duration, 'fadeOut', cb);
 		return this;
 	},
@@ -581,9 +583,9 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	width(value=false){
+	width(value=false) {
 		let r = QX.fn.widthHeight(this.elmts, value, 'width');
-		if(r === 'set'){
+		if (r === 'set') {
 			return this;
 		}
 		return r;
@@ -595,9 +597,9 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	height(value=false){
+	height(value=false) {
 		let r = QX.fn.widthHeight(this.elmts, value, 'height');
-		if(r === 'set'){
+		if (r === 'set') {
 			return this;
 		}
 
@@ -610,8 +612,8 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	each(cb){
-		for(let i=0, l=this.elmts.length; i<l; i++){
+	each(cb) {
+		for (let i=0, l=this.elmts.length; i<l; i++) {
 			cb(this.elmts[i], i);
 		}
 		return this;
@@ -623,13 +625,13 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	slideUp(duration=500, callback=false){
+	slideUp(duration=500, callback=false) {
 		let removeOnComplete = false;
 
-		if(typeof duration === 'function'){
+		if (typeof duration === 'function') {
 			callback = duration;
 			duration = 500;
-		} else if(duration === 'remove'){
+		} else if (duration === 'remove') {
 			removeOnComplete = true;
 			duration = 500;
 		}
@@ -682,13 +684,14 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	slideDown(duration=500, callback=false){
-		if(typeof duration === 'string'){
+	slideDown(duration=500, callback=false) {
+		if (typeof duration === 'string') {
 			duration = 500;
-		} else if(typeof duration === 'function'){
+		} else if (typeof duration === 'function') {
 			callback = duration;
 			duration = 500;
 		}
+
 		this.each(el => {
 			clearTimeout(el.tmo);
 			el.style.display = 'none';
@@ -713,7 +716,7 @@ QXo.fn = QXo.prototype = {
 			let height = el.scrollHeight + padding;
 
 			let display = el.getAttribute('data-display');
-			if(display){
+			if (display) {
 				el.style.display = display;
 			}			
 
@@ -726,7 +729,7 @@ QXo.fn = QXo.prototype = {
 			el.tmo = setTimeout( () => {
 				QX.fn.removeProps(el,['opacity','box-sizing','height','overflow','transition-duration','transition-property']);
 
-				if(callback){
+				if (callback) {
 					callback(el);
 				}
 
@@ -741,7 +744,7 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	getBounds(){
+	getBounds() {
 		let list = [];
 
 		this.each(el => {
@@ -758,13 +761,15 @@ QXo.fn = QXo.prototype = {
 
 			if ('getBoundingClientRect' in el){
 				let rect = el.getBoundingClientRect();
-				for(let p in bound){
+				for (let p in bound) {
 					bound[p] = rect[p]
 				}
-				if(typeof bound.x === 'undefined'){
+
+				if (typeof bound.x === 'undefined') {
 					bound.x = bound.left * 1;
 					bound.y = bound.top * 1;
 				}
+
 			} else {
 				bound.x = bound.left = el.offsetLeft;
 				bound.y = bound.top = el.offsetTop;
@@ -781,9 +786,9 @@ QXo.fn = QXo.prototype = {
 			list.push(bound);
 		});
 
-		if(list.length > 1){
+		if (list.length > 1) {
 			return list;
-		} else if(list.length){
+		} else if (list.length) {
 			return list[0];
 		}
 
@@ -796,13 +801,13 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	parent(className=false){
+	parent(className=false) {
 		let items = [], parentEl;
 		this.each(el => {
 
-			if(className){
+			if (className) {
 				parentEl = el.closest(className);
-				if(parentEl){
+				if (parentEl) {
 					items.push(parentEl);
 				}
 			} else {
@@ -820,7 +825,7 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	textWidth(){
+	textWidth() {
 		let list = [];
 
 		this.each(el => {
@@ -838,9 +843,9 @@ QXo.fn = QXo.prototype = {
 			list.push(width);
 		});
 
-		if(list.length > 1){
+		if (list.length > 1) {
 			return list;
-		} else if(list.length){
+		} else if (list.length) {
 			return list[0];
 		}
 
@@ -853,16 +858,16 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	top(){
+	top() {
 		let list = [];
 
-		this.each((el) => {
+		this.each( el => {
 			list.push(el.offsetTop);
 		});
 
-		if(list.length > 1){
+		if (list.length > 1) {
 			return list;
-		} else if(list.length){
+		} else if (list.length) {
 			return list[0];
 		}
 
@@ -875,14 +880,14 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	find(selector){
+	find(selector) {
 		let items = [];
 		selector = QX.fixSelector(selector);
 
 		this.each(el => {
 			let elmts = el.querySelectorAll(selector);
 			elmts.forEach(subEl => {
-				if(!subEl.listeners){
+				if(!subEl.listeners) {
 					subEl.listeners = {};
 				}
 				items.push(subEl);
@@ -903,7 +908,7 @@ QXo.fn = QXo.prototype = {
 		let items = [];
 		
 		this.each(el => {
-			if(el.matches(selector)){
+			if (el.matches(selector)) {
 				items.push(el);
 			}
 		});
@@ -930,15 +935,15 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	copy(){
+	copy() {
 		let list = [];
 		this.each(el => {
 			list.push(el.cloneNode(true));
 		});
 
-		if(list.length > 1){
+		if (list.length > 1) {
 			return list;
-		} else if(list.length){
+		} else if (list.length) {
 			return list[0];
 		}
 
@@ -1277,6 +1282,69 @@ Object.defineProperty(QXo.fn, 'scrollTop', {
 	set(value) {
 		this.each(el => {
 			el.scrollTop = value;
+		});
+		return this;
+	}
+});
+
+/*
+
+Offset Top
+
+*/
+
+Object.defineProperty(QXo.fn, 'offsetTop', {
+	get() {
+
+		if (!this.elmts[0]) {
+			return false;
+		}
+
+		if (this.elmts.length > 1) {
+			
+			let results = [];
+			
+			this.each(el => {
+				results.push(el.offsetTop);
+			});
+
+			return results;
+		}
+
+		return this.elmts[0].offsetTop;
+	}
+});
+
+/*
+
+ScrollTop
+
+*/
+
+Object.defineProperty(QXo.fn, 'innerText', {
+	get() {
+
+		if (!this.elmts[0]) {
+			return false;
+		}
+
+		if (this.elmts.length > 1) {
+			
+			let results = [];
+			
+			this.each(el => {
+				results.push(el.innerText);
+			});
+
+			return results;
+		}
+
+		return this.elmts[0].innerText;
+	},
+
+	set(value) {
+		this.each(el => {
+			el.innerText = value;
 		});
 		return this;
 	}
