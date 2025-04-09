@@ -929,6 +929,13 @@ QXo.fn = QXo.prototype = {
 		return this;
 	},
 
+	blur() {
+		if (this.elmts.length) {
+			this.elmts[0].blur();
+		}
+		return this;
+	},
+
 	/*
 
 	Return copies of elements
