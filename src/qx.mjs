@@ -922,9 +922,9 @@ QXo.fn = QXo.prototype = {
 
 	*/
 
-	focus() {
+	focus(e) {
 		if (this.elmts.length) {
-			this.elmts[0].focus();
+			this.elmts[0].focus(e);
 		}
 		return this;
 	},
